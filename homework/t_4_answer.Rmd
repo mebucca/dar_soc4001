@@ -1,0 +1,61 @@
+---
+title: "Tarea 4"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Ponderación: 12% de la nota final del curso
+Formato: Desarrollar esta tarea en un`Rmarkdown`. 
+
+
+## Instrucciones:
+
+Usa el siguiente cógigo para cargar la base de datos sobre Covid-19 usados en clase:
+
+
+```{r, message=FALSE, warning=FALSE}
+library("tidyverse")
+library("wesanderson")
+library("cowplot")
+library("lubridate")
+library("viridis")
+library("ggdark")
+
+path <- url("https://raw.githubusercontent.com/mebucca/dar_soc4001/master/slides/class_12/covid_data.csv")
+# leer archivo csv
+covid_data <- read_delim(path, delim=";")
+```
+
+
+Referencia: Hasell, J., Mathieu, E., Beltekian, D. et al. A cross-country database of COVID-19 testing. Sci Data 7, 345 (2020). [Link](https://doi.org/10.1038/s41597-020-00688-8)
+
+Los datos deben verse así:
+
+```{r, echo=F}
+covid_data  %>% glimpse()
+```
+
+## Ejercicio
+
+Usando `Rmarkdown`, produce un reporte lo más parecido posible al documento que estás leyendo. 
+
+La figura a continuación usa un `theme` y una paleta de colores de tu preferencia. **Pista**: mi paleta de colores está definida por la siguiente linea de código: `scale_color_viridis(trans = "date", option = "plasma")` y mi theme es `dark_theme_gray()`, del paquete `library("ggdark")`. Ambos ejes están graficados en escala log10.
+
+```{r, echo=F, message=F,warning=F}
+plot <- covid_data  %>% filter(continent=="Europe") %>%
+  ggplot(aes(x=new_cases_smoothed_per_million, y=new_deaths_smoothed_per_million, colour=date)) + 
+  geom_point(alpha=0.1) +
+  scale_x_log10() +  scale_y_log10() +
+  dark_theme_gray() +
+  scale_color_viridis(trans = "date", option = "plasma") +
+  labs(x="New cases smoothed per million", y="New deaths smoothed per million", title="Covid-19 in Europe")
+
+print(plot)
+```
+
+En el periodo estudiado el promedio de casos nuevos por millón de habitantes en Europa fue de `r  round(mean(covid_data$new_cases_smoothed_per_million, na.rm=T),2)`, mientras que el promedio de muertes nuevas por millón de habitantes fue `r  round(mean(covid_data$new_deaths_smoothed_per_million, na.rm=T))`.

@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Procesamiento avanzado de Bases de Datos en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <script src="libs/header-attrs-2.24/header-attrs.js"></script>
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Procesamiento avanzado de Bases de Datos en R
+]
+.subtitle[
+## Iteración y automatización
+]
+.author[
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+]
+.date[
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+]
+
+---
+
+
+
+
+
+## Recapitulación
+&lt;br&gt;
+
+- Manipulación de bases de datos con `tidyr` y `dplyr`
+
+- Visualización de datos con `ggplot2`
+
+
+---
+
+## Hoy hablaremos de ...
+
+Iteración y automatización: 
+
+  - Loops
+  
+  - "Functional programming"
+
+---
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#Loops]
+
+---
+## Loops: ¿para que?
+
+.pull-left[
+![for](forloop.jpg)
+]
+
+.pull-right[
+Explorar patrones comunes en código para:
+
+&lt;br&gt;
+
+- Reducir .bold[duplicación] de código 
+
+- Reducir posibilidades de .bold[errores] en código
+
+- Automatizar .bold[análisis] 
+
+- Automatizar .bold[almacenamiento y extracción] de resultados
+
+]
+
+---
+## Loops: ¿para que?
+
+.pull-left[
+
+- Hay muchos tipos de loops.
+
+
+]
+
+.pull-right[
+![loops](loops.png)
+]
+
+
+---
+## `for` loops
+
+Con números
+
+.pull-left[
+
+```r
+for(i in 1:20) {
+  
+  primo &lt;- i + (i-1)
+  print(primo)
+
+  }
+```
+]
+
+--
+.pull-right[
+
+```
+## [1] 1
+## [1] 3
+## [1] 5
+## [1] 7
+## [1] 9
+## [1] 11
+## [1] 13
+## [1] 15
+## [1] 17
+## [1] 19
+## [1] 21
+## [1] 23
+## [1] 25
+## [1] 27
+## [1] 29
+## [1] 31
+## [1] 33
+## [1] 35
+## [1] 37
+## [1] 39
+```
+]
+
+
+---
+## `for` loops
+
+Con letras
+
+.pull-left[
+
+```r
+*for(j in c("Tamara","Julio","Simona")) {
+  
+  frase &lt;- paste0(j, " participa en clases")
+  print(frase)
+  
+  }
+```
+]
+
+--
+.pull-right[
+
+```
+## [1] "Tamara participa en clases"
+## [1] "Julio participa en clases"
+## [1] "Simona participa en clases"
+```
+]
+
+--
+
+.pull-left[
+
+```r
+nombres &lt;- c("Tamara","Julio","Simona")
+
+*for(n in nombres) {
+  
+  frase &lt;- paste0(n, " participa en clases")
+  print(frase)
+  
+  }
+```
+]
+
+--
+.pull-right[
+
+```
+## [1] "Tamara participa en clases"
+## [1] "Julio participa en clases"
+## [1] "Simona participa en clases"
+```
+]
+
+&lt;style type="text/css"&gt;
+.pull-right ~ * { clear: unset; }
+.pull-right + * { clear: both; }
+&lt;/style&gt;
+
+---
+## Nested Loops
+
+.pull-left[
+
+```r
+*for (i in  1:5) {
+* for (j in c(3,4)) {
+    
+  diff = i - j
+  print(diff) 
+  
+  }
+}
+```
+]
+
+--
+.pull-right[
+
+```
+## [1] -2
+## [1] -3
+## [1] -1
+## [1] -2
+## [1] 0
+## [1] -1
+## [1] 1
+## [1] 0
+## [1] 2
+## [1] 1
+```
+]
+
+--
+
+.pull-left[
+
+```r
+*for (j in c(3,4)) {
+* for (i in  1:5) {
+
+  diff = i - j
+  print(diff) 
+  
+  }
+}
+```
+]
+
+--
+.pull-right[
+
+```
+## [1] -2
+## [1] -1
+## [1] 0
+## [1] 1
+## [1] 2
+## [1] -3
+## [1] -2
+## [1] -1
+## [1] 0
+## [1] 1
+```
+]
+
+&lt;style type="text/css"&gt;
+.pull-right ~ * { clear: unset; }
+.pull-right + * { clear: both; }
+&lt;/style&gt;
+
+---
+
+## Estructuras de control
+
+`if`, `else if`, `else`
+
+
+.pull-left[
+
+```r
+a &lt;- 49
+
+*if(a &gt; 100){
+  
+  print(":(")
+
+*} else if (a &lt; 50){
+  
+  print(":)")
+
+* } else {
+    
+  print(":S")
+
+  }
+```
+]
+
+--
+.pull-right[
+
+```
+## [1] ":)"
+```
+]
+
+---
+## Estructuras de control + loops
+
+.pull-left[
+![fibo1](fibonacci.png)
+]
+
+
+.pull-right[
+![fibo2](fibonacci2.jpg)
+]
+
+---
+## Estructuras de control + loops + almacenamiento
+
+.pull-left[
+`$$\begin{align}
+f_n = \begin{cases}
+n \quad &amp; \text{si } n \in 0,1 \\ \\
+f_{n-2} + f_{n-1} \quad &amp; \text{si } n &gt; 1 
+\end{cases}
+\end{align}$$`
+]
+
+.pull-right[
+
+]
+
+--
+
+.pull-left[
+
+```r
+*f &lt;- NULL
+for (n in 0:12) {
+  
+* if (n == 0 | n == 1) {
+*   f[n+1] &lt;- n
+    print(f)
+  }
+  
+* else if (n &gt; 1){
+*   f[n+1] &lt;- f[(n+1)-1] + f[(n+1)-2]
+    print(f)
+  }
+
+}
+```
+]
+
+--
+
+.pull-right[
+
+```
+## [1] 0
+## [1] 0 1
+## [1] 0 1 1
+## [1] 0 1 1 2
+## [1] 0 1 1 2 3
+## [1] 0 1 1 2 3 5
+## [1] 0 1 1 2 3 5 8
+## [1]  0  1  1  2  3  5  8 13
+## [1]  0  1  1  2  3  5  8 13 21
+##  [1]  0  1  1  2  3  5  8 13 21 34
+##  [1]  0  1  1  2  3  5  8 13 21 34 55
+##  [1]  0  1  1  2  3  5  8 13 21 34 55 89
+##  [1]   0   1   1   2   3   5   8  13  21  34  55  89 144
+```
+]
+
+&lt;style type="text/css"&gt;
+.pull-right ~ * { clear: unset; }
+.pull-right + * { clear: both; }
+&lt;/style&gt;
+
+---
+## `while` loops
+
+
+.pull-left[
+
+```r
+j=0
+*while (j &lt; 1000000000) {
+    print(j)
+*   j=(j+1)^2
+}
+```
+]
+
+--
+.pull-right[
+
+```
+## [1] 0
+## [1] 1
+## [1] 4
+## [1] 25
+## [1] 676
+## [1] 458329
+```
+]
+
+--
+.bold[Cuidado!]
+
+.pull-left[
+
+```r
+j=1
+*while (j &lt; 2) {
+  j = j/j 
+}
+```
+]
+
+.pull-right[
+![scream](images/scream.gif)
+]
+&lt;style type="text/css"&gt;
+.pull-right ~ * { clear: unset; }
+.pull-right + * { clear: both; }
+&lt;/style&gt;
+
+---
+class: inverse, center, middle
+
+## Loops: algunas aplicaciones para análisis de datos
+
+---
+## Datos Covid-19
+
+Continuaremos trabajando con datos mundiales de COVID (OWID):
+
+
+```
+## Rows: 210
+## Columns: 50
+## $ iso_code                           &lt;chr&gt; "AFG", "ALB", "DZA", "AND", "AGO", …
+## $ continent                          &lt;chr&gt; "Asia", "Europe", "Africa", "Europe…
+## $ location                           &lt;chr&gt; "Afghanistan", "Albania", "Algeria"…
+## $ date                               &lt;date&gt; 2020-11-17, 2020-11-17, 2020-11-17…
+## $ total_cases                        &lt;dbl&gt; 43468, 28432, 68589, 5914, 13451, 3…
+## $ new_cases                          &lt;dbl&gt; 65, 602, 910, 42, 77, 0, 0, 7895, 9…
+## $ new_cases_smoothed                 &lt;dbl&gt; 143.571, 528.714, 842.286, 68.143, …
+## $ total_deaths                       &lt;dbl&gt; 1632, 631, 2168, 76, 322, NA, 4, 35…
+## $ new_deaths                         &lt;dbl&gt; 6, 8, 14, 0, 0, 0, 0, 291, 23, 0, 0…
+## $ new_deaths_smoothed                &lt;dbl&gt; 7.857, 8.571, 15.143, 143.000, 2.14…
+## $ total_cases_per_million            &lt;dbl&gt; 1116.616, 9879.769, 1564.136, 76541…
+## $ new_cases_per_million              &lt;dbl&gt; 1.670, 209.188, 20.752, 543.584, 2.…
+## $ new_cases_smoothed_per_million     &lt;dbl&gt; 3.688, 183.722, 19.208, 881.937, 4.…
+## $ total_deaths_per_million           &lt;dbl&gt; 41.923, 219.265, 49.440, 983.628, 9…
+## $ new_deaths_per_million             &lt;dbl&gt; 154.000, 2.780, 319.000, 0.000, 0.0…
+## $ new_deaths_smoothed_per_million    &lt;dbl&gt; 202.000, 2.978, 345.000, 1.849, 65.…
+## $ reproduction_rate                  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ icu_patients                       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ icu_patients_per_million           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ hosp_patients                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ hosp_patients_per_million          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_icu_admissions              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_icu_admissions_per_million  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_hosp_admissions             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_hosp_admissions_per_million &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ total_tests                        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests                          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ total_tests_per_thousand           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_per_thousand             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_smoothed                 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_smoothed_per_thousand    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ tests_per_case                     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ positive_rate                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ tests_units                        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ stringency_index                   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ population                         &lt;dbl&gt; 38928341, 2877800, 43851043, 77265,…
+## $ population_density                 &lt;dbl&gt; 54.422, 104.871, 17.348, 163.755, 2…
+## $ median_age                         &lt;dbl&gt; 18.6, 38.0, 29.1, NA, 16.8, NA, 32.…
+## $ aged_65_older                      &lt;dbl&gt; 2.581, 13.188, 6.211, NA, 2.405, NA…
+## $ aged_70_older                      &lt;dbl&gt; 1.337, 8.643, 3.857, NA, 1.362, NA,…
+## $ gdp_per_capita                     &lt;dbl&gt; 1803.987, 11803.431, 13913.839, NA,…
+## $ extreme_poverty                    &lt;dbl&gt; NA, 1.1, 0.5, NA, NA, NA, NA, 0.6, …
+## $ cardiovasc_death_rate              &lt;dbl&gt; 597.029, 304.195, 278.364, 109.135,…
+## $ diabetes_prevalence                &lt;dbl&gt; 9.59, 10.08, 6.73, 7.97, 3.94, NA, …
+## $ female_smokers                     &lt;dbl&gt; NA, 7.1, 0.7, 29.0, NA, NA, NA, 16.…
+## $ male_smokers                       &lt;dbl&gt; NA, 51.2, 30.4, 37.8, NA, NA, NA, 2…
+## $ handwashing_facilities             &lt;dbl&gt; 37.746, NA, 83.741, NA, 26.664, NA,…
+## $ hospital_beds_per_thousand         &lt;dbl&gt; 0.50, 2.89, 1.90, NA, NA, NA, 3.80,…
+## $ life_expectancy                    &lt;dbl&gt; 64.83, 78.57, 76.88, 83.73, 61.15, …
+## $ human_development_index            &lt;dbl&gt; 498.00, 785.00, 754.00, 858.00, 581…
+```
+
+---
+## Análisis de datos Covid-19, manualmente
+
+- Variables dependientes (y): `total_cases_per_million`, `total_deaths_per_million`
+
+- Predictores (x): `population_density` `median_age`, `gdp_per_capita`
+
+&lt;br&gt;
+
+.bold[Instrucciones]:
+
+1. Crea un scatterplot de cada (y) con cada x
+
+2. Regresiona cada (y) con cada (x)
+
+3. Extrae el `\(R^2\)` de cada modelo
+  
+
+---
+## Análisis de datos Covid-19, manualmente
+
+- Variables dependientes (y): `total_cases_per_million`, `total_deaths_per_million`
+
+- Predictores (x): `population_density` `median_age`, `gdp_per_capita`
+
+&lt;br&gt;
+
+.bold[Instrucciones]:
+
+1. Regresiona cada (y) con cada (x), guarda el modelo
+
+2. Extrae el `\(R^2\)` de cada modelo
+
+
+&lt;br&gt;
+--
+
+
+```r
+*lm1 &lt;- lm(total_cases_per_million ~ population_density, data=covid_data)
+*r2_1 &lt;- summary(lm1)$r.squared
+
+lm2 &lt;- lm(total_cases_per_million ~ median_age, data=covid_data)
+r2_2 &lt;- summary(lm2)$r.squared
+
+*... ETC, ETC, ETC, ETC!!!
+```
+
+---
+## Análisis de datos Covid-19 usando loops
+
+.bold[Instrucciones]:
+
+1. Regresiona cada (y) con cada (x), guarda el modelo
+2. Extrae el `\(R^2\)` de cada modelo
+
+&lt;br&gt;
+--
+
+
+```r
+for (dv in c("total_cases_per_million", "total_deaths_per_million")) {
+  for (iv in  c("population_density", "median_age", "gdp_per_capita")) {
+    
+    #ajusta modelo
+    y &lt;- covid_data[,dv] %&gt;% as.matrix()
+    x &lt;- covid_data[,iv] %&gt;% as.matrix()
+*   mimodelo &lt;- lm(y ~ x)
+   
+    #r2 
+*   mir2 &lt;- summary(mimodelo)$r.squared; print(mir2)
+  }
+}
+```
+---
+## Análisis de datos Covid-19 usando loops
+
+.bold[Instrucciones]:
+
+1. Regresiona cada (y) con cada (x), guarda el modelo
+3. Extrae el `\(R^2\)` de cada modelo
+
+&lt;br&gt;
+
+
+```
+## [1] 0.004536585
+## [1] 0.2294957
+## [1] 0.2746037
+## [1] 0.005893679
+## [1] 0.124681
+## [1] 0.04440985
+```
+
+---
+## Análisis de datos Covid-19 usando loops + almacenamiento resultados via `assign()`
+
+
+```r
+for (dv in c("total_cases_per_million", "total_deaths_per_million")) {
+  for (iv in  c("population_density", "median_age", "gdp_per_capita")) {
+    
+    #ajusta modelo
+    y &lt;- covid_data[,dv] %&gt;% as.matrix()
+    x &lt;- covid_data[,iv] %&gt;% as.matrix()
+    mimodelo &lt;- lm(y ~ x)
+*   namemodelo &lt;- paste("lm_",dv,"_",iv)
+*   assign(namemodelo,mimodelo )
+      
+    #r2 
+    mir2 &lt;- summary(mimodelo)
+*   namer2 &lt;- paste("r2_",dv,"_",iv)
+*   assign(namer2,mir2)
+
+  }
+}
+```
+
+---
+## Análisis de datos Covid-19 usando loops 
+
+
+.pull-left[
+![boss](https://media1.tenor.com/images/096ff1a1434247ee4af566e41d3b21a1/tenor.gif?itemid=5874416)
+]
+.pull-right[
+.bold[Ahora hagamos estos análisis por separado para cada continente ...]
+]
+
+&lt;br&gt;
+--
+
+2 variables dependientes, 3 variables independientes, 2 análisis distintos, 6 continentes = ...
+
+--
+
+.bold[48 repeticiones] de los mismo ...
+
+--
+
+Una posible solución: agregar un nivel adicional al loop (continentes)
+
+---
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#A breve]
+.huge[#introducción]
+.huge[#a purrr]
+
+
+---
+class: center, middle
+
+![](images/tidyverse_packs.png)
+
+---
+## purrr: funciones para iteración 
+
+&lt;br&gt;
+
+.pull-left[
+  ![purrr](purrr.png)
+]
+
+.pull-right[
+
+- Iteración
+
+- Herramientas de "functional programming" 
+
+]
+
+
+---
+## purrr: `map()`
+
+La función básica de `purrr` es `map()`:  aplica la misma acción/función a cada elemento de un objeto.
+
+&lt;br&gt;
+
+.bold[Input]:
+
+- un vector
+
+- una lista
+
+- una base de datos
+
+&lt;br&gt;
+--
+
+.bold[Output]:
+
+
+- `map(.x, .f)` devuelve una lista
+
+- `map_df(.x, .f)` devuelve una base de datos
+
+- `map_dbl(.x, .f)` devuelve un número
+
+
+---
+## purrr: `map()`
+
+.pull-left[
+
+```r
+mydata &lt;- tibble(x=rnorm(30),y=rnorm(30))
+mydata %&gt;% head()
+```
+]
+
+.pull-right[
+
+```
+## # A tibble: 6 × 2
+##         x     y
+##     &lt;dbl&gt; &lt;dbl&gt;
+## 1 -0.716  0.631
+## 2 -0.0221 0.283
+## 3 -1.18   0.587
+## 4  0.0877 1.37 
+## 5 -0.883  1.15 
+## 6 -0.0264 2.42
+```
+]
+
+
+--
+
+.pull-left[
+
+```r
+sum_plus10 &lt;- function(x) {sum(x) + 10}
+
+*map(.x=mydata, .f=sum_plus10 )
+```
+]
+
+--
+.pull-right[
+
+```
+## $x
+## [1] 18.24677
+## 
+## $y
+## [1] 19.18172
+```
+]
+
+
+&lt;style type="text/css"&gt;
+.pull-right ~ * { clear: unset; }
+.pull-right + * { clear: both; }
+&lt;/style&gt;
+
+---
+## purrr: `map()`
+
+.pull-left[
+
+```r
+mydata &lt;- tibble(x=rnorm(30),y=rnorm(30))
+mydata %&gt;% head()
+```
+]
+
+.pull-right[
+
+```
+## # A tibble: 6 × 2
+##         x      y
+##     &lt;dbl&gt;  &lt;dbl&gt;
+## 1  0.940   0.816
+## 2  0.374  -1.49 
+## 3 -0.200   1.07 
+## 4  0.890  -0.557
+## 5 -0.344   0.788
+## 6  0.0816 -0.297
+```
+]
+
+
+--
+
+.pull-left[
+
+```r
+sum_plus10 &lt;- function(x) {sum(x) + 10}
+
+*map_df(.x=mydata, .f=sum_plus10 )
+```
+]
+
+--
+.pull-right[
+
+```
+## # A tibble: 1 × 2
+##       x     y
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  11.6  1.81
+```
+]
+
+
+&lt;style type="text/css"&gt;
+.pull-right ~ * { clear: unset; }
+.pull-right + * { clear: both; }
+&lt;/style&gt;
+
+---
+## purrr: `map()`
+
+.pull-left[
+
+```r
+mydata &lt;- tibble(x=rnorm(30),y=rnorm(30))
+mydata %&gt;% head()
+```
+]
+
+.pull-right[
+
+```
+## # A tibble: 6 × 2
+##         x      y
+##     &lt;dbl&gt;  &lt;dbl&gt;
+## 1  0.462   2.36 
+## 2 -0.889   1.79 
+## 3 -0.0903 -0.974
+## 4 -0.691   0.904
+## 5 -1.32    0.283
+## 6 -1.47   -0.816
+```
+]
+
+
+--
+
+.pull-left[
+
+```r
+*map_df(.x=mydata, .f= ~ sum(.x) + 10  )
+```
+]
+
+--
+.pull-right[
+
+```
+## # A tibble: 1 × 2
+##       x     y
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  5.86  16.1
+```
+]
+
+
+&lt;style type="text/css"&gt;
+.pull-right ~ * { clear: unset; }
+.pull-right + * { clear: both; }
+&lt;/style&gt;
+
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+Volviendo a nuestro problema inicial:
+
+- Variables dependientes (y): `total_cases_per_million`, `total_deaths_per_million`
+
+- Predictores (x): `population_density` `median_age`, `gdp_per_capita`
+
+
+
+&lt;br&gt;
+--
+
+
+.bold[Instrucciones]: Regresiona cada (y) con cada (x) y guarda el modelo, luego extrae el `\(R^2\)` de cada modelo, 
+
+Un modelo regresión por continente:
+
+--
+
+.pull-left[
+
+```r
+fit_lm &lt;- covid_data  %&gt;% nest(-continent) %&gt;%
+  mutate(
+*   fit = map(data, ~ lm(total_cases_per_million ~ median_age, data = .x))
+  ) 
+fit_lm
+```
+]
+
+
+--
+.pull-right[
+
+```
+## # A tibble: 6 × 3
+##   continent     data               fit   
+##   &lt;chr&gt;         &lt;list&gt;             &lt;list&gt;
+## 1 Asia          &lt;tibble [46 × 49]&gt; &lt;lm&gt;  
+## 2 Europe        &lt;tibble [48 × 49]&gt; &lt;lm&gt;  
+## 3 Africa        &lt;tibble [55 × 49]&gt; &lt;lm&gt;  
+## 4 North America &lt;tibble [36 × 49]&gt; &lt;lm&gt;  
+## 5 South America &lt;tibble [13 × 49]&gt; &lt;lm&gt;  
+## 6 Oceania       &lt;tibble [12 × 49]&gt; &lt;lm&gt;
+```
+]
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+.bold[Instrucciones]: Regresiona cada (y) con cada (x) y guarda el modelo, luego extrae el `\(R^2\)` de cada modelo, 
+
+Ahora .bold[extraemos] los coefficientes del modelo con la función `broom::tidy()`
+
+--
+
+
+```r
+*fit_lm &lt;- fit_lm %&gt;% mutate(coefs = map(fit, tidy))
+fit_lm
+```
+
+
+--
+
+
+```
+## # A tibble: 6 × 4
+##   continent     data               fit    coefs           
+##   &lt;chr&gt;         &lt;list&gt;             &lt;list&gt; &lt;list&gt;          
+## 1 Asia          &lt;tibble [46 × 49]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
+## 2 Europe        &lt;tibble [48 × 49]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
+## 3 Africa        &lt;tibble [55 × 49]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
+## 4 North America &lt;tibble [36 × 49]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
+## 5 South America &lt;tibble [13 × 49]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
+## 6 Oceania       &lt;tibble [12 × 49]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
+```
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+.bold[Instrucciones]: Regresiona cada (y) con cada (x) y guarda el modelo, luego extrae el `\(R^2\)` de cada modelo, 
+
+Ahora .bold[extraemos] los coefficientes del modelo con la función `broom::tidy()`
+
+--
+
+
+```r
+fit_lm &lt;- fit_lm %&gt;% mutate(coefs = map(fit, tidy))
+*fit_lm %&gt;% select(continent,coefs) %&gt;% unnest()
+```
+
+
+--
+
+
+```
+## # A tibble: 12 × 6
+##    continent     term        estimate std.error statistic  p.value
+##    &lt;chr&gt;         &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1 Asia          (Intercept)   2329.     8948.     0.260  0.796   
+##  2 Asia          median_age     243.      290.     0.838  0.407   
+##  3 Europe        (Intercept)  21138.    27632.     0.765  0.449   
+##  4 Europe        median_age     -64.0     656.    -0.0975 0.923   
+##  5 Africa        (Intercept)  -4997.     1812.    -2.76   0.00797 
+##  6 Africa        median_age     336.       83.2    4.04   0.000176
+##  7 North America (Intercept)  -5059.    13300.    -0.380  0.707   
+##  8 North America median_age     493.      395.     1.25   0.224   
+##  9 South America (Intercept) -19078.    27508.    -0.694  0.504   
+## 10 South America median_age    1153.      905.     1.27   0.231   
+## 11 Oceania       (Intercept)  -7953.    29799.    -0.267  0.797   
+## 12 Oceania       median_age     563.      979.     0.575  0.583
+```
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+- Nuestro código sólo considera las variables  `total_cases_per_million` y  `median_age`.
+
+--
+
+
+- .bold[Problema:] ¿Como hacemos para iterar sobre par (x)-(y) de variables dependientes e independientes? 
+
+
+&lt;br&gt;
+--
+
+
+```r
+covid_data &lt;- covid_data %&gt;% 
+* dplyr::select(continent,location,total_cases_per_million,
+                total_deaths_per_million, population_density,median_age, gdp_per_capita) %&gt;%
+* pivot_longer(c(total_cases_per_million,total_deaths_per_million),
+               names_to="dv", values_to="y") %&gt;% 
+*  pivot_longer(c(population_density,median_age,gdp_per_capita),
+                names_to="iv", values_to="x")  
+
+covid_data
+```
+
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+
+```
+## # A tibble: 1,260 × 6
+##    continent location    dv                            y iv                    x
+##    &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;
+##  1 Asia      Afghanistan total_cases_per_million  1117.  population_dens… 5.44e1
+##  2 Asia      Afghanistan total_cases_per_million  1117.  median_age       1.86e1
+##  3 Asia      Afghanistan total_cases_per_million  1117.  gdp_per_capita   1.80e3
+##  4 Asia      Afghanistan total_deaths_per_million   41.9 population_dens… 5.44e1
+##  5 Asia      Afghanistan total_deaths_per_million   41.9 median_age       1.86e1
+##  6 Asia      Afghanistan total_deaths_per_million   41.9 gdp_per_capita   1.80e3
+##  7 Europe    Albania     total_cases_per_million  9880.  population_dens… 1.05e2
+##  8 Europe    Albania     total_cases_per_million  9880.  median_age       3.8 e1
+##  9 Europe    Albania     total_cases_per_million  9880.  gdp_per_capita   1.18e4
+## 10 Europe    Albania     total_deaths_per_million  219.  population_dens… 1.05e2
+## # ℹ 1,250 more rows
+```
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+
+```r
+*fit_lm &lt;- covid_data %&gt;% nest(-c(continent,dv,iv)) %&gt;%
+  mutate(
+    fit = map(data, ~ lm(y ~ x, data = .x))
+  ) 
+fit_lm
+```
+
+
+```
+## # A tibble: 36 × 5
+##    continent dv                       iv                 data              fit  
+##    &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;              &lt;list&gt;            &lt;lis&gt;
+##  1 Asia      total_cases_per_million  population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  2 Asia      total_cases_per_million  median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  3 Asia      total_cases_per_million  gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  4 Asia      total_deaths_per_million population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  5 Asia      total_deaths_per_million median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  6 Asia      total_deaths_per_million gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  7 Europe    total_cases_per_million  population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
+##  8 Europe    total_cases_per_million  median_age         &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
+##  9 Europe    total_cases_per_million  gdp_per_capita     &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
+## 10 Europe    total_deaths_per_million population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
+## # ℹ 26 more rows
+```
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+
+```r
+fit_lm &lt;- covid_data %&gt;% nest(-c(continent,dv,iv)) %&gt;%
+  mutate(fit = map(data, ~ lm(y ~ x, data = .x))) %&gt;% 
+* mutate(coefs = map(fit, tidy))
+  
+fit_lm
+```
+
+
+```
+## # A tibble: 36 × 6
+##    continent dv                       iv                 data     fit   coefs   
+##    &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;              &lt;list&gt;   &lt;lis&gt; &lt;list&gt;  
+##  1 Asia      total_cases_per_million  population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  2 Asia      total_cases_per_million  median_age         &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  3 Asia      total_cases_per_million  gdp_per_capita     &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  4 Asia      total_deaths_per_million population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  5 Asia      total_deaths_per_million median_age         &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  6 Asia      total_deaths_per_million gdp_per_capita     &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  7 Europe    total_cases_per_million  population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  8 Europe    total_cases_per_million  median_age         &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  9 Europe    total_cases_per_million  gdp_per_capita     &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+## 10 Europe    total_deaths_per_million population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+## # ℹ 26 more rows
+```
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+
+```r
+fit_lm &lt;- covid_data %&gt;% nest(-c(continent,dv,iv)) %&gt;%
+  mutate(fit = map(data, ~ lm(y ~ x, data = .x))) %&gt;% 
+  mutate(coefs = map(fit, tidy)) %&gt;% 
+* dplyr::select(continent,dv,iv,coefs) %&gt;%
+* unnest()
+  
+fit_lm
+```
+
+
+```
+## # A tibble: 72 × 8
+##    continent dv                 iv    term  estimate std.error statistic p.value
+##    &lt;chr&gt;     &lt;chr&gt;              &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+##  1 Asia      total_cases_per_m… popu… (Int…  9.46e+3 2146.         4.41  7.11e-5
+##  2 Asia      total_cases_per_m… popu… x      1.40e+0    1.67       0.836 4.08e-1
+##  3 Asia      total_cases_per_m… medi… (Int…  2.33e+3 8948.         0.260 7.96e-1
+##  4 Asia      total_cases_per_m… medi… x      2.43e+2  290.         0.838 4.07e-1
+##  5 Asia      total_cases_per_m… gdp_… (Int…  4.53e+3 2380.         1.91  6.36e-2
+##  6 Asia      total_cases_per_m… gdp_… x      2.50e-1    0.0710     3.52  1.06e-3
+##  7 Asia      total_deaths_per_… popu… (Int…  1.21e+2   23.4        5.17  8.28e-6
+##  8 Asia      total_deaths_per_… popu… x     -1.50e-2    0.0172    -0.873 3.88e-1
+##  9 Asia      total_deaths_per_… medi… (Int…  8.79e+1  101.         0.873 3.88e-1
+## 10 Asia      total_deaths_per_… medi… x      9.04e-1    3.20       0.283 7.79e-1
+## # ℹ 62 more rows
+```
+
+---
+## Análisis de datos Covid-19 con `purrr`
+
+
+
+```r
+*fit_lm %&gt;% filter(term=="x") %&gt;%
+* ggplot(aes(x=continent, y=estimate, fill=continent)) +
+  geom_col() + facet_wrap(dv ~ iv, scales="free_y") +
+  scale_fill_viridis_d() +
+  theme_bw()
+```
+
+![](class_13_files/figure-html/purrr96-out-1.png)&lt;!-- --&gt;
+
+
+---
+
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+.huge[#R se aprende]
+.huge[#usando y]
+.huge[#preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, middle
+
+Presentacióny código en GitHub: &lt;https://github.com/mebucca/data-analysis-in-R&gt;
+
+---
+class: inverse, center, middle
+
+
+##Gracias!
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

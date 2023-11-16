@@ -1,0 +1,114 @@
+xaringan:::inf_mr()
+xaringan:::inf_mr()
+xaringan:::inf_mr()
+library(rvest)
+lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
+lego_movie
+lego_movie %>%
+html_nodes("strong span")
+lego_movie %>%
+html_nodes("strong span") %>%
+html_text()
+cast <- lego_movie %>%
+html_nodes("#titleCast .primary_photo img") %>%
+html_attr("alt")
+lego_movie %>%
+html_nodes("#titleCast .primary_photo img")
+```{r}
+set.seed(12345)
+monedas <- rbinom(n=100, size=1, p=0.7)
+print(monedas)
+```
+---
+data_4m_2008 <-  tibble(agno=c(2008,2008,2008,2009,2009,2009) ,mrun = c(1,2,3,4,5,6))
+data_4m_2008 <- tibble(agno=c(2008,2008,2008,2009,2009,2009),mrun = c(1,2,3,4,5,6))
+data_4m_2008
+data_4m <- tibble(agno=c(2008,2008,2008,2009,2009,2009),mrun = c(1,2,3,4,5,6))
+data_4m
+data_4m <- tibble(agno=c(2007,2008,2008,2008,2009,2009,2009),mrun = c(9,1,2,3,4,5,6))
+data_4m
+data_4m <- tibble(agno=c(2007,2008,2008,2008,2009,2009,2009),mrun = c(9,1,2,3,4,5,6), marcaegreso = c(1,1,1,1,0,1,1))
+data_4m
+data_univ <- tibble(mrun = c(2,3,6))
+data_univ
+data_univ_2010 <- tibble(mrun = c(2,3,6))
+data_univ_2010
+data_4m
+data_univ_2010
+colegio <- data_4m %>% filter(agno==2008 | agno==2009 ) %>% filter(marcaegreso==1)
+colegio
+uni
+data_univ_2010
+colegio %>% left_join(uni, by="mrun")
+uni <- data_univ %>% mutate(enuniv = 1) %>% select(mrnun, enuniv)
+uni <- data_univ_2010 %>% mutate(enuniv = 1) %>% select(mrnun, enuniv)
+uni <- data_univ_2010 %>% mutate(enuniv = 1) %>% select(mrun, enuniv)
+uni
+colegio %>% left_join(uni, by="mrun")
+colegio %>% left_join(uni, by="mrun") %>% mutate(enuniv = if_else(enuniv==NA,0,enuniv))
+colegio %>% left_join(uni, by="mrun") %>% mutate(enuniv = if_else(is.na(enuniv)==T,0,enuniv))
+base_final <- tibble(mrun = c(9,1,2,3,4,5,6), promedio = c(4,5,3,6,6,7,6))
+base_final <- tibble(mrun = c(9,1,2,3,4,5,6), promedio = c(4,5,3,6,6,7,6))
+base_final
+master <- colegio %>% left_join(uni, by="mrun") %>% mutate(enuniv = if_else(is.na(enuniv)==T,0,enuniv))
+master
+master %>% left_join(base_final %>% select(promedio), by="mrun")
+master %>% left_join(base_final %>% select(mrun,promedio), by="mrun")
+base_final
+glm(enuniv  ~promedio, family="binomial", data=master)
+master <- master %>% left_join(base_final %>% select(mrun,promedio), by="mrun")
+glm(enuniv  ~promedio, family="binomial", data=master)
+x[x==0]
+x
+xaringan:::inf_mr()
+xaringan:::inf_mr()
+x <- rbinom(n=1000,size=1,p=0.9)
+y %>% as_tibble()
+y %>% as_tibble() %>%
+ggplot(aes(x=value)) +
+geom_col()
+y %>% as_tibble() %>%
+ggplot(aes(x=value y=1)) +
+geom_col()
+y %>% as_tibble() %>%
+ggplot(aes(x=value)) +
+geom_histogram()
+y %>% as_tibble() %>%
+ggplot(aes(x=value)) +
+geom_histogram(nbind=2)
+y %>% as_tibble() %>%
+ggplot(aes(x=value)) +
+geom_histogram(nbind=2)
+y %>% as_tibble() %>%
+ggplot(aes(x=factor(value))) +
+geom_histogram(nbind=2)
+y %>% as_tibble() %>%
+ggplot(aes(x=factor(value))) +
+geom_histogram()
+y %>% as_tibble() %>%
+ggplot(aes(x=factor(value))) +
+geom_histogram()
+y %>% as_tibble() %>%
+ggplot(aes(x=value)) +
+geom_bar()
+y %>% as_tibble() %>%
+ggplot(aes(x=value, fill="")) +
+geom_bar() +
+scale_fill_viridis()
+library(viridis)
+x <- runif(n=1000, min=10, max=20)
+x %>% head(n=20)
+x %>% as_tibble() %>%
+ggplot(aes(x=value, fill="")) +
+geom_bar()
+runif()
+x %>% as_tibble() %>%
+ggplot(aes(x=value, fill="")) +
+geom_bar()
+x %>% as_tibble() %>%
+ggplot(aes(x=value, fill="")) +
+geom_histogram() +
+scale_fill_viridis_d()
+xaringan:::inf_mr()
+xaringan:::inf_mr()
+xaringan:::inf_mr()

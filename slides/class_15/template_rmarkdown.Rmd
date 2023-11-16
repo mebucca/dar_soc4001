@@ -1,0 +1,100 @@
+---
+title: "RMarkdown en 10 minutos"
+author: "Mauricio Bucca"
+date: "Agosto de 2020"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Primeros pasos 
+
+![Newfile](https://angus.readthedocs.io/en/2017/_images/create_rmd.png)
+
+El código para agregar esta imagen es: `![nombre_que_quieras](https://angus.readthedocs.io/en/2017/_images/create_rmd.png)`.
+
+## Introducción
+
+## Texto
+
+La parte principal de un informe en `RMarkdown` suele ser texto. En un fichero .Rmd, todo lo que no sea encabezamiento código será interpretado como texto y lo mostrará tal cual. El texto de un documento `.Rmd` es “simplemente” texto PERO está escrito en *Markdown*. Lo que escribamos en Rmarkdown se mostrará tal cual en el documento final, pero es posible dar un poco de formato: negritas, cursivas, listas, enlaces de internet, etc…
+
+Para mayor detalle: [aquí](https://www.markdownguide.org/cheat-sheet/)
+
+## Ecuaciones 
+
+En `Rmarkdown` se pueden introducir formulas matemáticas (escritas en `Látex`). Para formulas en linea se usa el signo `$` al inicio y al final de la expresión. Por ejemplo, el código `$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$` produce la siguiente ecuación: $y_{i} = \alpha + \beta_{1}x_{i} \beta_{2}x^{2}_{i} + \epsilon_{i}$.
+
+Para escribir la misma ecuación en una linea independiente, se usa el signo `$$`. Por ejemplo, el código `$$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$$` produce la siguiente ecuación: 
+
+$$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$$
+
+Para mayor detalle: [aquí](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
+
+
+## Código ("chunks")
+
+`RMarkdown` permite introducir código de `R` en el documento de texto, evaluar tal código y mostrar los resultados directamente en el informe. A modo de ejemplo, comenzaremos mostrando un `summary` de la base de datos `iris`, que viene incluida en `R`.
+
+
+```{r}
+summary(iris)
+```
+
+El trozo de arriba es un chunk de código `R`. Al compilar el documento, (click en el botón `knitr`, en el panel)  el código se ejecutará y mostrarán los resultados en el documento final. Los chunks pueden tienen diversas opciones que permiten una mayor flexibilidad en como se muestra el código y los resultados. Las opciones más usadas son:
+
+- echo
+- eval
+
+Por ejemplo, el chunk abajo mostrará el código (`echo = TRUE`), lo evaluará y mostrará los resultados en el documento final (`eval = TRUE`). Así se ve:
+```{r, echo = TRUE, eval = TRUE}
+a <- summary(iris)
+print(a)
+```
+
+Si sólo queremos mostrar el código (`echo = TRUE`) pero no evaluarlo (`eval = FALSE`), escribimos lo siguiente:
+
+```{r, echo = TRUE, eval = FALSE}
+a <- summary(iris)
+print(a)
+```
+
+Por el contrario, si queremos evaluar el código, mostrar sus resultados, pero no mostrar el código mismo, escribimos:
+
+```{r, echo = FALSE, eval = TRUE}
+summarya <- summary(iris)
+print(a)
+```
+
+Por último, si queremos NO mostrar el código (`echo = FALSE`), SI evaluarlo (`eval = FALSE`), PERO NO se mostrar los resultados  (`results = "hide"`), escribimos:
+
+```{r, echo = FALSE, eval = TRUE, results = "hide"}
+a <- summary(iris)
+print(a)
+```
+
+Que el código haya sido evaluado significa que el objeto "a" existirá en la memoria y podrá ser usado para posterior análisis.
+
+
+## Gráficos
+
+También podemos mostrar gráficos producidos en `R`. Notar que los paquetes necesarios para implementar un determinado análisis (`ggplot2` y `tidyverse`, en este caso) deben ser previamente cargados.
+
+```{r, echo=FALSE, eval=TRUE}
+library("tidyverse")
+library("ggplot2")
+iris %>% ggplot(aes(x=Sepal.Length, y=Sepal.Width, group=Species, colour=Species)) +
+                  geom_point(alpha=0.5)
+```
+
+
+Para eliminar el mensaje entregado por R usamos la opción `message=FALSE`:
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+iris %>% ggplot(aes(x=Sepal.Length, y=Sepal.Width, group=Species, colour=Species)) +
+                  geom_point(alpha=0.5)
+```
+

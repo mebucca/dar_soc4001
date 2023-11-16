@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Procesamiento avanzado de Bases de Datos en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Procesamiento avanzado de Bases de Datos en R
+## Reportes automatizados con RMarkdown
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+
+---
+
+layout: false
+
+
+## Recapitulación
+
+&lt;br&gt;
+
+Introducción a simulación e inferencia estadística: 
+
+  - Variables aleatorias y simulación
+  
+  - Concepto de "sampling distribution"
+  
+  - Inferencia via simulación
+
+---
+
+## Hoy hablaremos de ...
+
+&lt;br&gt;
+
+Reportes automatizados: 
+
+  - RMarkdown
+  
+  - Knit
+  
+---
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#Reportes]
+.huge[#automatizados]
+
+---
+
+class: center, middle
+
+![](images/tidyverse_packs.png)
+
+
+---
+## Paquetes necesarios
+
+.pull-left[
+
+```r
+install.packages("rmarkdown")
+install.packages("knitr")
+install.packages("xaringan")
+```
+]
+
+.pull-right[
+`rmarkdown`  trabaja con los siguientes herramientas:
+
+
+- .bold[Markdown] para formatear texto plano
+
+
+- .bold[Knitr] para embedded codigo `R` en el texto
+
+
+- .bold[YAML] controla el formato del document
+
+
+&lt;br&gt;
+Además usaremos:
+
+- `xaringan::inf_mr()` para pre-visualizar reporte
+
+
+-  Todas las presentaciones de este curso han sido escritas en `xaringan`.
+
+]
+
+---
+class: inverse, center, middle
+
+## Markdown
+
+---
+## Markdown
+
+.pull-left[
+.bold[Markdown] es un lenguaje de escritura que combina:
+  
+  - Ligeraza (texto plano)
+  
+  - Simpleza (opciones mínimas)
+  
+  - Orden (formateo simple)
+
+]
+
+--
+
+Un documento escrito en Markdown se ve así:
+
+--
+
+.pull-right[
+
+![mkd](images/markdown.png)
+]
+
+---
+## Markdown en RMarkdown
+
+.pull-left[
+La parte principal de un informe en `RMarkdown` suele ser texto escrito en `Markdown`.
+
+  -  Todo lo que no sea encabezamiento código será interpretado como texto y se mostrará tal cual. 
+  
+  - Es posible dar un poco de formato: negritas, cursivas, listas, enlaces de internet, etc…
+]
+
+--
+
+.pull-right[
+
+![mkd_f](images/markdown_form.png)
+
+]
+
+---
+## Markdown en RMarkdown: ¿cómo se hace?
+
+--
+
+.pull-left[
+![mkd_format](images/markdown_format.jpg)
+]
+
+.pull-right[
+Más detalles [aquí](https://www.markdownguide.org/cheat-sheet/)
+]
+
+---
+## LaTeX en RMarkdown: ecuaciones
+
+En `Rmarkdown` se pueden introducir formulas matemáticas (escritas en `Látex`).
+
+--
+
+- Para formulas en linea se usa el signo `$` al inicio y al final de la expresión.
+
+--
+
+.pull-left[
+El código 
+
+`$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$` 
+
+produce ...
+]
+
+--
+
+.pull-right[
+esta ecuación: `\(y_{i} = \alpha + \beta_{1}x_{i} \beta_{2}x^{2}_{i} + \epsilon_{i}\)`
+]
+
+&lt;br&gt;
+--
+
+- Para escribir la misma ecuación en una linea independiente, se usa el signo `$$`. 
+
+--
+
+.pull-left[
+El código 
+
+`$` `$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$$` 
+
+produce ...
+]
+
+--
+
+
+.pull-right[
+esta ecuación: `$$y_{i} = \alpha + \beta_{1}x_{i} \beta_{2}x^{2}_{i} + \epsilon_{i}$$`
+]
+
+
+---
+## LaTeX en RMarkdown: ecuaciones
+
+--
+
+
+![mkd_format](images/markdown_math.png)
+
+---
+## LaTeX en RMarkdown: equaciones
+
+--
+
+.pull-left[
+![mkd_format](images/markdown_math.png)
+]
+
+
+.pull-right[
+
+Más detalles [AQUÍ](https://rpruim.github.io/s341/S19/from-class/MathinRmd.html)
+
+ [aquí](https://www.overleaf.com/learn/latex/mathematical_expressions/)
+
+ [aquí](https://en.wikibooks.org/wiki/LaTeX/Mathematics/)
+
+ [aquí](https://en.wikibooks.org/wiki/LaTeX/Advanced_Mathematics)
+
+etc ...
+
+
+]
+
+---
+## Imágenes en RMarkdown
+
+
+En `Rmarkdown` se pueden insertar imagenes en una variedad de formatos.
+
+--
+
+-  Desde ubicación local (en el computador)
+
+&lt;br&gt;
+--
+
+.pull-left[
+El código 
+
+`![imagen](images/val_dorcia.jpg)` 
+
+inserta esta imagen
+]
+
+--
+
+.pull-right[
+![imagen](images/val_dorcia.jpg)
+]
+
+
+
+---
+## Imágenes en RMarkdown
+
+
+En `Rmarkdown` se pueden insertar imagenes en una variedad de formatos.
+
+--
+
+-  Desde una dirección URL:
+
+--
+
+.pull-left[
+El código 
+
+`![perro](https://media1.tenor.com/images/d583fcd99b8bbea59282d83aabe8e61b/tenor.gif?itemid=15701193)` 
+
+inserta esta imagen
+]
+
+--
+
+.img-bottom-right[
+![perro](https://img.huffingtonpost.com/asset/5c8b70b222000051001ae9ce.gif?ops=scalefit_630_noupscale)
+]
+
+---
+class: inverse, center, middle
+
+## Knitr
+
+---
+## Knitr
+.pull-left[
+![knitr](images/knitr.png)
+]
+
+A través de .bold[Knitr] `RMarkdown` es capaz de:
+ 
+.pull-right[
+
+  - Insertar "chuncks" de código de `R`
+  
+  - Evaluar "chuncks" de código de `R`
+  
+  - Insertar outputs de `R`
+
+]
+
+---
+## Knitr: insertar chuck de código y resultados
+
+
+Las opciones `echo=TRUE` indica que queremos imprimir el código y `eval=TRUE` indica que queremos mostrar el output resultante:
+
+~~~
+
+```{r, eval=TRUE, echo=TRUE}
+library("tidyverse")
+library("carData")
+
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(across( c("income","statusquo"), ~ mean(.x, na.rm=T)))
+```
+
+~~~
+
+--
+
+.pull-left[
+
+```r
+library("tidyverse")
+library("carData")
+
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(
+  across( c("income","statusquo"), 
+  ~ mean(.x, na.rm=T))
+  )
+```
+]
+
+--
+
+.pull-right[
+
+```
+## # A tibble: 5 x 3
+##   vote  income statusquo
+##   &lt;fct&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+## 1 A     33184.   -0.190 
+## 2 N     37031.   -0.911 
+## 3 U     25683.    0.0361
+## 4 Y     36495.    0.942 
+## 5 &lt;NA&gt;  32353.    0.0441
+```
+]
+
+
+---
+## Knitr: insertar sólo chuck de código
+
+Las opciones `echo=TRUE` indica que queremos imprimir el código y `eval=FALSE` indica que no queremos evaluarlo ni producir un resultado:
+
+~~~
+``` {r, eval=FALSE, echo=TRUE}
+library("tidyverse")
+library("carData")
+
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(across( c("income","statusquo"), ~ mean(.x, na.rm=T)))
+```
+~~~
+
+--
+
+.pull-left[
+
+```r
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(
+  across( c("income","statusquo"), 
+  ~ mean(.x, na.rm=T))
+  )
+```
+]
+
+--
+
+.pull-right[
+
+...
+
+]
+
+---
+## Knitr: insertar sólo resultado sin chuck de código
+
+Las opciones `echo=FALSE` indica que no queremos imprimir el código y `eval=TRUE` indica que queremos evaluarlo y producir un resultado:
+
+~~~
+``` {r, eval=TRUE, echo=FALSE}
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(across( c("income","statusquo"), ~ mean(.x, na.rm=T)))
+```
+~~~
+
+--
+
+.pull-left[
+
+...
+
+]
+
+--
+
+.pull-right[
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 5 x 3
+##   vote  income statusquo
+##   &lt;fct&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+## 1 A     33184.   -0.190 
+## 2 N     37031.   -0.911 
+## 3 U     25683.    0.0361
+## 4 Y     36495.    0.942 
+## 5 &lt;NA&gt;  32353.    0.0441
+```
+
+
+]
+
+---
+## Knitr: silenciar mensajes y alertas
+
+
+Las opciones `message=FALSE` y `warning=FALSE` indican que queremos silenciar mensajes y alertas:
+
+~~~
+
+```{r, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE}
+library("tidyverse")
+library("carData")
+
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(across( c("income","statusquo"), ~ mean(.x, na.rm=T)))
+```
+
+~~~
+
+--
+
+.pull-left[
+
+```r
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(
+  across( c("income","statusquo"), 
+  ~ mean(.x, na.rm=T))
+  )
+```
+]
+
+--
+
+.pull-right[
+
+```
+## # A tibble: 5 x 3
+##   vote  income statusquo
+##   &lt;fct&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+## 1 A     33184.   -0.190 
+## 2 N     37031.   -0.911 
+## 3 U     25683.    0.0361
+## 4 Y     36495.    0.942 
+## 5 &lt;NA&gt;  32353.    0.0441
+```
+]
+
+---
+## Knitr: tablas en R con función `kable()`
+
+La función `knitr::kable()` es un generador tables y es simple por diseño. Sólo genera tablas para datos estrictamente rectangulares, sean matrices o bases de datos. 
+
+~~~
+
+```{r, eval=TRUE, echo=TRUE}
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(
+  across( c("income","statusquo"), 
+  ~ mean(.x, na.rm=T))  
+  ) %&gt;%
+  knitr::kable(format='html',  caption="Mi tabla", align = "lcc")
+```
+
+~~~
+
+--
+
+.pull-left[
+
+```r
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  summarise(
+  across( c("income","statusquo"), 
+  ~ mean(.x, na.rm=T))  
+  ) %&gt;%
+  knitr::kable(format='html', 
+  caption="Mi tabla", align = "lcc")
+```
+]
+
+--
+
+.pull-right[
+&lt;table&gt;
+&lt;caption&gt;Mi tabla&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; vote &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; income &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; statusquo &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; A &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33184.36 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.1897191 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; N &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 37031.07 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.9110607 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; U &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25683.04 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0360503 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Y &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 36495.24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.9422308 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 32352.94 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0441393 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+
+
+---
+## Knitr: figuras de R
+
+Cuando el output es una figura es posible controlar su apariencia:
+
+~~~
+```{r, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, fig.width=3.5, fig.height=3.5}
+library("tidyverse")
+library("carData")
+
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  ggplot(aes(x=income, y=statusquo)) + geom_smooth(method="lm") 
+```
+~~~
+
+--
+
+.pull-left[
+
+```r
+library("tidyverse")
+library("carData")
+
+datos_chile &lt;- Chile
+datos_chile %&gt;% group_by(vote) %&gt;%
+  ggplot(aes(x=income, y=statusquo)) + 
+  geom_smooth(method="lm") 
+```
+]
+
+--
+
+.pull-right[
+![](class_15_files/figure-html/code6-out-1.png)&lt;!-- --&gt;
+]
+
+---
+class: inverse, center, middle
+
+## Manos a la obra
+
+---
+class: center, middle
+
+## Iniciar nuevo documento RMarkdown
+
+![inicio](images/inicio.png)
+
+---
+class: center, middle
+
+## escribir ...
+
+
+---
+class: center, middle
+
+## Preview como HTML con `xaringan::inf_mr()`
+
+![inf_mr](https://user-images.githubusercontent.com/163582/53144527-35f7a500-3562-11e9-862e-892d3fd7036d.gif)
+
+
+---
+class: center, middle
+
+## Compilar
+
+![inicio](images/fin.png)
+
+---
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+.huge[#R se aprende]
+.huge[#usando y]
+.huge[#preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, middle, center
+
+Presentacióny código en GitHub: &lt;https://github.com/mebucca/data-analysis-in-R&gt;
+
+---
+class: inverse, center, middle
+
+.huge[
+**Gracias!**
+]
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

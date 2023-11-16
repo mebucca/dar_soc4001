@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Procesamiento avanzado de Bases de Datos en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <script src="libs/header-attrs-2.24/header-attrs.js"></script>
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Procesamiento avanzado de Bases de Datos en R
+]
+.subtitle[
+## Manipulación de bases de datos con tidyverse
+]
+.author[
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+]
+.date[
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+]
+
+---
+
+
+
+
+
+## Recapitulación
+&lt;br&gt;
+
+- Resumen de datos con `dplyr`
+
+- Resumen de datos agrupados con `dplyr`
+
+- Justar bases de datos con llave común
+
+
+---
+
+## Hoy hablaremos de ...
+
+- Bases de datos ordenadas ("tidy")
+
+- Datos "largos" y datos "anchos"
+
+- Transformación entre datos largos y anchos
+
+---
+
+class: center, middle
+
+![](images/tidyverse_packs.png)
+
+
+---
+
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+#tidyr
+
+---
+
+## tidyr: herramientas intuitivas para manipulación de datos
+
+&lt;br&gt;
+
+.pull-left[
+  ![tidyr](images/tidyr.png)
+]
+
+.pull-right[
+`tidyr` permite:
+
+- obtener un bases de datos "tidy"
+
+]
+
+---
+class: inverse, center, middle
+
+
+.bold[*“Las familias felices son todas iguales, pero cada familia infeliz es infeliz a su manera.”*]
+
+  -Leo Tolstoy
+
+&lt;br&gt;
+
+.bold[*“Tidy datasets son todas iguales, cada dataset desordenaro es desordenado a su manera.”*]
+
+  – Hadley Wickham (creador de Tidyverse)
+
+
+---
+## Bases de datos ordenadas ("tidy")
+
+Una bases de datos está ordenada si:
+
+--
+
+- Cada columna es una variable.
+
+--
+
+- Cada fila es una observación.
+
+--
+
+- Cada celda es un valor único.
+
+&lt;br&gt;
+
+![tidydata](images/tidy_data.png)
+
+---
+## Bases de datos ordenadas ("tidy")
+
+.bold[¿no es siempre así?]
+--
+ NO!
+
+&lt;br&gt;
+.center[
+![messy_data](images/messy_data.png)
+]
+
+.right[.bold[“spreadsheet thinking”]]
+
+---
+class: inverse, center, middle
+
+#tidyr::pivot_longer()
+
+---
+## De ancho a largo
+
+
+![longer](images/pivot_longer.png)
+- `pivot_longer()` reemplaza la función `gather()`
+
+---
+## De ancho a largo
+
+.pull-left[
+
+```
+## # A tibble: 34 × 4
+##    group     wl1   wl2   wl3
+##    &lt;fct&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;
+##  1 Control     4     3     3
+##  2 Control     4     4     3
+##  3 Control     4     3     1
+##  4 Control     3     2     1
+##  5 Control     5     3     2
+##  6 Control     6     5     4
+##  7 Control     6     5     4
+##  8 Control     5     4     1
+##  9 Control     5     4     1
+## 10 Control     3     3     2
+## # ℹ 24 more rows
+```
+- group: a factor with levels Control Diet DietEx.
+- wl1: weight loss at 1 month
+- wl2: weight loss at 2 months
+- wl3: weight loss at 3 months
+]
+.pull-right[
+
+```r
+wl %&gt;% 
+  pivot_longer(
+*   cols = starts_with("w"))
+```
+
+```
+## # A tibble: 102 × 3
+##    group   name  value
+##    &lt;fct&gt;   &lt;chr&gt; &lt;int&gt;
+##  1 Control wl1       4
+##  2 Control wl2       3
+##  3 Control wl3       3
+##  4 Control wl1       4
+##  5 Control wl2       4
+##  6 Control wl3       3
+##  7 Control wl1       4
+##  8 Control wl2       3
+##  9 Control wl3       1
+## 10 Control wl1       3
+## # ℹ 92 more rows
+```
+]
+
+---
+## De ancho a largo
+
+.pull-left[
+
+```
+## # A tibble: 34 × 4
+##    group     wl1   wl2   wl3
+##    &lt;fct&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;
+##  1 Control     4     3     3
+##  2 Control     4     4     3
+##  3 Control     4     3     1
+##  4 Control     3     2     1
+##  5 Control     5     3     2
+##  6 Control     6     5     4
+##  7 Control     6     5     4
+##  8 Control     5     4     1
+##  9 Control     5     4     1
+## 10 Control     3     3     2
+## # ℹ 24 more rows
+```
+- group: a factor with levels Control Diet DietEx.
+- wl1: weight loss at 1 month
+- wl2: weight loss at 2 months
+- wl3: weight loss at 3 months
+]
+.pull-right[
+
+```r
+wl %&gt;% 
+  pivot_longer(
+    cols = starts_with("w"), 
+    names_to="week", 
+*   values_to= "lbs_lost")
+```
+
+```
+## # A tibble: 102 × 3
+##    group   week  lbs_lost
+##    &lt;fct&gt;   &lt;chr&gt;    &lt;int&gt;
+##  1 Control wl1          4
+##  2 Control wl2          3
+##  3 Control wl3          3
+##  4 Control wl1          4
+##  5 Control wl2          4
+##  6 Control wl3          3
+##  7 Control wl1          4
+##  8 Control wl2          3
+##  9 Control wl3          1
+## 10 Control wl1          3
+## # ℹ 92 more rows
+```
+]
+
+---
+## De ancho a largo
+
+.pull-left[
+
+```
+## # A tibble: 34 × 4
+##    group     wl1   wl2   wl3
+##    &lt;fct&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;
+##  1 Control     4     3     3
+##  2 Control     4     4     3
+##  3 Control     4     3     1
+##  4 Control     3     2     1
+##  5 Control     5     3     2
+##  6 Control     6     5     4
+##  7 Control     6     5     4
+##  8 Control     5     4     1
+##  9 Control     5     4     1
+## 10 Control     3     3     2
+## # ℹ 24 more rows
+```
+- group: a factor with levels Control Diet DietEx.
+- wl1: weight loss at 1 month
+- wl2: weight loss at 2 months
+- wl3: weight loss at 3 months
+]
+.pull-right[
+
+```r
+wl %&gt;% 
+  pivot_longer(
+    cols = starts_with("w"), 
+    names_to="week", 
+    values_to= "lbs_lost",
+*   names_prefix="wl")
+```
+
+```
+## # A tibble: 102 × 3
+##    group   week  lbs_lost
+##    &lt;fct&gt;   &lt;chr&gt;    &lt;int&gt;
+##  1 Control 1            4
+##  2 Control 2            3
+##  3 Control 3            3
+##  4 Control 1            4
+##  5 Control 2            4
+##  6 Control 3            3
+##  7 Control 1            4
+##  8 Control 2            3
+##  9 Control 3            1
+## 10 Control 1            3
+## # ℹ 92 more rows
+```
+]
+
+
+---
+## De ancho a largo, avanzado
+
+.pull-left[
+
+```
+## # A tibble: 34 × 8
+##       id group     wl1   wl2   wl3   se1   se2   se3
+##    &lt;int&gt; &lt;fct&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+##  1     1 Control     4     3     3    14    13    15
+##  2     2 Control     4     4     3    13    14    17
+##  3     3 Control     4     3     1    17    12    16
+##  4     4 Control     3     2     1    11    11    12
+##  5     5 Control     5     3     2    16    15    14
+##  6     6 Control     6     5     4    17    18    18
+##  7     7 Control     6     5     4    17    16    19
+##  8     8 Control     5     4     1    13    15    15
+##  9     9 Control     5     4     1    14    14    15
+## 10    10 Control     3     3     2    14    15    13
+## # ℹ 24 more rows
+```
+- group: a factor with levels Control Diet DietEx.
+- wl1: weight loss at 1 month
+- wl2: weight loss at 2 months
+- wl3: weight loss at 3 months
+- se1: self esteem at 1 month
+- se2: self esteem at 2 month
+- se3: self esteem at 3 month
+
+]
+
+---
+
+## De ancho a largo, avanzado
+
+
+```r
+wl %&gt;% pivot_longer(cols = -c(id,group),     
+*                   names_to = "outcome_week",
+*                   values_to = "score")
+```
+
+--
+
+.pull-left[
+
+```
+## # A tibble: 204 × 4
+##       id group   outcome_week score
+##    &lt;int&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;int&gt;
+##  1     1 Control wl1              4
+##  2     1 Control wl2              3
+##  3     1 Control wl3              3
+##  4     1 Control se1             14
+##  5     1 Control se2             13
+##  6     1 Control se3             15
+##  7     2 Control wl1              4
+##  8     2 Control wl2              4
+##  9     2 Control wl3              3
+## 10     2 Control se1             13
+## # ℹ 194 more rows
+```
+]
+.pull-right[
+- .bold[Problema]: `outcome_week` contiene 2 variables en una sola columna. 
+
+- .bold[Solución]: `separate()`
+]
+
+---
+
+## De ancho a largo, avanzado
+
+
+
+```r
+wl_long &lt;- wl %&gt;% pivot_longer(cols = -c(id,group),     
+                    names_to = "outcome_week",
+                    values_to = "score") %&gt;%
+*           separate(outcome_week, into = c("outcome", "week"), sep = 2); wl_long
+```
+
+```
+## # A tibble: 204 × 5
+##       id group   outcome week  score
+##    &lt;int&gt; &lt;fct&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;int&gt;
+##  1     1 Control wl      1         4
+##  2     1 Control wl      2         3
+##  3     1 Control wl      3         3
+##  4     1 Control se      1        14
+##  5     1 Control se      2        13
+##  6     1 Control se      3        15
+##  7     2 Control wl      1         4
+##  8     2 Control wl      2         4
+##  9     2 Control wl      3         3
+## 10     2 Control se      1        13
+## # ℹ 194 more rows
+```
+
+
+---
+class: inverse, center, middle
+
+
+#tidyr::pivot_wider()
+
+---
+## De largo a ancho
+
+![wider](images/pivot_wider.png)
+- `pivot_wider()` reemplaza la función `spread()`
+
+
+---
+## De largo a ancho
+
+Retomando nuestros datos ...
+
+
+```
+## # A tibble: 204 × 5
+##       id group   outcome week  score
+##    &lt;int&gt; &lt;fct&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;int&gt;
+##  1     1 Control wl      1         4
+##  2     1 Control wl      2         3
+##  3     1 Control wl      3         3
+##  4     1 Control se      1        14
+##  5     1 Control se      2        13
+##  6     1 Control se      3        15
+##  7     2 Control wl      1         4
+##  8     2 Control wl      2         4
+##  9     2 Control wl      3         3
+## 10     2 Control se      1        13
+## # ℹ 194 more rows
+```
+
+Podriamos separar los valores de la variable `outcome` en dos variables separadas: `wl` y `se`, tomado valores de variable `score`
+
+---
+## De largo a ancho
+
+
+```r
+wl_long %&gt;% 
+* pivot_wider(names_from = outcome, values_from = score)
+```
+
+```
+## # A tibble: 102 × 5
+##       id group   week     wl    se
+##    &lt;int&gt; &lt;fct&gt;   &lt;chr&gt; &lt;int&gt; &lt;int&gt;
+##  1     1 Control 1         4    14
+##  2     1 Control 2         3    13
+##  3     1 Control 3         3    15
+##  4     2 Control 1         4    13
+##  5     2 Control 2         4    14
+##  6     2 Control 3         3    17
+##  7     3 Control 1         4    17
+##  8     3 Control 2         3    12
+##  9     3 Control 3         1    16
+## 10     4 Control 1         3    11
+## # ℹ 92 more rows
+```
+
+
+---
+## De largo a ancho
+
+¿Y si tuvieramos dos variables que contienen valores (`score`, `error`)?
+
+
+```
+## # A tibble: 204 × 6
+##       id group   outcome week  score  error
+##    &lt;int&gt; &lt;fct&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt;
+##  1     1 Control wl      1         4  0.436
+##  2     1 Control wl      2         3  0.620
+##  3     1 Control wl      3         3  0.644
+##  4     1 Control se      1        14  0.688
+##  5     1 Control se      2        13  0.230
+##  6     1 Control se      3        15 -0.220
+##  7     2 Control wl      1         4  0.235
+##  8     2 Control wl      2         4  0.707
+##  9     2 Control wl      3         3  0.598
+## 10     2 Control se      1        13  1.15 
+## # ℹ 194 more rows
+```
+
+---
+## De largo a ancho
+
+¿Y si tuvieramos dos variables que contienen valores (`score`, `error`)?
+
+
+```r
+wl_long %&gt;% mutate(error = rnorm(n())) %&gt;%
+*   pivot_wider(names_from = outcome, values_from = c(score, error))
+```
+
+```
+## # A tibble: 102 × 7
+##       id group   week  score_wl score_se error_wl error_se
+##    &lt;int&gt; &lt;fct&gt;   &lt;chr&gt;    &lt;int&gt;    &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+##  1     1 Control 1            4       14    0.456   -0.409
+##  2     1 Control 2            3       13    1.00    -0.278
+##  3     1 Control 3            3       15    0.279    1.94 
+##  4     2 Control 1            4       13    0.709    0.246
+##  5     2 Control 2            4       14   -0.836    0.614
+##  6     2 Control 3            3       17   -1.01    -0.107
+##  7     3 Control 1            4       17    0.458    1.14 
+##  8     3 Control 2            3       12   -0.373   -0.143
+##  9     3 Control 3            1       16    1.72    -2.53 
+## 10     4 Control 1            3       11    0.912   -0.839
+## # ℹ 92 more rows
+```
+
+---
+## De largo a ancho
+
+Más aún ...
+
+
+```r
+wl_long %&gt;% mutate(error = rnorm(n())) %&gt;%
+*   pivot_wider(names_from = c(outcome,week), values_from = c(score, error))
+```
+
+```
+## # A tibble: 34 × 14
+##       id group   score_wl_1 score_wl_2 score_wl_3 score_se_1 score_se_2 score_se_3 error_wl_1
+##    &lt;int&gt; &lt;fct&gt;        &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;dbl&gt;
+##  1     1 Control          4          3          3         14         13         15      0.497
+##  2     2 Control          4          4          3         13         14         17     -2.58 
+##  3     3 Control          4          3          1         17         12         16     -1.80 
+##  4     4 Control          3          2          1         11         11         12     -1.91 
+##  5     5 Control          5          3          2         16         15         14     -0.306
+##  6     6 Control          6          5          4         17         18         18     -0.985
+##  7     7 Control          6          5          4         17         16         19     -1.00 
+##  8     8 Control          5          4          1         13         15         15      2.71 
+##  9     9 Control          5          4          1         14         14         15      0.101
+## 10    10 Control          3          3          2         14         15         13      1.14 
+## # ℹ 24 more rows
+## # ℹ 5 more variables: error_wl_2 &lt;dbl&gt;, error_wl_3 &lt;dbl&gt;, error_se_1 &lt;dbl&gt;, error_se_2 &lt;dbl&gt;,
+## #   error_se_3 &lt;dbl&gt;
+```
+
+
+---
+class: inverse, center, middle
+
+
+#tidyr::separate()
+#y
+#tidyr::unite()
+
+
+---
+## Dos variables en una sólo columna: separar columna 
+
+
+```
+## # A tibble: 184 × 3
+##    year  region                      population
+##    &lt;chr&gt; &lt;chr&gt;                       &lt;chr&gt;     
+##  1 1820  Western Europe              2.307     
+##  2 1820  Eastern Europe              818       
+##  3 1820  Western Offshoots           2.513     
+##  4 1820  Latin America               953       
+##  5 1820  Asia (East)                 1.089     
+##  6 1820  Asia (South and South-East) 929       
+##  7 1820  Middle East                 974       
+##  8 1820  Sub-Sahara Africa           800       
+##  9 1830  Western Europe              2.384     
+## 10 1830  Eastern Europe              942       
+## # ℹ 174 more rows
+```
+
+---
+## Dos variables en una sólo columna: separar columna 
+
+
+```r
+data_mpd &lt;- data_mpd %&gt;% separate(region, into = c("zone", "continent"), sep = " ", extra="merge")
+data_mpd 
+```
+
+```
+## # A tibble: 184 × 4
+##    year  zone       continent              population
+##    &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;                  &lt;chr&gt;     
+##  1 1820  Western    Europe                 2.307     
+##  2 1820  Eastern    Europe                 818       
+##  3 1820  Western    Offshoots              2.513     
+##  4 1820  Latin      America                953       
+##  5 1820  Asia       (East)                 1.089     
+##  6 1820  Asia       (South and South-East) 929       
+##  7 1820  Middle     East                   974       
+##  8 1820  Sub-Sahara Africa                 800       
+##  9 1830  Western    Europe                 2.384     
+## 10 1830  Eastern    Europe                 942       
+## # ℹ 174 more rows
+```
+
+---
+## Una variable dividad en dos columnas: unir columna
+
+
+```r
+data_mpd &lt;- data_mpd %&gt;% unite(col = "region", c("zone","continent"), sep = "-")
+data_mpd 
+```
+
+```
+## # A tibble: 184 × 3
+##    year  region                      population
+##    &lt;chr&gt; &lt;chr&gt;                       &lt;chr&gt;     
+##  1 1820  Western-Europe              2.307     
+##  2 1820  Eastern-Europe              818       
+##  3 1820  Western-Offshoots           2.513     
+##  4 1820  Latin-America               953       
+##  5 1820  Asia-(East)                 1.089     
+##  6 1820  Asia-(South and South-East) 929       
+##  7 1820  Middle-East                 974       
+##  8 1820  Sub-Sahara-Africa           800       
+##  9 1830  Western-Europe              2.384     
+## 10 1830  Eastern-Europe              942       
+## # ℹ 174 more rows
+```
+
+
+
+---
+class: inverse, center, middle
+
+
+#Combinando herramientas
+
+
+---
+##Combinando herramientas (1)
+
+
+```r
+data_mpd_messy &lt;- read_delim("mpd2020.csv", delim = ";")
+data_mpd_messy
+```
+
+```
+## # A tibble: 25 × 19
+##    ...1   `GDP pc 2011 prices...2` `GDP pc 2011 prices...3` `GDP pc 2011 prices...4`
+##    &lt;chr&gt;  &lt;chr&gt;                    &lt;chr&gt;                    &lt;chr&gt;                   
+##  1 Region Western Europe           Eastern Europe           Western Offshoots       
+##  2 Year   &lt;NA&gt;                     &lt;NA&gt;                     &lt;NA&gt;                    
+##  3 1820   2.307                    818                      2.513                   
+##  4 1830   2.384                    942                      &lt;NA&gt;                    
+##  5 1840   2.580                    907                      &lt;NA&gt;                    
+##  6 1850   2.678                    985                      3.474                   
+##  7 1860   3.034                    1.358                    4.214                   
+##  8 1870   3.301                    1.575                    4.647                   
+##  9 1880   3.585                    1.886                    6.019                   
+## 10 1890   4.079                    2.204                    6.481                   
+## # ℹ 15 more rows
+## # ℹ 15 more variables: `GDP pc 2011 prices...5` &lt;chr&gt;, `GDP pc 2011 prices...6` &lt;chr&gt;,
+## #   `GDP pc 2011 prices...7` &lt;chr&gt;, `GDP pc 2011 prices...8` &lt;chr&gt;,
+## #   `GDP pc 2011 prices...9` &lt;chr&gt;, Population...10 &lt;chr&gt;, Population...11 &lt;chr&gt;,
+## #   Population...12 &lt;chr&gt;, Population...13 &lt;chr&gt;, Population...14 &lt;chr&gt;, Population...15 &lt;chr&gt;,
+## #   Population...16 &lt;chr&gt;, Population...17 &lt;chr&gt;, Population...18 &lt;chr&gt;, Population...19 &lt;chr&gt;
+```
+
+---
+##Combinando herramientas (1)
+
+
+```r
+data_mpd_messy %&gt;% select(`...1`,starts_with("GDP")) %&gt;% row_to_names(row_number = 1) %&gt;%
+* rename(year=Region) %&gt;%
+* filter(year!="Year")
+```
+
+```
+## # A tibble: 23 × 9
+##    year  `Western Europe` `Eastern Europe` `Western Offshoots` `Latin America` `Asia (East)`
+##    &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;        
+##  1 1820  2.307            818              2.513               953             1.089        
+##  2 1830  2.384            942              &lt;NA&gt;                &lt;NA&gt;            &lt;NA&gt;         
+##  3 1840  2.580            907              &lt;NA&gt;                &lt;NA&gt;            &lt;NA&gt;         
+##  4 1850  2.678            985              3.474               1.081           900          
+##  5 1860  3.034            1.358            4.214               1.588           &lt;NA&gt;         
+##  6 1870  3.301            1.575            4.647               1.319           989          
+##  7 1880  3.585            1.886            6.019               &lt;NA&gt;            &lt;NA&gt;         
+##  8 1890  4.079            2.204            6.481               1.673           &lt;NA&gt;         
+##  9 1900  4.724            2.700            7.741               1.751           1.086        
+## 10 1910  5.135            2.283            9.355               2.194           &lt;NA&gt;         
+## # ℹ 13 more rows
+## # ℹ 3 more variables: `Asia (South and South-East)` &lt;chr&gt;, `Middle East` &lt;chr&gt;,
+## #   `Sub-Sahara Africa` &lt;chr&gt;
+```
+
+
+---
+##Combinando herramientas (1)
+
+
+```r
+data_mpd_gpd &lt;- data_mpd_messy %&gt;% select(`...1`,starts_with("GDP")) %&gt;% row_to_names(row_number = 1) %&gt;%
+  rename(year=Region) %&gt;%
+  filter(year!="Year") %&gt;%
+  pivot_longer(-year, names_to= "region", values_to="dgp"); data_mpd_gpd #&lt;&lt; data_mpd_gpd 
+```
+
+```
+## # A tibble: 184 × 3
+##    year  region                      dgp  
+##    &lt;chr&gt; &lt;chr&gt;                       &lt;chr&gt;
+##  1 1820  Western Europe              2.307
+##  2 1820  Eastern Europe              818  
+##  3 1820  Western Offshoots           2.513
+##  4 1820  Latin America               953  
+##  5 1820  Asia (East)                 1.089
+##  6 1820  Asia (South and South-East) 929  
+##  7 1820  Middle East                 974  
+##  8 1820  Sub-Sahara Africa           800  
+##  9 1830  Western Europe              2.384
+## 10 1830  Eastern Europe              942  
+## # ℹ 174 more rows
+```
+
+---
+##Combinando herramientas (1)
+
+
+```r
+data_mpd_pop &lt;- data_mpd_messy %&gt;% select(`...1`,starts_with("Population")) %&gt;% row_to_names(row_number = 1) %&gt;%
+  rename(year=Region) %&gt;%
+  filter(year!="Year") %&gt;%
+  pivot_longer(-year, names_to= "region", values_to="population"); data_mpd_pop
+```
+
+```
+## # A tibble: 230 × 3
+##    year  region                      population
+##    &lt;chr&gt; &lt;chr&gt;                       &lt;chr&gt;     
+##  1 1820  Western Europe              132.371   
+##  2 1820  Western Offshoots           11.231    
+##  3 1820  Eastern Europe              90.785    
+##  4 1820  Latin America               20.099    
+##  5 1820  Asia (South and South-East) 255.695   
+##  6 1820  Asia (East)                 427.757   
+##  7 1820  Middle East                 35.600    
+##  8 1820  Sub-Sahara Africa           60.000    
+##  9 1820  World                       1.033.538 
+## 10 1820  World GDP pc                1.102     
+## # ℹ 220 more rows
+```
+
+---
+##Combinando herramientas (1)
+
+
+```r
+data_mpd &lt;- data_mpd_gpd %&gt;% left_join(data_mpd_pop, by=c("year","region"))
+data_mpd 
+```
+
+```
+## # A tibble: 184 × 4
+##    year  region                      dgp   population
+##    &lt;chr&gt; &lt;chr&gt;                       &lt;chr&gt; &lt;chr&gt;     
+##  1 1820  Western Europe              2.307 132.371   
+##  2 1820  Eastern Europe              818   90.785    
+##  3 1820  Western Offshoots           2.513 11.231    
+##  4 1820  Latin America               953   20.099    
+##  5 1820  Asia (East)                 1.089 427.757   
+##  6 1820  Asia (South and South-East) 929   255.695   
+##  7 1820  Middle East                 974   35.600    
+##  8 1820  Sub-Sahara Africa           800   60.000    
+##  9 1830  Western Europe              2.384 &lt;NA&gt;      
+## 10 1830  Eastern Europe              942   &lt;NA&gt;      
+## # ℹ 174 more rows
+```
+
+
+---
+##Combinando herramientas (2)
+
+
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(starts_with("y"), list(media = ~mean(.x, na.rm = TRUE), mediana= ~median(.x, na.rm = TRUE)) ))
+```
+
+```
+##   yaimcorh_media yaimcorh_mediana yautcor_media yautcor_mediana ytotcor_media ytotcor_mediana
+## 1         192620           150000      493137.5          325000      417382.9          287408
+##   yautcorh_media yautcorh_mediana ymonecorh_media ymonecorh_mediana ytotcorh_media
+## 1       949556.6           618100        986153.2            655557        1178773
+##   ytotcorh_mediana yoprcor_media yoprcor_mediana yoprcorh_media yoprcorh_mediana
+## 1           812148      478917.3          330000       478917.3           330000
+##   ytrabajocor_media ytrabajocor_mediana ytrabajocorh_media ytrabajocorh_mediana ypchautcor_media
+## 1          501513.8              350000             830781               536667           268881
+##   ypchautcor_mediana ypc_media ypc_mediana ypchtrabajo_media ypchtrabajo_mediana
+## 1           178201.5  339356.5    235708.5          228008.8              150000
+```
+
+---
+##Combinando herramientas (2)
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(starts_with("y"), list(media = ~mean(.x, na.rm = TRUE), mediana= ~median(.x, na.rm = TRUE)) )) %&gt;%
+* pivot_longer(
+*   everything(),
+*   names_to="outcome_stat",
+*   values_to="value")
+```
+
+```
+## # A tibble: 26 × 2
+##    outcome_stat        value
+##    &lt;chr&gt;               &lt;dbl&gt;
+##  1 yaimcorh_media    192620.
+##  2 yaimcorh_mediana  150000 
+##  3 yautcor_media     493137.
+##  4 yautcor_mediana   325000 
+##  5 ytotcor_media     417383.
+##  6 ytotcor_mediana   287408 
+##  7 yautcorh_media    949557.
+##  8 yautcorh_mediana  618100 
+##  9 ymonecorh_media   986153.
+## 10 ymonecorh_mediana 655557 
+## # ℹ 16 more rows
+```
+
+---
+##Combinando herramientas (2)
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(starts_with("y"), list(media = ~mean(.x, na.rm = TRUE), mediana= ~median(.x, na.rm = TRUE)) )) %&gt;%
+  pivot_longer(
+    everything(), 
+    names_to="outcome_stat",
+    values_to="value"
+    ) %&gt;%
+* separate(outcome_stat, sep="_", into = c("outcome","stat"))
+```
+
+```
+## # A tibble: 26 × 3
+##    outcome   stat      value
+##    &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;
+##  1 yaimcorh  media   192620.
+##  2 yaimcorh  mediana 150000 
+##  3 yautcor   media   493137.
+##  4 yautcor   mediana 325000 
+##  5 ytotcor   media   417383.
+##  6 ytotcor   mediana 287408 
+##  7 yautcorh  media   949557.
+##  8 yautcorh  mediana 618100 
+##  9 ymonecorh media   986153.
+## 10 ymonecorh mediana 655557 
+## # ℹ 16 more rows
+```
+
+
+---
+##Combinando herramientas (2)
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(starts_with("y"), list(media = ~mean(.x, na.rm = TRUE), mediana= ~median(.x, na.rm = TRUE)) )) %&gt;%
+  pivot_longer(
+    everything(), 
+    names_to="outcome_stat",
+    values_to="value"
+    ) %&gt;%
+  separate(outcome_stat, sep="_", into = c("outcome","stat") ) %&gt;%
+* pivot_wider(names_from = "stat", values_from = "value")
+```
+
+```
+## # A tibble: 13 × 3
+##    outcome         media mediana
+##    &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;
+##  1 yaimcorh      192620. 150000 
+##  2 yautcor       493137. 325000 
+##  3 ytotcor       417383. 287408 
+##  4 yautcorh      949557. 618100 
+##  5 ymonecorh     986153. 655557 
+##  6 ytotcorh     1178773. 812148 
+##  7 yoprcor       478917. 330000 
+##  8 yoprcorh      478917. 330000 
+##  9 ytrabajocor   501514. 350000 
+## 10 ytrabajocorh  830781. 536667 
+## 11 ypchautcor    268881. 178202.
+## 12 ypc           339356. 235708.
+## 13 ypchtrabajo   228009. 150000
+```
+
+---
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+.huge[#R se aprende]
+.huge[#usando y]
+.huge[#preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, middle, center
+
+###Presentación y código en GitHub: &lt;https://github.com/mebucca/dar_soc4001&gt;
+
+---
+class: inverse, center, middle
+
+
+#Gracias!
+
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

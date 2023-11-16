@@ -1,0 +1,90 @@
+---
+title: "Ejercicio Práctico"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+I.  Bajar submuestra d CASEN 2017 desde repositorio Github del curso usando el siguiente código:
+
+
+```{r, warning=FALSE, message=FALSE}
+library("tidyverse")
+
+data_casen2017 <- read.csv("https://raw.githubusercontent.com/mebucca/dar_soc4001/master/data/sample_casen2017.csv")
+```
+
+Los datos se ven así:
+
+```{r, warning=FALSE, message=FALSE}
+data_casen2017 %>% glimpse()
+```
+
+
+1) Haz el siguiente gráfico usando `geom_histogram()`:
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+data_casen2017 %>% filter(sexo==1, edad>18 & edad<65) %>%
+  ggplot(aes(x=yautcor/1000)) +
+  geom_histogram(colour="black", fill="green") +
+  labs(title="Distribución del ingreso autónomo en Chile",
+       subtitle = "Hombres entre 18 y 65 años",
+       y="Frecuencia", x="Ingreso autónomo corregido (miles de pesos)") 
+```
+
+2) Haz el siguiente gráfico. Prueba primero usando `geom_point()` y  luego trata con `geom_jitter()`:
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+data_casen2017 %>% filter(edad>18 & edad<65) %>%
+  mutate(sexo_text = case_when(sexo==1 ~ "Hombre", sexo==2 ~ "Mujer")) %>%
+  ggplot(aes(x=esc, y=log(yautcor), colour=sexo_text)) +
+  #geom_point(alpha=0.3) +
+  geom_jitter(alpha=0.2) +
+  labs(title="Relación entre educación e ingresos",
+       subtitle = "Individuos entre 18 y 65 años",
+       y="Log autónomo corregido", x="Años de escolaridad", colour="Sexo") 
+```
+
+II. Carga datos históricos sobre clima en Autralia desde repositorio Github del curso usando el siguiente código:
+
+```{r, warning=FALSE, message=FALSE}
+file <- url("https://raw.githubusercontent.com/mebucca/dar_soc4001/master/slides/class_11/aus_weather.csv")
+clima_australia <- read_csv(file)
+```
+
+Los datos se ven así:
+
+```{r, warning=FALSE, message=FALSE}
+clima_australia %>% glimpse()
+```
+
+3) Haz el siguiente gráfico usando `geom_line()` y  `geom_point()`:
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+clima_australia %>% group_by(Year) %>%
+  mutate(daily_avg = if_else(daily_avg==0,NA_real_,daily_avg)) %>%
+  summarise(temperatura = mean(daily_avg, na.rm = T)) %>% 
+  ggplot(aes(x=Year,y=temperatura)) +
+  geom_point(alpha=0.5, colour="red") +
+  geom_line(colour="blue") +
+  labs(x="Año", y="Temperatura (celsius)", title="Promedio de temperatura anual", subtitle="daily_avg")
+```
+
+Importante: debes transformar previamente los ceros de la variable `daily_avg` en `NA_real_` para calcular correctamente el promedio de temperatura anual. 
+
+4) Usa el siguiente código para transformar crear una variable de fecha a partir de las variables `Year`, `Month`, `Day`.  
+
+```{r, warning=FALSE, message=FALSE}
+library("lubridate")
+clima_australia <- clima_australia %>% 
+mutate(fecha = make_datetime(Year, Month, Day))
+```
+Haz el siguiente gráfico usando `geom_line()`:
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+clima_australia %>% 
+  ggplot(aes(x=fecha,y=rainfall_mm)) +
+  geom_line(colour="blue", alpha=0.7) +
+  labs(x="Fecha", y="Milímetros diarios de lluvia", title="Evolución lluvia en Australia", subtitle="milímetros diarios")
+```
+

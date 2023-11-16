@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Procesamiento avanzado de Bases de Datos en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <script src="libs/header-attrs-2.24/header-attrs.js"></script>
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Procesamiento avanzado de Bases de Datos en R
+]
+.subtitle[
+## Manipulación de bases de datos con tidyverse
+]
+.author[
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+]
+.date[
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+]
+
+---
+
+
+
+
+
+
+## Recapitulación
+&lt;br&gt;
+
+- Creación y transformación de datos con `dplyr`
+
+- Manipulación de datos agrupados con `dplyr`
+
+
+---
+
+## Hoy hablaremos de ...
+
+- Resumen de datos con `dplyr`
+
+- Resumen de datos agrupados con `dplyr`
+
+- Justar bases de datos con llave común
+
+---
+
+class: center, middle
+
+![](images/tidyverse_packs.png)
+
+
+---
+
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#dplyr]
+
+---
+
+## dplyr: herramientas intuitivas para manipulación de datos
+
+&lt;br&gt;
+
+.pull-left[
+  ![dplyr](images/dplyr.png)
+]
+
+.pull-right[
+`dplyr` permite:
+
+- ordenar datos
+
+- filtrar casos 
+
+- seleccionar variables
+
+- __crear y transformar variables__
+
+- agrupar datos
+
+- crear resumen estadísticos
+]
+
+
+---
+class: inverse, center, middle
+
+.huge[
+**dplyr::summarise()**
+]
+
+---
+## summarise: extrayendo información de los datos
+
+La función `summarise()` permite calcular una variedad de medidas en base a los datos. 
+
+--
+
+- Una de las principales ventajas es que esta función retorna una base de datos con los resultados, que puede ser usado para posterior análisis (ej, gráficos).
+
+--
+
+- Combinando con `group_by()` resulta una herramiendo muy potente. 
+
+
+---
+## summarise: extrayendo información de los datos
+
+
+
+
+
+```r
+library(tidyverse)
+data_casen_csv %&gt;% 
+  summarise(mean_ytotcor_region = mean(ytotcor, na.rm = T)) 
+```
+
+```
+## # A tibble: 1 × 1
+##   mean_ytotcor_region
+##                 &lt;dbl&gt;
+## 1             414351.
+```
+
+Obtenemos una bases de datos con los resultados.
+
+--
+
+Pero podemos transformarlo en otro tipo de objetos (vectores, matrices, etc)
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(mean_ytotcor_region = mean(ytotcor, na.rm = T), 
+            median_ytotcor_region = median(ytotcor, na.rm = T)) / 1000
+```
+
+```
+##   mean_ytotcor_region median_ytotcor_region
+## 1            414.3509              274.7175
+```
+
+---
+## summarise: algunas funciones útiles
+
+.pull-left[
+- `median()`
+- `sd()`
+- `min()`, `max()`
+- `quantile()`
+- `first()`, `last()`, `nth()`
+- `n()`, `n_distinct()`
+- `any()`, `all()`
+
+Ejemplo:
+
+- Quantile:
+
+```r
+data_casen_csv %&gt;% 
+  summarise(q20=quantile(ytotcor, probs=0.2, na.rm = T))
+```
+
+```
+## # A tibble: 1 × 1
+##      q20
+##    &lt;dbl&gt;
+## 1 104646
+```
+]
+
+--
+
+.pull-right[
+
+- 3er caso:
+
+```r
+data_casen_csv %&gt;% 
+  summarise(tercer=nth(ytotcor, n=3))
+```
+
+```
+## # A tibble: 1 × 1
+##   tercer
+##    &lt;dbl&gt;
+## 1  78327
+```
+
+- Cantidad de valores distintos
+
+```r
+data_casen_csv %&gt;% 
+  summarise(distintos=n_distinct(ytotcor))
+```
+
+```
+## # A tibble: 1 × 1
+##   distintos
+##       &lt;int&gt;
+## 1      5207
+```
+]
+
+---
+## summarise across() variables
+
+`across()` facilita la aplicación de la misma transformación a múltiples columnas. Permite usar el tipo de semántica de `select()` dentro de `summarise()` y `mutate()`.
+
+--
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across( c("sexo","edad"), mean))
+```
+
+```
+## # A tibble: 1 × 2
+##    sexo  edad
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  1.52  37.6
+```
+
+--
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(starts_with("y"), mean))
+```
+
+```
+## # A tibble: 1 × 13
+##   yaimcorh yautcor ytotcor yautcorh ymonecorh ytotcorh yoprcor yoprcorh
+##      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+## 1  181168.      NA      NA  941282.   979353. 1160520.      NA       NA
+## # ℹ 5 more variables: ytrabajocor &lt;dbl&gt;, ytrabajocorh &lt;dbl&gt;, ypchautcor &lt;dbl&gt;,
+## #   ypc &lt;dbl&gt;, ypchtrabajo &lt;dbl&gt;
+```
+
+
+---
+## summarise across() variables
+
+`across()` facilita la aplicación de la misma transformación a múltiples columnas. Permite usar el tipo de semántica de `select()` dentro de `summarise()` y `mutate()`.
+
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across( c("sexo","edad"), mean))
+```
+
+```
+## # A tibble: 1 × 2
+##    sexo  edad
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  1.52  37.6
+```
+
+--
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(starts_with("y"), ~mean(.x, na.rm = TRUE) ))
+```
+
+```
+## # A tibble: 1 × 13
+##   yaimcorh yautcor ytotcor yautcorh ymonecorh ytotcorh yoprcor yoprcorh
+##      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+## 1  181168. 491459. 414351.  941282.   979353. 1160520. 492152.  492152.
+## # ℹ 5 more variables: ytrabajocor &lt;dbl&gt;, ytrabajocorh &lt;dbl&gt;, ypchautcor &lt;dbl&gt;,
+## #   ypc &lt;dbl&gt;, ypchtrabajo &lt;dbl&gt;
+```
+
+---
+## summarise una variable con una lista de funciones
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(edad, list(media = mean, mediana = median)))
+```
+
+```
+## # A tibble: 1 × 2
+##   edad_media edad_mediana
+##        &lt;dbl&gt;        &lt;dbl&gt;
+## 1       37.6           36
+```
+
+--
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(ytrabajocor, list(media =  ~mean(.x, na.rm = TRUE), mediana = ~median(.x, na.rm = TRUE))))
+```
+
+```
+## # A tibble: 1 × 2
+##   ytrabajocor_media ytrabajocor_mediana
+##               &lt;dbl&gt;               &lt;dbl&gt;
+## 1           514546.              330000
+```
+
+
+---
+## summarise muchas variable con una lista de funciones
+
+
+```r
+data_casen_csv %&gt;% 
+  summarise(across(starts_with("y"), list(media = ~mean(.x, na.rm = TRUE), mediana= ~median(.x, na.rm = TRUE)) ))
+```
+
+```
+## # A tibble: 1 × 26
+##   yaimcorh_media yaimcorh_mediana yautcor_media yautcor_mediana ytotcor_media
+##            &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;
+## 1        181168.           150000       491459.          302500       414351.
+## # ℹ 21 more variables: ytotcor_mediana &lt;dbl&gt;, yautcorh_media &lt;dbl&gt;,
+## #   yautcorh_mediana &lt;dbl&gt;, ymonecorh_media &lt;dbl&gt;, ymonecorh_mediana &lt;dbl&gt;,
+## #   ytotcorh_media &lt;dbl&gt;, ytotcorh_mediana &lt;dbl&gt;, yoprcor_media &lt;dbl&gt;,
+## #   yoprcor_mediana &lt;dbl&gt;, yoprcorh_media &lt;dbl&gt;, yoprcorh_mediana &lt;dbl&gt;,
+## #   ytrabajocor_media &lt;dbl&gt;, ytrabajocor_mediana &lt;dbl&gt;,
+## #   ytrabajocorh_media &lt;dbl&gt;, ytrabajocorh_mediana &lt;dbl&gt;,
+## #   ypchautcor_media &lt;dbl&gt;, ypchautcor_mediana &lt;dbl&gt;, ypc_media &lt;dbl&gt;, …
+```
+
+---
+## summarise by_group(): resumiendo datos agupados
+
+
+```r
+data_casen_csv %&gt;% 
+* group_by(region, sexo) %&gt;%
+  summarise(mean_ytotcor_region = mean(ytotcor, na.rm = T), 
+            median_ytotcor_region = median(ytotcor, na.rm = T))
+```
+
+```
+## # A tibble: 32 × 4
+## # Groups:   region [16]
+##    region  sexo mean_ytotcor_region median_ytotcor_region
+##     &lt;dbl&gt; &lt;dbl&gt;               &lt;dbl&gt;                 &lt;dbl&gt;
+##  1      1     1             553568.               400000 
+##  2      1     2             344284.               270625 
+##  3      2     1             717358.               534328.
+##  4      2     2             425246.               292900.
+##  5      3     1             518018.               365518.
+##  6      3     2             331062.               253684 
+##  7      4     1             371221.               300000 
+##  8      4     2             204881.               123041 
+##  9      5     1             500857.               340000 
+## 10      5     2             352456.               250000 
+## # ℹ 22 more rows
+```
+
+---
+## summarise by_group(): resumiendo datos agupados
+
+.center[
+![loops](loops.jpeg)
+]
+
+---
+## summarise by_group(): resumiendo datos agupados
+
+Combinando herramientas
+
+
+```r
+data_casen_csv %&gt;% 
+* group_by(region, sexo) %&gt;%
+      summarise(across(ytrabajocor, list(media =  ~mean(.x, na.rm = TRUE), mediana = ~median(.x, na.rm = TRUE))))
+```
+
+```
+## # A tibble: 32 × 4
+## # Groups:   region [16]
+##    region  sexo ytrabajocor_media ytrabajocor_mediana
+##     &lt;dbl&gt; &lt;dbl&gt;             &lt;dbl&gt;               &lt;dbl&gt;
+##  1      1     1           602465.             416250 
+##  2      1     2           420287.             300000 
+##  3      2     1           797842.             600000 
+##  4      2     2           565274.             380000 
+##  5      3     1           636032.             482000 
+##  6      3     2           414388.             300000 
+##  7      4     1           459171.             350000 
+##  8      4     2           315574.             270834.
+##  9      5     1           570293.             363208.
+## 10      5     2           436425.             300000 
+## # ℹ 22 more rows
+```
+
+---
+## summarise: funciones externas
+
+Supongamos que queremos calcular el indice de Gini para cada región de Chile.
+
+
+```r
+*library(ineq)
+data_casen_csv %&gt;% 
+  group_by(region, sexo) %&gt;% 
+* summarise(gini = Gini(ytotcor, na.rm = T))
+```
+
+```
+## # A tibble: 32 × 3
+## # Groups:   region [16]
+##    region  sexo  gini
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1      1     1 0.462
+##  2      1     2 0.491
+##  3      2     1 0.469
+##  4      2     2 0.554
+##  5      3     1 0.499
+##  6      3     2 0.493
+##  7      4     1 0.458
+##  8      4     2 0.516
+##  9      5     1 0.505
+## 10      5     2 0.529
+## # ℹ 22 more rows
+```
+
+---
+## summarise: funciones propias
+
+Supongamos que queremos calcular el indice de Gini para cada región de Chile.
+
+
+```r
+*ratio_9010 &lt;- function(x) { quantile(x,p=0.9, na.rm=T)/quantile(x,p=0.1, na.rm =T)}
+
+data_casen_csv %&gt;% 
+  group_by(region, sexo) %&gt;% 
+* summarise(ratio9010 = ratio_9010(ytotcor))
+```
+
+```
+## # A tibble: 32 × 3
+## # Groups:   region [16]
+##    region  sexo ratio9010
+##     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;
+##  1      1     1      11.8
+##  2      1     2      41.5
+##  3      2     1      12.0
+##  4      2     2      30.0
+##  5      3     1      12.8
+##  6      3     2      21.0
+##  7      4     1      72.1
+##  8      4     2      40.8
+##  9      5     1      21.0
+## 10      5     2      31.9
+## # ℹ 22 more rows
+```
+
+---
+class: inverse, center, middle
+
+.huge[
+**dplyr::join()**
+]
+
+---
+## join: juntar bases de datos
+
+These are generic functions that dispatch to individual tbl methods - see the method documentation for details of individual data sources
+
+
+---
+## join: juntar bases de datos
+
+Dos bases de datos puede juntarse mientras tengan un llave común (region, aquí). 
+
+.pull-left[
+
+```r
+data_a &lt;- data_casen_csv %&gt;% filter(region &lt;2 | region&gt;=15 ) %&gt;%
+  group_by(region) %&gt;% 
+  summarise(across(edad, mean)); data_a
+```
+
+```
+## # A tibble: 3 × 2
+##   region  edad
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1      1  32.8
+## 2     15  36.8
+## 3     16  39.7
+```
+]
+.pull-right[
+
+```r
+data_b &lt;- data_casen_csv %&gt;% filter(region &lt;3 | region&gt;=16 ) %&gt;%
+  group_by(region) %&gt;% 
+  summarise(across(c(edad,yautcorh), mean)); data_b
+```
+
+```
+## # A tibble: 3 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2      2  34.1 1193048.
+## 3     16  39.7  656704.
+```
+]
+
+--
+
+&lt;br&gt;
+
+Muchas formas de juntar ambas bases de datos.
+
+---
+## join: juntar bases de datos con (inner)
+
+.pull-left[
+`data_a`
+
+```
+## # A tibble: 3 × 2
+##   region  edad
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1      1  32.8
+## 2     15  36.8
+## 3     16  39.7
+```
+]
+.pull-right[
+`data_b`
+
+```
+## # A tibble: 3 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2      2  34.1 1193048.
+## 3     16  39.7  656704.
+```
+]
+
+&lt;br&gt;
+--
+
+`inner_join()`
+
+```r
+data_a %&gt;% inner_join(data_b, by="region")
+```
+
+```
+## # A tibble: 2 × 4
+##   region edad.x edad.y yautcorh
+##    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1   32.8   32.8 1052109.
+## 2     16   39.7   39.7  656704.
+```
+
+---
+## join: juntar bases de datos con (inner)
+
+.pull-left[
+`data_a`
+
+```
+## # A tibble: 3 × 2
+##   region  edad
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1      1  32.8
+## 2     15  36.8
+## 3     16  39.7
+```
+]
+.pull-right[
+`data_b`
+
+```
+## # A tibble: 3 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2      2  34.1 1193048.
+## 3     16  39.7  656704.
+```
+]
+
+&lt;br&gt;
+--
+
+`inner_join()`
+
+```r
+data_a %&gt;% inner_join(data_b %&gt;% select(!edad), by="region")
+```
+
+```
+## # A tibble: 2 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2     16  39.7  656704.
+```
+
+---
+## join: juntar bases de datos con (inner)
+
+.pull-left[
+`data_a`
+
+```
+## # A tibble: 3 × 2
+##   region  edad
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1      1  32.8
+## 2     15  36.8
+## 3     16  39.7
+```
+]
+.pull-right[
+`data_b`
+
+```
+## # A tibble: 3 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2      2  34.1 1193048.
+## 3     16  39.7  656704.
+```
+]
+
+&lt;br&gt;
+--
+
+`inner_join()`
+
+```r
+data_a %&gt;% select(!edad) %&gt;% inner_join(data_b, by="region")
+```
+
+```
+## # A tibble: 2 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2     16  39.7  656704.
+```
+
+
+---
+## join: juntar bases de datos con (left)
+
+.pull-left[
+`data_a`
+
+```
+## # A tibble: 3 × 2
+##   region  edad
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1      1  32.8
+## 2     15  36.8
+## 3     16  39.7
+```
+]
+.pull-right[
+`data_b %&gt;% select(!edad)`
+
+```
+## # A tibble: 3 × 2
+##   region yautcorh
+##    &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1 1052109.
+## 2      2 1193048.
+## 3     16  656704.
+```
+]
+
+&lt;br&gt;
+--
+
+`left_join()`
+
+```r
+data_a %&gt;% left_join(data_b  %&gt;% select(!edad), by="region")
+```
+
+```
+## # A tibble: 3 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2     15  36.8      NA 
+## 3     16  39.7  656704.
+```
+
+--
+
+.img-right[
+![michael](images/michael_scott.gif)
+]
+
+---
+## join: juntar bases de datos con (right)
+
+.pull-left[
+`data_a`
+
+```
+## # A tibble: 3 × 2
+##   region  edad
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1      1  32.8
+## 2     15  36.8
+## 3     16  39.7
+```
+]
+.pull-right[
+`data_b %&gt;% select(!edad)`
+
+```
+## # A tibble: 3 × 2
+##   region yautcorh
+##    &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1 1052109.
+## 2      2 1193048.
+## 3     16  656704.
+```
+]
+
+&lt;br&gt;
+--
+
+`right_join()`
+
+```r
+data_a  %&gt;% right_join(data_b %&gt;% select(!edad), by="region")
+```
+
+```
+## # A tibble: 3 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2     16  39.7  656704.
+## 3      2  NA   1193048.
+```
+
+---
+## join: juntar bases de datos con (full)
+
+.pull-left[
+`data_a`
+
+```
+## # A tibble: 3 × 2
+##   region  edad
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1      1  32.8
+## 2     15  36.8
+## 3     16  39.7
+```
+]
+.pull-right[
+`data_b %&gt;% select(!edad)`
+
+```
+## # A tibble: 3 × 2
+##   region yautcorh
+##    &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1 1052109.
+## 2      2 1193048.
+## 3     16  656704.
+```
+]
+
+&lt;br&gt;
+--
+
+`full_join()`
+
+```r
+data_a  %&gt;% full_join(data_b %&gt;% select(!edad), by="region")
+```
+
+```
+## # A tibble: 4 × 3
+##   region  edad yautcorh
+##    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1      1  32.8 1052109.
+## 2     15  36.8      NA 
+## 3     16  39.7  656704.
+## 4      2  NA   1193048.
+```
+
+---
+## join: juntar bases de datos por más de una llave
+
+
+.pull-left[
+
+```r
+data_casen_csv %&gt;% 
+  select(region,sexo,yautcorh)
+```
+
+```
+## # A tibble: 21,644 × 3
+##    region  sexo yautcorh
+##     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+##  1     13     2   600000
+##  2      7     2   392000
+##  3     13     2    87417
+##  4     13     1  2791666
+##  5      9     2   501667
+##  6     13     2   781000
+##  7      6     1   270000
+##  8      8     2   362500
+##  9      3     2   433333
+## 10      6     2  1093750
+## # ℹ 21,634 more rows
+```
+]
+
+--
+
+.pull-right[
+
+```r
+gini_regsex &lt;- data_casen_csv %&gt;% 
+* group_by(region,sexo) %&gt;%
+  summarise(gini = Gini(yautcorh, na.rm = T )); gini_regsex
+```
+
+```
+## # A tibble: 32 × 3
+## # Groups:   region [16]
+##    region  sexo  gini
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1      1     1 0.406
+##  2      1     2 0.427
+##  3      2     1 0.390
+##  4      2     2 0.423
+##  5      3     1 0.439
+##  6      3     2 0.448
+##  7      4     1 0.392
+##  8      4     2 0.399
+##  9      5     1 0.443
+## 10      5     2 0.456
+## # ℹ 22 more rows
+```
+]
+
+--
+
+Quiero incorporar la información agregada a mi bases de datos.
+
+---
+## join: juntar bases de datos por más de una llave
+
+
+```r
+data_casen_csv %&gt;% 
+* left_join(gini_regsex, by=c("region","sexo")) %&gt;%
+  select(region,sexo,yautcorh, gini)
+```
+
+```
+## # A tibble: 21,644 × 4
+##    region  sexo yautcorh  gini
+##     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;
+##  1     13     2   600000 0.506
+##  2      7     2   392000 0.453
+##  3     13     2    87417 0.506
+##  4     13     1  2791666 0.512
+##  5      9     2   501667 0.525
+##  6     13     2   781000 0.506
+##  7      6     1   270000 0.394
+##  8      8     2   362500 0.456
+##  9      3     2   433333 0.448
+## 10      6     2  1093750 0.409
+## # ℹ 21,634 more rows
+```
+
+
+
+
+---
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+.huge[#R se aprende]
+.huge[#usando y]
+.huge[#preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, middle
+
+Presentación y código en GitHub: &lt;https://github.com/mebucca/dar_soc4001&gt;
+
+---
+class: inverse, center, middle
+
+.huge[
+**Gracias!**
+]
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

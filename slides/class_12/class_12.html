@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Procesamiento avanzado de Bases de Datos en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <script src="libs/header-attrs-2.24/header-attrs.js"></script>
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Procesamiento avanzado de Bases de Datos en R
+]
+.subtitle[
+## Visualización de datos con ggplots
+]
+.author[
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+]
+.date[
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+]
+
+---
+
+
+
+
+## Recapitulación
+&lt;br&gt;
+
+
+- Visualización de datos con tidyverse
+
+  - `ggplot2`
+
+---
+
+## Hoy hablaremos de ...
+&lt;br&gt;
+
+- Más sobre visualización de datos con tidyverse
+
+- `ggplot2`
+
+---
+
+class: center, middle
+
+![](images/tidyverse_packs.png)
+
+
+---
+
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#ggplot2]
+
+---
+## ggplot2: un nueva forma de pensar y visualizar datos
+
+&lt;br&gt;
+
+.pull-left[
+  ![tidyr](images/ggplot2.png)
+]
+
+.pull-right[
+`tidyr` permite:
+
+- "Traduce" datos en elementos visuales 
+
+]
+
+
+---
+## Bases de datos ordenadas ("tidy") 
+
+- El punto de partida de un gráfico en `ggplot` es una base de datos "tidy".
+
+
+
+- Hoy trabajaremos con datos mundiales de COVID (OWID):
+
+
+```
+## Rows: 56,748
+## Columns: 51
+## $ iso_code                           &lt;chr&gt; "AFG", "AFG", "AFG", "AFG", "AFG", …
+## $ continent                          &lt;chr&gt; "Asia", "Asia", "Asia", "Asia", "As…
+## $ location                           &lt;chr&gt; "Afghanistan", "Afghanistan", "Afgh…
+## $ date                               &lt;date&gt; 2019-12-31, 2020-01-01, 2020-01-02…
+## $ total_cases                        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_cases                          &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ new_cases_smoothed                 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 0, 0, 0, 0,…
+## $ total_deaths                       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_deaths                         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ new_deaths_smoothed                &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 0, 0, 0, 0,…
+## $ total_cases_per_million            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_cases_per_million              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ new_cases_smoothed_per_million     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 0, 0, 0, 0,…
+## $ total_deaths_per_million           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_deaths_per_million             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ new_deaths_smoothed_per_million    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 0, 0, 0, 0,…
+## $ reproduction_rate                  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ icu_patients                       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ icu_patients_per_million           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ hosp_patients                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ hosp_patients_per_million          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_icu_admissions              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_icu_admissions_per_million  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_hosp_admissions             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_hosp_admissions_per_million &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ total_tests                        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests                          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ total_tests_per_thousand           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_per_thousand             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_smoothed                 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_smoothed_per_thousand    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ tests_per_case                     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ positive_rate                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ tests_units                        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ stringency_index                   &lt;dbl&gt; NA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ population                         &lt;dbl&gt; 38928341, 38928341, 38928341, 38928…
+## $ population_density                 &lt;dbl&gt; 54.422, 54.422, 54.422, 54.422, 54.…
+## $ median_age                         &lt;dbl&gt; 18.6, 18.6, 18.6, 18.6, 18.6, 18.6,…
+## $ aged_65_older                      &lt;dbl&gt; 2.581, 2.581, 2.581, 2.581, 2.581, …
+## $ aged_70_older                      &lt;dbl&gt; 1.337, 1.337, 1.337, 1.337, 1.337, …
+## $ gdp_per_capita                     &lt;dbl&gt; 1803.987, 1803.987, 1803.987, 1803.…
+## $ extreme_poverty                    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ cardiovasc_death_rate              &lt;dbl&gt; 597.029, 597.029, 597.029, 597.029,…
+## $ diabetes_prevalence                &lt;dbl&gt; 9.59, 9.59, 9.59, 9.59, 9.59, 9.59,…
+## $ female_smokers                     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ male_smokers                       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ handwashing_facilities             &lt;dbl&gt; 37.746, 37.746, 37.746, 37.746, 37.…
+## $ hospital_beds_per_thousand         &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, …
+## $ life_expectancy                    &lt;dbl&gt; 64.83, 64.83, 64.83, 64.83, 64.83, …
+## $ human_development_index            &lt;dbl&gt; 498, 498, 498, 498, 498, 498, 498, …
+## $ month                              &lt;date&gt; 2020-01-01, 2020-01-01, 2020-01-01…
+```
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Descripción univariada
+
+
+---
+##Histogramas
+
+
+.pull-left[
+
+```r
+covid_data %&gt;% filter(location=="Italy") %&gt;% 
+  ggplot(aes(x=new_deaths_smoothed_per_million)) +
+* geom_histogram()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-hist1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+##Histogramas
+
+
+.pull-left[
+
+```r
+covid_data %&gt;% filter(location=="Italy") %&gt;%
+  ggplot(aes(x=new_deaths_smoothed_per_million)) +
+* geom_histogram(binwidth = 100)
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-hist2-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Gráfico de densidad
+
+.pull-left[
+
+```r
+covid_data %&gt;% filter(location=="Italy") %&gt;% 
+  ggplot(aes(
+    x=new_deaths_smoothed_per_million
+    )) +
+* geom_density()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-dens1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Gráfico de densidad
+
+.pull-left[
+
+```r
+covid_data %&gt;% 
+  filter(continent=="South America") %&gt;%
+  ggplot(aes(
+    x=new_deaths_smoothed_per_million,
+*   group=location,
+*   colour=location)) +
+  geom_density() +
+* scale_x_sqrt()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-dens2-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Gráfico de densidad
+
+.pull-left[
+
+```r
+covid_data %&gt;% 
+  filter(continent=="South America") %&gt;%
+  ggplot(aes(
+    x=new_deaths_smoothed_per_million,
+*   fill=location,
+    group=location, 
+    colour=location)) +
+* geom_density(alpha=0.1, adjust = 10) +
+  scale_x_sqrt()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-dens3-out-1.png)&lt;!-- --&gt;
+]
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Descripción bivariada
+
+---
+## Scatterplot
+
+.pull-left[
+
+```r
+covid_data %&gt;% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million
+    )) +
+  geom_point(alpha=0.1) 
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-points1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Scatterplot
+
+.pull-left[
+
+```r
+jitter &lt;- position_jitter(
+* width = 5, height = 15)
+
+covid_data %&gt;% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million
+    )) +
+* geom_point(alpha=0.05, position = jitter)
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-points2-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Barras
+
+.pull-left[
+
+```r
+covid_data %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million
+    )) +
+* geom_col()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-col1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Barras
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+*   group=continent,
+*   fill=continent)) +
+* geom_col()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-col2-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Lineas
+
+.pull-left[
+
+```r
+covid_data %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million
+    )) +
+* geom_line()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-line1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Lineas
+
+.pull-left[
+
+```r
+covid_data %&gt;% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+*   group=location,
+*   colour=location)) +
+  geom_line() 
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-line2-out-1.png)&lt;!-- --&gt;
+]
+
+
+---
+## Lineas
+
+.pull-left[
+
+```r
+covid_data %&gt;% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+*   group=location,
+*   colour=location)) +
+* geom_line(alpha=0.5) +
+* theme(legend.position = "none")
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-line3-out-1.png)&lt;!-- --&gt;
+]
+
+
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+
+```r
+covid_data %&gt;%
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million
+    )) +
+* geom_smooth(se=F)
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-smooth1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+*   group=continent,
+*   colour=continent)) +
+  geom_smooth(se=F) 
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-smooth2-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+
+```r
+covid_data  %&gt;%
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=continent,
+    colour=continent)) +
+* geom_point(size=0.7, alpha=0.03) +
+  geom_smooth(se=F) 
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-smooth4-out-1.png)&lt;!-- --&gt;
+]
+
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=continent,
+    colour=continent)) +
+* geom_smooth(aes(
+*   x=date,
+*   y=total_deaths_per_million,
+*   group=location),
+*   colour="grey",
+*   size=0.7, alpha=0.01) +
+  geom_smooth(se=F) 
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-smooth3-out-1.png)&lt;!-- --&gt;
+]
+
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Facets
+
+
+---
+## Facets
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+*   group=location,
+*   colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none")
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-facet1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Facets
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+* facet_grid( . ~ continent )
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-facet2-out-1.png)&lt;!-- --&gt;
+]
+
+
+---
+## Facets
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+* facet_grid( continent ~ . )
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-facet3-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Facets
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+* facet_wrap( continent ~ . )
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-facet4-out-1.png)&lt;!-- --&gt;
+]
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Persanolización de apariencia
+
+---
+## Etiquetas
+
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+*   x="fecha",
+*   y= "total muertes por millon de habitantes",
+*   title = "Evolución de muertes por covid-19 por región"
+  )
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-lab1-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Rango de ejes
+
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+* ylim(0,1500)
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-lab2-out-1.png)&lt;!-- --&gt;
+]
+
+
+
+---
+## Theme
+
+
+.pull-left[
+
+```r
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+* theme_bw()
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-theme1-out-1.png)&lt;!-- --&gt;
+]
+
+
+---
+## Palette
+
+.pull-left[
+
+```r
+*library("viridis")
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+* scale_color_viridis(discrete=TRUE)
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-palette2-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Palette
+
+.pull-left[
+
+```r
+*library("viridis")
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_viridis(discrete=TRUE,
+*                     option="magma")
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-palette3-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Palette
+
+.center[![wa1](images/wa1.jpg)]
+
+---
+## Palette
+
+.center[![wa1](images/wa2.webp)]
+
+---
+## Palette: Wes Andersen
+
+.center[![wa1](images/wa3.webp)]
+
+---
+## Palette: 
+`library("wesanderson")`
+.center[![wa1](images/wa4.jpg)]
+
+---
+## Palette
+
+.pull-left[
+
+```r
+*library("wesanderson")
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_manual(
+*   values = wes_palette("BottleRocket1"))
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-palette1-out-1.png)&lt;!-- --&gt;
+]
+
+
+---
+## Palette
+
+.pull-left[
+
+```r
+*library("wesanderson")
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_manual(
+*   values = wes_palette("Zissou1", 6, type = "continuous"))
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-palette4-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Palette
+
+.pull-left[
+
+```r
+*library("wesanderson")
+covid_data  %&gt;% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_manual(
+*   values = wes_palette("Darjeeling2", 6, type = "continuous"))
+```
+]
+
+--
+.pull-right[
+![](class_12_files/figure-html/gg-palette5-out-1.png)&lt;!-- --&gt;
+]
+
+
+
+---
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+.huge[#R se aprende]
+.huge[#usando y]
+.huge[#preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, middle
+
+Presentación y código en GitHub: &lt;https://github.com/mebucca/dar_soc4001&gt;
+
+---
+class: inverse, center, middle
+
+.huge[
+**Gracias!**
+]
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

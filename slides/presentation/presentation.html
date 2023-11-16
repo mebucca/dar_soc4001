@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R, el idioma no oficial de la ciencia de datos</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R, el idioma no oficial de la ciencia de datos
+## Herramientas para extracción, manipulación y visualización de datos
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+
+---
+
+class: inverse, center, middle
+
+
+## Datos: abudantes y complejos
+
+---
+class: center, middle 
+
+
+![data_everywhere](images/data_everywhere.jpg)
+
+
+
+---
+## Nuevas formas de datos requieres nuevas herramientas de análisis
+
+.pull-left[
+&lt;br&gt;
+
+- Orden de *magnitud* sin precedente: "big-data"
+
+&lt;br&gt;
+
+- Nuevas *fuentes*: encuestas, registros, webpages, "digital traces"
+
+&lt;br&gt;
+
+- Nuevos *formatos*: datos no-estructurados, texto, imágenes, datos relacionales (network data).
+
+]
+
+.img-right2[
+![css_nature](images/css_nature.png)
+]
+
+---
+class: inverse, center, middle
+
+## Data Science Workflow
+
+&lt;br&gt;
+--
+
+###Extraer
+--
+
+###Procesar
+
+--
+###Comunicar
+
+
+
+---
+
+## Extraer
+
+.pull-left[
+&lt;br&gt;
+
+- Tradicionalmente, recolección manual de datos (encuestas). Previo al trabajo de procesamiento.
+
+- Crecientemenete, recolección automatizada de datos no estructurados
+
+- Web-scraping o web-harvesting: recolección automatizada de datos desde la web
+
+]
+
+
+.pull-right[
+![harvest](images/harvest.jpg)
+]
+
+---
+## Procesar
+
+
+- Limpiar, modificar, reformatear, crear
+
+
+![data_wrangling](images/data_wrangling.jpg)
+
+---
+## Comunicar
+
+.pull-left[
+
+- Visualización: `ggplot()`
+
+- Reportes y presentaciones automatizadas: `Rmarkdown`,`Xaringan`
+
+
+- Publicaciones científicas: integración con `\(\LaTeX\)`
+
+]
+
+
+.img-right3[
+![network_graph](images/covid.png)
+]
+
+---
+class: inverse, center, middle
+
+## Un ejemplo, manos a la obra
+---
+## Datos sobre presidentes de Chile en Wikipedia
+![nyt](images/wiki.png)
+
+
+---
+## Más allá de "copy-paste"
+
+![nyt](images/wiki_code.png)
+---
+## Extraer
+
+
+
+
+
+```r
+*pagina &lt;- read_html("https://es.wikipedia.org/wiki/Anexo:Presidentes_de_Chile")
+```
+
+--
+
+
+```
+## {html_document}
+## &lt;html class="client-nojs" lang="es" dir="ltr"&gt;
+## [1] &lt;head&gt;\n&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8 ...
+## [2] &lt;body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-104 ns-subjec ...
+```
+
+
+---
+## Extraer
+
+
+
+
+
+```r
+presidentes &lt;- pagina %&gt;%
+* html_node(xpath = "/html/body/div[3]/div[3]/div[5]/div[1]/table[3]") %&gt;%
+  html_table() %&gt;% select(1,3,4,5,7) %&gt;% 
+  as_tibble(.name_repair = ~ c("mandato","presidente","inicio","fin","partido"))
+```
+
+.img-right4[
+![nyt](images/scraping.png)
+]
+
+
+
+--
+
+
+```
+## # A tibble: 78 × 5
+##    mandato                presidente        inicio      fin        partido      
+##    &lt;chr&gt;                  &lt;chr&gt;             &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;        
+##  1 Presidente Interino d… Manuel Blanco En… 9 de julio… 9 de sept… "Independien…
+##  2 Vicepresidente Interi… Agustín Eyzaguir… 9 de septi… 25 de ene… "Independien…
+##  3 Presidente Provisiona… Ramón Freire Ser… 25 de ener… 15 de feb… "Pipiolo"    
+##  4 Presidente de la Repú… Ramón Freire Ser… 15 de febr… 8 de mayo… "Pipiolo"    
+##  5 Vicepresidente de la … Francisco Antoni… 8 de mayo … 16 de jul… "Pipiolo"    
+##  6 Presidente Delegado    Francisco Ramón … 16 de juli… 19 de oct… "Pipiolo"    
+##  7 Presidente de la Repú… Francisco Antoni… 19 de octu… 2 de novi… "Pipiolo"    
+##  8 Vicepresidente de la … Francisco Ramón … 2 de novie… 7 de novi… "Pipiolo"    
+##  9 Presidente de la Junt… Ramón Freire Ser… 7 de novie… 8 de novi… "Pipiolo"    
+## 10 Vicepresidente de la … Francisco Ramón … 8 de novie… 7 de dici… "Pipiolo"    
+## # … with 68 more rows
+```
+
+---
+## Procesar 
+
+
+```r
+presidentes &lt;- presidentes  %&gt;%
+  filter(grepl("Presidente de la República|Presidenta de la República", mandato)) %&gt;% 
+  separate(inicio, into=c("fecha","inicio"), - 4, convert = T) %&gt;% select(-fecha,) %&gt;% 
+  mutate(n=1)  %&gt;% arrange(inicio) %&gt;% group_by(partido) %&gt;% mutate(csum_pres = cumsum(n), ultimo=last(inicio)) 
+```
+
+
+
+
+--
+
+
+```
+## # A tibble: 40 × 7
+## # Groups:   partido [14]
+##    presidente                   inicio   fin partido          n csum_pres ultimo
+##    &lt;chr&gt;                         &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;  &lt;int&gt;
+##  1 Ramón Freire Serrano           1827  1827 Pipiolo          1         1   1829
+##  2 Francisco Antonio Pinto Díaz   1829  1829 Pipiolo          1         2   1829
+##  3 Joaquín Prieto                 1831  1836 PelucónCons…     1         1   1836
+##  4 Joaquín Prieto                 1836  1841 PelucónCons…     1         2   1836
+##  5 Manuel Bulnes                  1841  1846 Conservador      1         1   1851
+##  6 Manuel Bulnes                  1846  1851 Conservador      1         2   1851
+##  7 Manuel Montt Torres            1851  1856 Conservador      1         3   1851
+##  8 Manuel Montt Torres            1856  1861 Nacional         1         1   1906
+##  9 José Joaquín Pérez Mascayano   1861  1866 Nacional         1         2   1906
+## 10 José Joaquín Pérez Mascayano   1866  1871 Nacional         1         3   1906
+## # … with 30 more rows
+```
+
+---
+## Comunicar
+
+
+
+```r
+presidentes %&gt;% 
+* ggplot(aes(x=inicio, y=csum_pres, color=reorder(partido, ultimo))) +
+  geom_point() + geom_line() +
+  labs(x="Año", y="Número acumulado de Presidentes", colour="Partido/Coalición") +
+  scale_color_manual(values=as.vector(stepped3(16))) + dark_theme_grey()
+```
+
+--
+.center[
+![](presentation_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+]
+
+---
+## ¿Por qué automatizar algo que puedo hacer manualmente?
+
+--
+
+&lt;br&gt;
+
+.pull-left[
+- Eficiencia (o factibilidad!)
+
+
+- Fiabilidad 
+
+
+- Reproducibilidad
+
+
+- Transparencia
+
+]
+
+.img-right2[
+![automation](images/automation.jpg)
+]
+
+---
+class: inverse, center, middle
+
+## ¿Por qué R?
+
+
+---
+class: middle
+##R es lingua franca de la ciencia de datos
+
+.center[
+![r_nyt](images/r_nyt.png)
+]
+
+---
+## Ventajas de R
+
+--
+
+- Código libre y abierto
+
+--
+
+- En desarrollo constante 
+
+--
+
+- Flexible. Se amplia fácilmente a través de _paquetes_ desarrollado por usuarios
+
+--
+
+- Comunidad activa y robusta
+
+
+--
+
+- Entre las herramientas informáticas mejor pagadas del mercado
+
+---
+## R entre analistas de datos
+![R in the market](images/R_datascience.png)
+
+---
+
+## R en la academia
+
+![R in the market](images/R_publications.png)
+
+---
+## ¿Y los otros?
+
+.img-center[
+![softwares](images/softwares.png)
+]
+
+--
+
+
+- R combina lo mejor de varios mundos
+
+
+---
+class: inverse, center, middle
+
+## Diplomado en WebScraping y visualización de datos sociales en R
+
+
+&lt;br&gt;
+###Extraer: (Curso 3) "Webscraping y Acceso a Datos desde la Web"
+--
+
+###Procesar: (Curso 1) "Procesamiento Avanzado de Bases de Datos en R"
+
+--
+###Comunicar:(Curso 2) "Visualización de Datos usando R"
+
+
+---
+class: inverse, center, middle
+
+.huge[
+**Muchas gracias!**
+]
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

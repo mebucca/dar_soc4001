@@ -1,0 +1,465 @@
+---
+title: "Probabilidad e Inferencia Estadística"
+subtitle: "#5: Momentos de una distribución"
+author: "<br> Mauricio Bucca <br> [github.com/mebucca](https://github.com/mebucca) <br> mebucca@uc.cl"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["gentle-r.css","xaringan-themer.css"]
+    df_print: default
+    nature:
+      ratio: 16:9
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: true
+      slideNumberFormat: "%current%"
+editor_options: 
+  
+  chunk_output_type: console
+runtime: shiny
+---  
+
+class:  fullscreen, center, middle
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(tidyverse)
+library(xaringanthemer)
+style_duo_accent(primary_color = "#4953A6", secondary_color = "#FFD58D" ,
+                 background_color = "#f8f7f3",
+                 header_font_google = google_font("Archivo"),
+                 text_font_google   = google_font("Inconsolata"), 
+                 link_color="#DF484C"
+
+)
+```
+
+
+![mometos](momentos.jpg)
+---
+class: inverse, center, middle
+
+#Primer momento
+##Valor Esperado
+
+---
+## Valor Esperado
+
+El valor esperado de una variable es el análogo teórico de un promedio. Los posibles valores de la variable se ponderan por su probabilidad de ocurrencia. En el caso de variables discretas:
+
+<br>
+--
+
+\begin{align}
+\mathbb{E}(X) &= \sum_{i} x_{i} \times \mathbb{P}(X=x_{i}) \\
+&\equiv  \sum_{i} x_{i} \times f(x_{i})
+\end{align}
+
+<br>
+--
+Es teórico porque esta información la podemos saber *a priori*, sin necesidad de datos. 
+
+--
+
+Análogamente, para variables continuas:
+
+\begin{align}
+\mathbb{E}(X) =  \int x f(x)dx
+\end{align}
+
+---
+## Valor Esperado, variable discreta
+
+Por ejemplo, supongamos que $Y$ es una variable que resulta de tirar un dado "justo".  ¿Cuál es el valor esperado de $Y$?
+
+<br>
+--
+
+\begin{align}
+\mathbb{E}(Y) &= \sum_{i}y_{i} \times \mathbb{P}(Y=y_{i})  \\ \\
+     &=  1 \times  \frac{1}{6}+ 2 \times \frac{1}{6} + \dots + 6 \times \frac{1}{6}  \\ \\
+     &= 3.5
+\end{align}
+
+
+---
+## Valor Esperado, variable continua
+
+
+<iframe src="https://mebucca.shinyapps.io/class_5/" style="width: 100%; height: 600px;"></iframe>
+
+
+
+---
+## Valor Esperado, algunas propiedades útiles  
+
+<br>
+--
+
+1) El valor esperado de una constante es una constante.
+
+$$\mathbb{E}(c)=c$$
+<br>
+--
+
+2) Si $X$ es una variable aleatoria y $c$ una constante, entonces 
+
+$$\mathbb{E}(c X)= c \mathbb{E}(X)$$
+<br>
+--
+
+3) Si $X$ e $Y$ son variables aleatorias (sin importar si $X \bot Y$ o no), entonces
+
+$$\mathbb{E}(X + Y)=  \mathbb{E}(X) + \mathbb{E}(Y)$$
+
+
+---
+## Valor Esperado, ejemplo
+
+Por ejemplo, supongamos que $X_{i}$ es la variable que resulta de tirar un dado "justo". Participamos de un concurso que consiste en tirar el mismo dado 10 veces. El premio (G) es $ $1000$ de base, más el resultado de cada dado $i$ multiplicado por 100.
+--
+
+ ¿Cuánto es el premio esperado?
+
+--
+
+.center[
+```{r, echo=FALSE, fig.height=6, fig.width=10, message=FALSE, warning=FALSE}
+library("tidyverse")
+
+library("tidyverse")
+
+n <- 10  # Number of dice rolls
+simulations <- 10000  # Number of times to simulate the game
+
+# Simulate rolling a die n times, for 'simulations' times
+set.seed(123)  # For reproducibility
+results <- replicate(simulations, sum(sample(1:6, n, replace = TRUE)))
+
+# Calculate the prize for each simulation
+prizes <- 1000 + 100 * results
+
+# Create data frame for plotting
+df <- tibble(prize = prizes)
+
+# Calculate mean and standard deviation of the prizes
+mean_prize <- mean(prizes)
+std_dev <- sd(prizes)
+
+# Bar plot of prizes
+plot <- ggplot(df, aes(x = prize)) +
+  geom_bar(aes(y = ..prop..), fill = "#FFD58D", color = "black", width = 100) +
+  
+  # Add a dashed line for the mean
+  geom_vline(aes(xintercept = mean_prize), linetype="dashed", size = 1) +
+  
+  # Add a text label with the Greek letter µ for the mean
+  annotate("text", x = mean_prize + 150, y = 0.075, label = expression(mu), size = 5) +
+  labs(y = "P(Premio = x)", x = "Monto del Premio ($)", title = "Distribución del premio") +
+  
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(size = 22),
+    axis.text.x = element_text(size = 22),
+    axis.title.y = element_text(size = 24),
+    axis.title.x = element_text(size = 24),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)
+  )
+
+print(plot)
+
+
+```
+]
+
+---
+
+## Valor Esperado, ejemplo
+
+Por ejemplo, supongamos que $X_{i}$ es la variable que resulta de tirar un dado "justo". Participamos de un concurso que consiste en tirar el mismo dado 10 veces. El premio (G) es $ $1000$ de base, más el resultado de cada dado $i$ multiplicado por 100. ¿Cuánto es el premio esperado?
+
+<br>
+--
+
+$$G = 1000 + \sum^{n=10}_{i=1} X_{i} \times 100 \quad \text{ por tanto,}$$
+
+--
+
+$$\mathbb{E}(G) = \mathbb{E}(1000 + \sum^{n=10}_{i=1} X_{i} \times 100)$$
+
+--
+
+$$\mathbb{E}(G) = 1000 + 100 \times \sum^{n=10}_{i=1}\mathbb{E}(X_{i})$$
+
+--
+
+$$\mathbb{E}(G) = 1000 + 10 (3.5 + 3.5 + \dots + 3.5)) = 1000 + 100 \times 10 \times 3.5 = \$4500$$ 
+
+---
+## Valor Esperado de variables discretas
+
+###  Bernoulli
+
+Si X es una variable Bernoulli, su valor esperado viene dado por:
+
+<br>
+
+\begin{align}
+\mathbb{E}(X) = \sum_{i} x_{i} \times \mathbb{P}(X=x_{i}) &= \sum_{i} x_{i} \times p^{x_{i}}(1-p)^{1 - x_{i}} \\ 
+     &= 1 \times p + 0 \times (1-p) \\ 
+     &= p
+\end{align}
+
+--
+### Binomial
+
+Si X es una variable Binomial, su valor esperado viene dado por:
+
+\begin{align}
+\mathbb{E}(X) = np
+\end{align}
+
+--
+.bold[Pregunta]: ¿Cuántas "Caras" debo esperar si tiro 200 monedas "justas"?
+
+--
+
+.bold[Respuesta]: $np = 200 \times 0.5 = 100$
+
+
+
+---
+class: inverse, center, middle
+
+#Segundo momento
+##Varianza
+
+
+---
+## Varianza 
+
+La varianza de una variable aleatoria es el análogo teórico de la varianza de los datos.
+--
+ Mide cuánta dispersión existe en torno al centro (la media). Formalmente, en el caso de variables aleatorias discretas:
+
+<br>
+
+$$\mathbb{Var}(X) = \sum_{i} \bigg( x_{i} - \mathbb{E}(X) \bigg)^{2} \times f_{X}(x_{i})$$
+<br>
+--
+
+Análogamente, para variables continuas:
+
+\begin{align}
+\mathbb{Var}(X) =  \int \bigg(x -  \mathbb{E}(X)\bigg)^{2} f(x)dx
+\end{align}
+
+---
+## Varianza
+Por ejemplo, si $Y$ es una variable que resulta de tirar un dado "justo", ¿cuál es la varianza de $Y$?
+
+<br>
+--
+
+\begin{align}
+\mathbb{Var}(Y) &= \sum_{i} \bigg( y_{i} - \mathbb{E}(Y) \bigg)^{2} \times f_{Y}(y_{i})   \\ \\
+     &=  (1 - 3.5)^{2} \times  \frac{1}{6} + (2-3.5)^{2} \times \frac{1}{6} + \dots + (6-3.5)^{2} \times \frac{1}{6}  \\ \\
+     &= 2.91
+\end{align}
+
+
+---
+## Varianza, algunas propiedades útiles  
+
+
+<br>
+--
+
+1) La varianza de una constante es cero.
+
+<br>
+
+$$\mathbb{Var}(c)=0$$
+
+<br>
+--
+
+2) Si $X$ es una variable aleatoria y $c$ una constante, entonces 
+
+<br>
+
+$$\mathbb{Var}(c X)= c^{2} \mathbb{Var}(X)$$
+
+<br>
+--
+
+3) Si $X$ e $Y$ son dos variables aleatorias .bold[independientes], entonces
+
+<br>
+
+$$\mathbb{Var}(X \pm Y) =  \mathbb{Var}(X) + \mathbb{Var}(Y)$$
+
+
+---
+## Varianza, ejemplo  
+
+Por ejemplo, supongamos que $X_{i}$ es la variable que resulta de tirar un dado "justo". Participamos de un concurso que consiste en tirar el mismo dado 10 veces. El premio (G) es $ $1000$ de base, más el resultado de cada dado $i$ multiplicado por 100.
+--
+
+ ¿Cuánto es la desviación estándar del premio?
+
+--
+
+.center[
+```{r, echo=FALSE, fig.height=6, fig.width=10, message=FALSE, warning=FALSE}
+library("tidyverse")
+
+library("tidyverse")
+
+n <- 10  # Number of dice rolls
+simulations <- 10000  # Number of times to simulate the game
+
+# Simulate rolling a die n times, for 'simulations' times
+set.seed(123)  # For reproducibility
+results <- replicate(simulations, sum(sample(1:6, n, replace = TRUE)))
+
+# Calculate the prize for each simulation
+prizes <- 1000 + 100 * results
+
+# Create data frame for plotting
+df <- tibble(prize = prizes)
+
+# Calculate mean and standard deviation of the prizes
+mean_prize <- mean(prizes)
+std_dev <- sd(prizes)
+
+# Bar plot of prizes
+plot <- ggplot(df, aes(x = prize)) +
+  geom_bar(aes(y = ..prop..), fill = "#FFD58D", color = "black", width = 100) +
+  
+  # Add a dashed line for the mean
+  geom_vline(aes(xintercept = mean_prize), linetype="dashed", size = 1) +
+  
+  # Add dashed lines for mean ± 1 standard deviation
+  geom_vline(aes(xintercept = mean_prize - std_dev), linetype="dashed", color = "#4953A6", size = 1) +
+  geom_vline(aes(xintercept = mean_prize + std_dev), linetype="dashed", color = "#4953A6", size = 1) +
+  
+  # Add a text label with the Greek letter µ for the mean
+  annotate("text", x = mean_prize + 150, y = 0.075, label = expression(mu), size = 5) +
+  
+  # Add a text label with the Greek letter σ for the standard deviation
+  annotate("text", x = mean_prize + std_dev + 150, y = 0.075, label = expression(sigma), size = 5, color = "#4953A6") +
+  annotate("text", x = mean_prize - std_dev - 150, y = 0.075, label = expression(-sigma), size = 5, color = "#4953A6") +
+
+  labs(y = "P(Premio = x)", x = "Monto del Premio ($)", title = "Distribución del premio") +
+  
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(size = 22),
+    axis.text.x = element_text(size = 22),
+    axis.title.y = element_text(size = 24),
+    axis.title.x = element_text(size = 24),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)
+  )
+
+print(plot)
+
+
+```
+]
+
+
+---
+## Varianza, ejemplo  
+
+Por ejemplo, supongamos que $X_{i}$ es la variable que resulta de tirar un dado "justo". Participamos de un concurso que consiste en tirar el mismo dado 10 veces. El premio (G) es $ $1000$ de base, más el resultado de cada dado $i$ multiplicado por 100. ¿Cuánto es la desviación estándar del premio?
+
+<br>
+--
+
+$$G = 1000 + \sum^{n=10}_{i=1} X_{i} \times 100 \quad \text{ por tanto,}$$
+
+--
+
+$$\mathbb{Var}(G) = \mathbb{Var}(1000 + \sum^{n=10}_{i=1} X_{i} \times 100)$$
+
+--
+
+$$\mathbb{Var}(G) = \mathbb{Var}(1000) + 100^{2} \times \sum^{n=10}_{i=1}\mathbb{Var}(X_{i})$$
+
+--
+
+$$\mathbb{Var}(G) =  0 +  100^{2} \times 10 \times 2.9167 = \$291,670$$ 
+
+
+<br>
+--
+
+$$\sigma_{G} = \sqrt{0 + 100 \times 100 \times 291,670} = \$ 539.88$$
+
+---
+## Varianza de variables discretas
+
+### Bernoulli
+
+Si X es una variable Bernoulli, su varianza viene dada por:
+
+<br>
+
+\begin{align}
+\mathbb{Var}(X) &= \sum_{i} \bigg( x_{i} - \mathbb{E}(X) \bigg)^{2} \times f(x_{i})  \\ \\
+ &= (1 - \mathbb{E}(X))^{2} \times \mathbb{P}(X=1) + (0 - \mathbb{E}(X))^{2} \times \mathbb{P}(X=0) \\ \\
+ &= (1 - p)^{2} \times p +  (0 - p)^{2} \times (1-p) \\ \\
+ &=p^{2} − p^{3} + p − 2p^{2} + p^{3} \\ \\
+ &=p(1-p)
+\end{align}
+
+---
+## Varianza de variables discretas
+
+### Binomial
+
+Si X es una variable Binomial, su varianza viene dada por:
+
+\begin{align}
+\mathbb{Var}(X) = n \times p(1-p)
+\end{align}
+
+<br>
+--
+.bold[Pregunta]: ¿Cuánta variabilidad debo esperar en el número de "Caras" si tiro 200 monedas "justas"?
+
+--
+
+.bold[Respuesta]: varianza es $n \times p(1-p) = 200 \times 0.5 \times 0.5 = 50$. La desviación estándar es $\sqrt{50} = 7.01$.
+
+---
+## Varianza de variables Binomial
+
+.bold[Ilustración via Monte Carlo simulation]
+
+```{r}
+
+# Repeat experiment of tossing 200 coins 10000 times
+coins200 <- rbinom(10000, size=200, p=0.5)
+glimpse(coins200)
+moments = list(mean=mean(coins200), var=var(coins200))
+print(moments)
+```
+
+
+---
+
+class: inverse, center, middle
+
+.huge[
+**Hasta la próxima clase. Gracias!**
+]
+
+<br>
+Mauricio Bucca <br>
+https://mebucca.github.io/ <br>
+github.com/mebucca
+
+
+
+

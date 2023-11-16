@@ -1,0 +1,883 @@
+---
+title: "Procesamiento avanzado de Bases de Datos en R"
+subtitle: "Visualización de datos con ggplots"
+author: "<br> Mauricio Bucca<br> Profesor Asistente, Sociología UC"
+date: "[github.com/mebucca](https://github.com/mebucca)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["gentle-r.css","xaringan-themer.css"]
+    df_print: default
+    nature:
+      ratio: 16:9
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: true
+      slideNumberFormat: "%current%"
+editor_options: 
+  chunz_output_type: console
+---
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(tidyverse)
+library(xaringanthemer)
+style_duo_accent(primary_color = "#915A88", secondary_color = "#03C631",
+                 background_color = "#f8f7f3",
+                 header_font_google = google_font("Archivo"),
+                 text_font_google   = google_font("Inconsolata"), 
+                 link_color= "#111F47"
+)
+```
+
+## Recapitulación
+<br>
+
+
+- Visualización de datos con tidyverse
+
+  - `ggplot2`
+
+---
+
+## Hoy hablaremos de ...
+<br>
+
+- Más sobre visualización de datos con tidyverse
+
+- `ggplot2`
+
+---
+
+class: center, middle
+
+![](images/tidyverse_packs.png)
+
+
+---
+
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#ggplot2]
+
+---
+## ggplot2: un nueva forma de pensar y visualizar datos
+
+<br>
+
+.pull-left[
+  ![tidyr](images/ggplot2.png)
+]
+
+.pull-right[
+`tidyr` permite:
+
+- "Traduce" datos en elementos visuales 
+
+]
+
+
+---
+## Bases de datos ordenadas ("tidy") 
+
+- El punto de partida de un gráfico en `ggplot` es una base de datos "tidy".
+
+
+
+- Hoy trabajaremos con datos mundiales de COVID (OWID):
+
+```{r, echo=FALSE, message=F, warning=F}
+library("tidyverse")
+library("cowplot")
+library("lubridate")
+
+setwd(
+  "~/Library/Mobile Documents/com~apple~CloudDocs/Teaching/ISUC/2020_2_data_analysis_r/repo/slides/class_12/")
+
+# leer archivo csv
+covid_data <- read_delim("covid_data.csv", delim=";")
+
+covid_data <- covid_data %>% mutate(month = round_date(date, "month"))
+covid_data  %>% glimpse()
+```
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Descripción univariada
+
+
+---
+##Histogramas
+
+
+.pull-left[
+```{r  gg-hist1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% filter(location=="Italy") %>% 
+  ggplot(aes(x=new_deaths_smoothed_per_million)) +
+  geom_histogram() #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-hist1-out, ref.label="gg-hist1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+##Histogramas
+
+
+.pull-left[
+```{r  gg-hist2, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% filter(location=="Italy") %>%
+  ggplot(aes(x=new_deaths_smoothed_per_million)) +
+  geom_histogram(binwidth = 100) #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-hist2-out, ref.label="gg-hist2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+
+```
+]
+
+---
+## Gráfico de densidad
+
+.pull-left[
+```{r  gg-dens1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% filter(location=="Italy") %>% 
+  ggplot(aes(
+    x=new_deaths_smoothed_per_million
+    )) +
+  geom_density() #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-dens1-out, ref.label="gg-dens1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Gráfico de densidad
+
+.pull-left[
+```{r  gg-dens2, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% 
+  filter(continent=="South America") %>%
+  ggplot(aes(
+    x=new_deaths_smoothed_per_million,
+    group=location, #<<
+    colour=location)) + #<<
+  geom_density() +
+  scale_x_sqrt() #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-dens2-out, ref.label="gg-dens2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Gráfico de densidad
+
+.pull-left[
+```{r  gg-dens3, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% 
+  filter(continent=="South America") %>%
+  ggplot(aes(
+    x=new_deaths_smoothed_per_million,
+    fill=location, #<<
+    group=location, 
+    colour=location)) +
+  geom_density(alpha=0.1, adjust = 10) + #<<
+  scale_x_sqrt()
+```
+]
+
+--
+.pull-right[
+```{r  gg-dens3-out, ref.label="gg-dens3", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Descripción bivariada
+
+---
+## Scatterplot
+
+.pull-left[
+```{r  gg-points1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million
+    )) +
+  geom_point(alpha=0.1) 
+```
+]
+
+--
+.pull-right[
+```{r  gg-points1-out, ref.label="gg-points1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Scatterplot
+
+.pull-left[
+```{r  gg-points2, eval=FALSE,warning=FALSE, message=FALSE}
+jitter <- position_jitter(
+  width = 5, height = 15) #<<
+
+covid_data %>% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million
+    )) +
+  geom_point(alpha=0.05, position = jitter)  #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-points2-out, ref.label="gg-points2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Barras
+
+.pull-left[
+```{r  gg-col1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million
+    )) +
+  geom_col() #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-col1-out, ref.label="gg-col1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Barras
+
+.pull-left[
+```{r  gg-col2, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=continent,  #<<
+    fill=continent)) +  #<<
+  geom_col()  #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-col2-out, ref.label="gg-col2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Lineas
+
+.pull-left[
+```{r  gg-line1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million
+    )) +
+  geom_line() #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-line1-out, ref.label="gg-line1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Lineas
+
+.pull-left[
+```{r  gg-line2, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=location, #<<
+    colour=location)) + #<<
+  geom_line() 
+```
+]
+
+--
+.pull-right[
+```{r  gg-line2-out, ref.label="gg-line2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+---
+## Lineas
+
+.pull-left[
+```{r  gg-line3, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=location, #<<
+    colour=location)) + #<<
+  geom_line(alpha=0.5) + #<<
+  theme(legend.position = "none") #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-line3-out, ref.label="gg-line3", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+```{r  gg-smooth1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data %>%
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million
+    )) +
+  geom_smooth(se=F) #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-smooth1-out, ref.label="gg-smooth1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+```{r  gg-smooth2, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=continent, #<<
+    colour=continent)) + #<<
+  geom_smooth(se=F) 
+```
+]
+
+--
+.pull-right[
+```{r  gg-smooth2-out, ref.label="gg-smooth2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+```{r  gg-smooth4, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>%
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=continent,
+    colour=continent)) +
+  geom_point(size=0.7, alpha=0.03) + #<< 
+  geom_smooth(se=F) 
+
+```
+]
+
+--
+.pull-right[
+```{r  gg-smooth4-out, ref.label="gg-smooth4", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+---
+## Smoothing y lineas de regresión
+
+.pull-left[
+```{r  gg-smooth3, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date,
+    y=total_deaths_per_million,
+    group=continent,
+    colour=continent)) +
+  geom_smooth(aes( #<< 
+    x=date,#<< 
+    y=total_deaths_per_million, #<< 
+    group=location), #<< 
+    colour="grey", #<< 
+    size=0.7, alpha=0.01) + #<< 
+  geom_smooth(se=F) 
+
+```
+]
+
+--
+.pull-right[
+```{r  gg-smooth3-out, ref.label="gg-smooth3", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Facets
+
+
+---
+## Facets
+
+.pull-left[
+```{r  gg-facet1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location,  #<< 
+    colour=continent)) + #<< 
+  geom_smooth(se=F) +
+  theme(legend.position = "none")
+```
+]
+
+--
+.pull-right[
+```{r  gg-facet1-out, ref.label="gg-facet1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Facets
+
+.pull-left[
+```{r  gg-facet2, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_grid( . ~ continent ) #<< 
+```
+]
+
+--
+.pull-right[
+```{r  gg-facet2-out, ref.label="gg-facet2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+---
+## Facets
+
+.pull-left[
+```{r  gg-facet3, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_grid( continent ~ . ) #<< 
+```
+]
+
+--
+.pull-right[
+```{r  gg-facet3-out, ref.label="gg-facet3", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Facets
+
+.pull-left[
+```{r  gg-facet4, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) #<< 
+```
+]
+
+--
+.pull-right[
+```{r  gg-facet4-out, ref.label="gg-facet4", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+class: inverse, center, middle
+
+##tidyr::ggplot2()
+
+### Persanolización de apariencia
+
+---
+## Etiquetas
+
+
+.pull-left[
+```{r  gg-lab1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha", #<< 
+    y= "total muertes por millon de habitantes", #<< 
+    title = "Evolución de muertes por covid-19 por región" #<< 
+  )
+```
+]
+
+--
+.pull-right[
+```{r  gg-lab1-out, ref.label="gg-lab1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Rango de ejes
+
+
+.pull-left[
+```{r gg-lab2, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-lab2-out, ref.label="gg-lab2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+
+---
+## Theme
+
+
+.pull-left[
+```{r  gg-theme1, eval=FALSE,warning=FALSE, message=FALSE}
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-theme1-out, ref.label="gg-theme1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+---
+## Palette
+
+.pull-left[
+```{r  gg-palette2, eval=FALSE,warning=FALSE, message=FALSE}
+library("viridis") #<<
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_viridis(discrete=TRUE) #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-palette2-out, ref.label="gg-palette2", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Palette
+
+.pull-left[
+```{r  gg-palette3, eval=FALSE,warning=FALSE, message=FALSE}
+library("viridis") #<<
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_viridis(discrete=TRUE,
+                      option="magma") #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-palette3-out, ref.label="gg-palette3", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Palette
+
+.center[![wa1](images/wa1.jpg)]
+
+---
+## Palette
+
+.center[![wa1](images/wa2.webp)]
+
+---
+## Palette: Wes Andersen
+
+.center[![wa1](images/wa3.webp)]
+
+---
+## Palette: 
+`library("wesanderson")`
+.center[![wa1](images/wa4.jpg)]
+
+---
+## Palette
+
+.pull-left[
+```{r  gg-palette1, eval=FALSE,warning=FALSE, message=FALSE}
+library("wesanderson") #<<
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_manual(
+    values = wes_palette("BottleRocket1")) #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-palette1-out, ref.label="gg-palette1", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+---
+## Palette
+
+.pull-left[
+```{r  gg-palette4, eval=FALSE,warning=FALSE, message=FALSE}
+library("wesanderson") #<<
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_manual(
+    values = wes_palette("Zissou1", 6, type = "continuous")) #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-palette4-out, ref.label="gg-palette4", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+---
+## Palette
+
+.pull-left[
+```{r  gg-palette5, eval=FALSE,warning=FALSE, message=FALSE}
+library("wesanderson") #<<
+covid_data  %>% 
+  ggplot(aes(
+    x=date, 
+    y=total_deaths_per_million, 
+    group=location, 
+    colour=continent)) +
+  geom_smooth(se=F) +
+  theme(legend.position = "none") +
+  facet_wrap( continent ~ . ) +
+  labs(
+    x="fecha",  
+    y= "total muertes por millon de habitantes", 
+    title = "Evolución de muertes por covid-19 por región" 
+  ) +
+  ylim(0,1500) +
+  theme_bw() +
+  scale_color_manual(
+    values = wes_palette("Darjeeling2", 6, type = "continuous")) #<<
+```
+]
+
+--
+.pull-right[
+```{r  gg-palette5-out, ref.label="gg-palette5", echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```
+]
+
+
+
+---
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+.huge[#R se aprende]
+.huge[#usando y]
+.huge[#preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, middle
+
+Presentación y código en GitHub: <https://github.com/mebucca/dar_soc4001>
+
+---
+class: inverse, center, middle
+
+.huge[
+**Gracias!**
+]
+
+<br>
+Mauricio Bucca <br>
+https://mebucca.github.io/ <br>
+github.com/mebucca
+
+
+
+
+
