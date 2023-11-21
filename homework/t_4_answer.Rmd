@@ -1,8 +1,10 @@
 ---
 title: "Tarea 4"
 output:
-  pdf_document: default
+  html_document:
+    df_print: paged
   word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -46,7 +48,7 @@ Usando `Rmarkdown`, produce un reporte lo más parecido posible al documento que
 
 La figura a continuación usa un `theme` y una paleta de colores de tu preferencia. **Pista**: mi paleta de colores está definida por la siguiente linea de código: `scale_color_viridis(trans = "date", option = "plasma")` y mi theme es `dark_theme_gray()`, del paquete `library("ggdark")`. Ambos ejes están graficados en escala log10.
 
-```{r, echo=F, message=F,warning=F}
+```{r, echo=T, message=F,warning=F}
 plot <- covid_data  %>% filter(continent=="Europe") %>%
   ggplot(aes(x=new_cases_smoothed_per_million, y=new_deaths_smoothed_per_million, colour=date)) + 
   geom_point(alpha=0.1) +
