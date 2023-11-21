@@ -4,7 +4,7 @@ Este repositorio contiene el material del curso SOC4001 Procesamiento Avanzado d
 Encuentra también aquí una presentación sobre el rol de `R` como *lingua franca* de la ciencia de datos: [`[Slides]`](https://mebucca.github.io/dar_soc4001/slides/presentation/presentation#1) [`[.Rmd]`](slides/presentation/presentation.Rmd). 
 
 
-![useR](files/useR.png)
+![useR](files/ExP27umWgAAo6qT.jpg)
 
 ---
 ## Calendario
