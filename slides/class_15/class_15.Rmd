@@ -2,11 +2,11 @@
 title: "Procesamiento avanzado de Bases de Datos en R"
 subtitle: "Reportes automatizados con RMarkdown"
 author: "<br> Mauricio Bucca<br> Profesor Asistente, Sociología UC"
-date: "[github.com/mebucca](https://github.com/mebucca)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: ["default","default-fonts","gentle-r.css"]
+    css: ["gentle-r.css","xaringan-themer.css"]
     df_print: default
     nature:
       ratio: 16:9
@@ -15,22 +15,37 @@ output:
       countIncrementalSlides: true
       slideNumberFormat: "%current%"
 editor_options: 
-  chunk_output_type: console
+  chunz_output_type: console
+---  
+class: inverse, center, middle
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(tidyverse)
+library(xaringanthemer)
+style_duo_accent(primary_color = "#A0522D", secondary_color = "#ADD8E6",
+                 background_color = "#f8f7f3", 
+                 header_font_google = google_font("Archivo"),
+                 text_font_google   = google_font("Inconsolata"), 
+                 link_color= "#DAA520"
+
+)
+
+options(scipen = 999)
+
+```
+
+#Reportes automatizados con RMarkdown
+
 ---
-layout: false
-
-
 ## Recapitulación
 
 <br>
 
-Introducción a simulación e inferencia estadística: 
+  - Iteraciones
 
-  - Variables aleatorias y simulación
+  - Programación funcional con `purrr`
   
-  - Concepto de "sampling distribution"
   
-  - Inferencia via simulación
 
 ---
 
@@ -49,7 +64,8 @@ class: fullscreen, left, middle, text-black
 background-image: url("images/typewriter.jpg")
 
 .huge[#Reportes]
-.huge[#automatizados]
+.huge[#automa]
+.huge[#tizados]
 
 ---
 
@@ -603,9 +619,11 @@ Presentacióny código en GitHub: <https://github.com/mebucca/data-analysis-in-R
 ---
 class: inverse, center, middle
 
-.huge[
-**Gracias!**
-]
+
+
+##Gracias!
+
+
 
 <br>
 Mauricio Bucca <br>
