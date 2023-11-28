@@ -1,7 +1,7 @@
 ---
 title: 'Una nueva teoría sobre la vida en Austria'
 author: "Mauricio Bucca"
-date: "10 de Noviembre 2021"
+date: "`r Sys.Date()`"
 output:
   pdf_document: default
   word_document: default
@@ -9,7 +9,9 @@ output:
     df_print: paged
 ---
 
-```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+# Reporte sobre mi experiencia en Austria
+
+```{r setup, eval=T, echo=FALSE, message=FALSE, warning=FALSE}
 # Carga paquetes
 library("haven")
 library("tidyverse")
@@ -32,9 +34,14 @@ setwd(dirreport)
 
 ## Introducción
 
-Diferentes autores han argumentado que la vida en Austria se reduce a pasear por las calles de Viena, tomar café y comer torta Sacher (Urbina 2019). La figura a continuación ilustran este argumento. 
+```{r, echo=F}
+#comentario
+```
 
-![Torta Sacher](sacher.jpg)
+Diferentes autores han argumentado que la vida en Austria se reduce a pasear por las calles de Viena, tomar café y comer torta Sacher (Urbina 2019). La figura a continuación ilustran este argumento. Este documento no es real. Sólo busca ilustrar el uso de `Rmarkdown` a los estudiantes del diplomado.
+
+
+![torta](sacher.jpg)
 
 Alternativamente:
 ```{r, eval=FALSE}
@@ -45,28 +52,21 @@ Alternativamente:
 \end{figure}
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-El presente artículo, basado en teorías recientes en literatura de economía institucional (Aranzaes y Deneken 2021), busca testear la siguiente hipótesis complementaria: para entender la vida en Austria hay que considerar elementos adicionales, no reductibles a consideraciones estéticas de sus ciudades, la oferta de bebidas calientes y la calidad de la repostería local. Formalmente, nuestro modelo puede ser escrito de la siguiente manera:
-=======
+
 El presente artículo, basado en teorías recientes en literatura de economía institucional (Aranzaes y Deneken 2020), busca testear la siguiente hipótesis complementaria: para entender la vida en Austria hay que considerar elementos adicionales, no reductibles a consideraciones estéticas de sus ciudades, la oferta de bebidas calientes y la calidad de la repostería local. Formalmente, nuestro modelo puede ser escrito de la siguiente manera:
->>>>>>> master
-=======
-El presente artículo, basado en teorías recientes en literatura de economía institucional (Aranzaes y Deneken 2020), busca testear la siguiente hipótesis complementaria: para entender la vida en Austria hay que considerar elementos adicionales, no reductibles a consideraciones estéticas de sus ciudades, la oferta de bebidas calientes y la calidad de la repostería local. Formalmente, nuestro modelo puede ser escrito de la siguiente manera:
->>>>>>> master
+
+
 
 $$\text{Vida Austria} = \int f(\text{calles Viena},\text{Cafe},\text{Sacher},x)dx$$
 
 donde $x$ es una variable que mide "elementos adicionales", un nuevo concepto acuñado en este artículo.
 
-
 ```{r, echo=FALSE}
 # filtra datos de Austria
-essdata <- essdata %>% filter(cntry =="AT")
+essdata <- essdata %>% filter(cntry =="DE")
 ```
 
 Para testear esta hipótesis usaremos datos para Austria (`cntry=="AT"`) de la encuesta European Social Survey (Wave 8, año 2019). El tamaño de la muestra es N= `r nrow(essdata)`, con `r sum(is.na(essdata$hinctnta))` valores perdidos en la variable ingreso (`hinctnta`) y `r sum(is.na(essdata$eisced))` valores perdidos en la variable educación (`eisced`). La siguiente tabla presenta la distribución conjunta de educación en ingresos:
-
 
 ```{r, echo=FALSE}
 # filtra datos de Austria
@@ -94,7 +94,7 @@ essdata <- essdata %>%
 
 ```
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, message=F, warning=F}
 jitter <- position_jitter(width = 1, height = 0.5)
 
 fig <- essdata %>% filter(age>30) %>% ggplot(aes(x=eisced, y=hinctnta , colour=gndr_string)) +
