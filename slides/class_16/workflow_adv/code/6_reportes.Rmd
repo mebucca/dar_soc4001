@@ -3,7 +3,7 @@ params:
    new_title: "My Title!"
 title: "`r params$new_title`"
 author: "Mauricio Bucca"
-date: "17 de Noviembre 2022"
+date: "28 de Noviembre 2023"
 output:
   word_document: default
 
@@ -46,9 +46,11 @@ Este resumen está basados en los datos correspondientes al país  `r paises_nom
 
 Por las tardes en `r paises_nombres[which(paises==i)]` la gente acostumbra a relajarse de la siguiente manera.
 
+
 ```{r, results = "asis"}
     cat(paste0("![Comida típica de ",paises_nombres[which(paises==i)],"]","(pics/", i, ".jpg)"), "\n")
 ```
+
 
 \newpage
 
