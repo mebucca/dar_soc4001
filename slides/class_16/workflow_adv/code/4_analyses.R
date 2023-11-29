@@ -32,7 +32,7 @@ mi_figura <- essdata_sub %>% filter(age>30) %>% ggplot(aes(x=yrbrn, y=eisced, co
     labs(x="año de nacimento", y="máxima educación alcanzada", colour="genero")
 
 filename <- paste0(dirresults,"mi_figura.pdf") 
-ggsave(filename, mi_figura, width = 25, height = 20, units = "cm") # guarda ggplot en archivo
+ggsave(filename, mi_figura, width = 15, height = 10, units = "cm") # guarda ggplot en archivo
 
 
 

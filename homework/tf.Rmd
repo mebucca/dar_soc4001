@@ -1,0 +1,73 @@
+---
+title: "SOC4001 Procesamiento avanzado de bases de datos en R"
+author: "Trabajo final"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r, echo=FALSE, message=F}
+# Escribir install.packages("tinytex") en la consola para instalar "tinytex"
+# Carga "tinytex" para compilar PDF
+library("tinytex")
+library("tidyverse")
+library("viridis")
+library("ggdark")
+```
+
+Ponderación: 40% de la nota final del curso
+
+
+1) Crea un proyecto (una carpeta) llamado `tf`. Al interior crea las carpetas `datos`, `codigo` y  `resultados`.  
+
+
+2) Al interior de la carpeta `codigo` crear un "master file" con el nombre `0_masterfile.R` Crea además `1_limpieza_datos.R` y `2_analisis.R`. 
+
+
+3) Desde el repositorio Github del Ministerio de la Ciencia descargar la base de datos que da cuenta del número de casos fallecidos en cada una de las comunas de Chile según su residencia. Puedes usar el siguiente código para importar los datos a `R`:
+
+```{r, eval=FALSE}
+library("tidyverse")
+library("readr")
+
+file <- url("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto38/CasosFallecidosPorComuna.csv")
+covid <- read_csv(file)
+```
+Link: [Datos Covid](https://github.com/MinCiencia/Datos-COVID19/blob/master/output/producto38/CasosFallecidosPorComuna.csv)
+
+
+4) Desde la página del Ministerio de Desarrollo Social descarga la Encuesta CASEN 2017: [Datos CASEN 2017](http://observatorio.ministeriodesarrollosocial.gob.cl/encuesta-casen-2017#basedatos)
+
+Guarda los datos en `tf\datos\`
+
+5) En base a los datos de la encuesta CASEN crea una base a nivel de comunas que contenga las siguiente información: media de edad (`edad`)  por comuna, media de escolaridad por comuna (`esc`) por comuna y media de ingreso total del hogar por comuna (`ytotcorh`).  
+
+6) Junta las bases covid y las bases a nivel de comuna. 
+
+7) Transforma todas las variables de conteo de muertes (`2020-06-12`, `2020-06-15`, ..., `2020-12-28`, etc.) en "muertes por 100 mil habitantes" (ejemplo: `100000*2020-06-12/Poblacion`)
+
+8) Produce el siguiente reporte: [Link](https://github.com/mebucca/dar_soc4001/blob/master/homework/tf_reporte.docx)
+
+
+ - Tablas y figuras deber ser creadas desde el código y almacenadas automáticamente en la carpeta `tf\resultados\`. Para insertar figuras en el reporte `RMarkdown` crea una referencia a la ubicación de éstas en tu computador.
+ 
+ - Ubica las diferentes partes de tu cógigo donde corresponda. La totalidad del código debe ejecutarse en 1-click desde el "master file", almacenando todos los resultados automáticamente en `tf\resultados\`
+
+
+### Ayuda
+
+- Para crear un tabla de resumen estadístico pueder usar la función `stargazer` del paquete `stargazer`. El siguiente código ejemplifica el uso de este comando:
+
+```{r, eval=F}
+stargazer(data, summary.stat = c("n", "mean","median", "sd"), 
+		covariate.labels  = c("nombre_var1", "nombre_var1", .....), 
+		type = "text",
+		out = nombre_archivo_donde_guardar_tabla)
+```
+
+- Nota 2: Para transformar una variable a formato fecha puedes usar código del siguiente tipo:
+
+```{r, eval=F}
+data %>% mutate(var_nueva = as.Date(var_vieja))
+```
