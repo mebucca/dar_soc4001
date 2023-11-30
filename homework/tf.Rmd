@@ -25,16 +25,15 @@ Ponderación: 40% de la nota final del curso
 2) Al interior de la carpeta `codigo` crear un "master file" con el nombre `0_masterfile.R` Crea además `1_limpieza_datos.R` y `2_analisis.R`. 
 
 
-3) Desde el repositorio Github del Ministerio de la Ciencia descargar la base de datos que da cuenta del número de casos fallecidos en cada una de las comunas de Chile según su residencia. Puedes usar el siguiente código para importar los datos a `R`:
+3) Desde el repositorio del curso descargar la base de datos que da cuenta del número de casos fallecidos por cada mil habitantes en cada una de las comunas de Chile según su residencia. Puedes usar el siguiente código para importar los datos a `R`:
 
 ```{r, eval=FALSE}
 library("tidyverse")
 library("readr")
 
-file <- url("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto38/CasosFallecidosPorComuna.csv")
+file <- url("https://raw.githubusercontent.com/mebucca/dar_soc4001/master/data/covid_comunas.csv")
 covid <- read_csv(file)
 ```
-Link: [Datos Covid](https://github.com/MinCiencia/Datos-COVID19/blob/master/output/producto38/CasosFallecidosPorComuna.csv)
 
 
 4) Desde la página del Ministerio de Desarrollo Social descarga la Encuesta CASEN 2017: [Datos CASEN 2017](http://observatorio.ministeriodesarrollosocial.gob.cl/encuesta-casen-2017#basedatos)
@@ -45,9 +44,8 @@ Guarda los datos en `tf\datos\`
 
 6) Junta las bases covid y las bases a nivel de comuna. 
 
-7) Transforma todas las variables de conteo de muertes (`2020-06-12`, `2020-06-15`, ..., `2020-12-28`, etc.) en "muertes por 100 mil habitantes" (ejemplo: `100000*2020-06-12/Poblacion`)
 
-8) Produce el siguiente reporte: [Link](https://github.com/mebucca/dar_soc4001/blob/master/homework/tf_reporte.docx)
+7) Produce el siguiente reporte: [Link](https://github.com/mebucca/dar_soc4001/blob/master/homework/tf_reporte.docx)
 
 
  - Tablas y figuras deber ser creadas desde el código y almacenadas automáticamente en la carpeta `tf\resultados\`. Para insertar figuras en el reporte `RMarkdown` crea una referencia a la ubicación de éstas en tu computador.
