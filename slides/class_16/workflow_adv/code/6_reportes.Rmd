@@ -1,0 +1,68 @@
+---
+params:
+   new_title: "My Title!"
+title: "`r params$new_title`"
+author: "Mauricio Bucca"
+date: "28 de Noviembre 2023"
+output:
+  word_document: default
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.height=6)
+
+# Carga paquetes
+library("haven")
+library("tidyverse")
+library("stargazer")
+library("knitr")
+library("viridis")
+library("xtable")
+library("rmarkdown")
+library("tinytex")
+
+
+setwd(dirdata)
+essdata <- read_dta("ESS8_subset.dta"); essdata
+
+setwd(dircode)
+source("2_exploration.R")
+
+setwd(dircode)
+source("3_recoding.R")
+
+essdata_sub_cntry <- essdata_sub %>% filter(cntry == i)
+
+
+```
+
+## Introducción
+
+
+Este resumen está basados en los datos correspondientes al país  `r paises_nombres[which(paises==i)]`, con N= `r nrow(essdata_sub_cntry)` y `r sum(is.na(essdata_sub_cntry$age))` valores perdidos.
+
+## Marco Teórico
+
+Por las tardes en `r paises_nombres[which(paises==i)]` la gente acostumbra a relajarse de la siguiente manera.
+
+
+```{r, results = "asis"}
+    cat(paste0("![Comida típica de ",paises_nombres[which(paises==i)],"]","(pics/", i, ".jpg)"), "\n")
+```
+
+
+\newpage
+
+## Resultados
+
+La siguiente figura resume nuestros resultados
+
+```{r}
+fig <- essdata_sub_cntry %>% filter(age>30) %>% ggplot(aes(x=yrbrn, y=eisced, colour=gndr_string)) +
+	geom_point(alpha=0.2, position = jitter) +
+	geom_smooth(method="lm",se=F) + 
+  	scale_color_viridis(discrete=TRUE, option="plasma") +
+    labs(x="año de nacimento", y="máxima educación alcanzada", colour="genero")
+print(fig)
+```

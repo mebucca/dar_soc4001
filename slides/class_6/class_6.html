@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Procesamiento avanzado de Bases de Datos en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <script src="libs/header-attrs-2.24/header-attrs.js"></script>
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Procesamiento avanzado de Bases de Datos en R
+]
+.subtitle[
+## Manipulación de bases de datos con tidyverse
+]
+.author[
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+]
+.date[
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+]
+
+---
+
+
+## Recapitulación
+
+
+
+
+&lt;br&gt;
+
+- Universo `tidyverse`
+
+  - Importar datos con `readr`
+  
+  - Bases de datos "modernas" con `tibble`
+  
+  - ordenar, seleccionar, filtrar con`dplyr`
+
+---
+
+## Hoy hablaremos de ...
+
+- Creación y transformación de datos con `dplyr`
+
+- Manipulación de datos agrupados con `dplyr`
+
+- Resumen de datos con `dplyr`
+
+---
+
+class: center, middle
+
+![](images/tidyverse_packs.png)
+
+
+---
+
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+##dplyr
+
+---
+
+## dplyr: herramientas intuitivas para manipulación de datos
+
+&lt;br&gt;
+
+.pull-left[
+  ![dplyr](images/dplyr.png)
+]
+
+.pull-right[
+`dplyr` permite:
+
+- ordenar datos
+
+- filtrar casos 
+
+- seleccionar variables
+
+- __crear y transformar variables__
+
+- agrupar datos
+
+- crear resumen estadísticos
+]
+
+
+---
+class: inverse, center, middle
+
+
+##dplyr::mutate()
+
+
+---
+
+## mutate: creación de datos
+
+La función `mutate()` permite crear y transformar variables. Equivalente a `gen` en `Stata` o `compute` en `Spss`.
+
+Continuando con los datos de la encuesta Casen 2017, esta es la vista no-ordenada de los datos:
+
+--
+
+
+
+
+```r
+library("tidyverse")
+data_casen_csv %&gt;% select(sexo,edad,ytotcor)
+```
+
+```
+## # A tibble: 21,644 × 3
+##     sexo  edad ytotcor
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+##  1     2    15      NA
+##  2     2    59      NA
+##  3     2    33   78327
+##  4     1    47 1508333
+##  5     2    58    1667
+##  6     2     1      NA
+##  7     1    42  270000
+##  8     2    45   44109
+##  9     2    27  433333
+## 10     2    17      NA
+## # ℹ 21,634 more rows
+```
+
+---
+
+## mutate: creación de datos
+
+Supongamos que queremos agregar una variable que indica el año de la encuesta:
+
+--
+
+
+```r
+data_casen_csv %&gt;% select(sexo,edad,ytotcor) %&gt;% mutate(anno = 2017)
+```
+
+```
+## # A tibble: 21,644 × 4
+##     sexo  edad ytotcor  anno
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+##  1     2    15      NA  2017
+##  2     2    59      NA  2017
+##  3     2    33   78327  2017
+##  4     1    47 1508333  2017
+##  5     2    58    1667  2017
+##  6     2     1      NA  2017
+##  7     1    42  270000  2017
+##  8     2    45   44109  2017
+##  9     2    27  433333  2017
+## 10     2    17      NA  2017
+## # ℹ 21,634 more rows
+```
+
+
+---
+
+## mutate: creación de datos
+
+También podemos crear nuevas variables en base a variables existentes:
+--
+
+
+```r
+data_casen_csv %&gt;% select(sexo,edad,ytotcor) %&gt;% mutate(ytotcor_mm = log(ytotcor/1000) + 1)
+```
+
+```
+## # A tibble: 21,644 × 4
+##     sexo  edad ytotcor ytotcor_mm
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1     2    15      NA      NA   
+##  2     2    59      NA      NA   
+##  3     2    33   78327       5.36
+##  4     1    47 1508333       8.32
+##  5     2    58    1667       1.51
+##  6     2     1      NA      NA   
+##  7     1    42  270000       6.60
+##  8     2    45   44109       4.79
+##  9     2    27  433333       7.07
+## 10     2    17      NA      NA   
+## # ℹ 21,634 more rows
+```
+
+---
+## mutate, if_else: creación de datos
+
+También podemos crear nuevas variables en función de valores de variable(s) existente(s).
+--
+ La función `if_else()` es conveniente para casos simples. Por ejemplo:
+
+.pull-left[
+
+```r
+data_casen_csv %&gt;% select(sexo,edad,ytotcor) %&gt;% 
+* mutate(sexo = if_else(sexo==1,1,0))
+```
+
+```
+## # A tibble: 21,644 × 3
+##     sexo  edad ytotcor
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+##  1     0    15      NA
+##  2     0    59      NA
+##  3     0    33   78327
+##  4     1    47 1508333
+##  5     0    58    1667
+##  6     0     1      NA
+##  7     1    42  270000
+##  8     0    45   44109
+##  9     0    27  433333
+## 10     0    17      NA
+## # ℹ 21,634 more rows
+```
+]
+
+--
+
+.pull-right[
+ 
+- Estructura: `if_else(condición, si cumple, si no cumple )`
+ 
+- Notar que es posible reemplazar la variable existente. 
+
+- Lo mismo se podría escribir así:
+
+
+```r
+data_casen_csv %&gt;% select(sexo,edad,ytotcor) %&gt;% 
+* mutate(sexo = if_else(sexo==1,sexo,0))
+```
+
+
+]
+---
+
+## mutate, cases_when: creación de datos
+
+La función `cases_when()` permite crear una nueva variable en base al valor(es) de otra(s) variable(s).
+--
+ Más cómodo que `if_else()` cuando la condición es complexa.
+
+
+```r
+data_casen_csv %&gt;% select(sexo,edad,ytotcor) %&gt;% 
+* mutate(edad_cat = case_when(edad &lt;= 18 ~ 1,
+*                             edad &gt;18 &amp; edad&lt;=65 ~ 2,
+*                             edad &gt; 65  ~ 3)
+                              )
+```
+
+```
+## # A tibble: 21,644 × 4
+##     sexo  edad ytotcor edad_cat
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+##  1     2    15      NA        1
+##  2     2    59      NA        2
+##  3     2    33   78327        2
+##  4     1    47 1508333        2
+##  5     2    58    1667        2
+##  6     2     1      NA        1
+##  7     1    42  270000        2
+##  8     2    45   44109        2
+##  9     2    27  433333        2
+## 10     2    17      NA        1
+## # ℹ 21,634 more rows
+```
+
+---
+
+## mutate, cases_when: creación de datos
+
+- Estructura: `case_when(condición1 ~ valor1, condicion2 ~ valor2, ... )`
+ 
+- Casos que no cumplen ninguna condición son asignados automáticamente como `NA`.
+
+- Asignación de casos que no cumplen ninguna condición se puede controlar: 
+
+
+
+```r
+data_casen_csv %&gt;% select(sexo,edad,ytotcor) %&gt;% 
+  mutate(edad_cat = case_when(edad &lt;= 18 ~ 1,
+                              edad &gt;18 &amp; edad&lt;=65 ~ 2, 
+                              edad &gt; 65  ~ 3, 
+*                             TRUE ~ edad)
+                              )
+```
+
+- En este caso la condición es: casos que no cumplen condición mantienen los valores de la variable original `edad`.
+
+-  Otras funciones útiles aquí: https://dplyr.tidyverse.org/reference/mutate.html
+
+---
+class: inverse, center, middle
+
+##dplyr::group_by()
+
+
+---
+## group_by: operaciones agrupadas.
+
+Supongamos que queremos agregar un nueva variable que calcule la cantidad de personas por region y la edad promedio por region. `group_by()` es una herramienta muy conveniente para realizar este tipo de operaciones.
+
+--
+
+
+```r
+data_casen_csv %&gt;% 
+* group_by(region) %&gt;%
+* mutate(n_region = n(), mean_ytotcor_region = mean(ytotcor, na.rm = T)) %&gt;%
+* #ungroup() %&gt;%
+  select(region,sexo,edad, ytotcor,n_region, mean_ytotcor_region) 
+```
+
+```
+## # A tibble: 21,644 × 6
+## # Groups:   region [16]
+##    region  sexo  edad ytotcor n_region mean_ytotcor_region
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt;               &lt;dbl&gt;
+##  1     13     2    15      NA     4233             625465.
+##  2      7     2    59      NA     1541             306517.
+##  3     13     2    33   78327     4233             625465.
+##  4     13     1    47 1508333     4233             625465.
+##  5      9     2    58    1667     1546             308376.
+##  6     13     2     1      NA     4233             625465.
+##  7      6     1    42  270000     1647             312602.
+##  8      8     2    45   44109     2166             324471.
+##  9      3     2    27  433333      679             422632.
+## 10      6     2    17      NA     1647             312602.
+## # ℹ 21,634 more rows
+```
+
+---
+## group_by: operaciones agrupadas
+
+Es posible agrupar por más de una variable ....
+Por ejemplo, calcule ahora la cantidad hombres y mujeres por region y la edad promedio por region y genero.
+
+
+--
+
+
+```r
+data_casen_csv %&gt;% 
+* group_by(region, sexo) %&gt;%
+* mutate(n_region = n(), mean_ytotcor_region = mean(ytotcor, na.rm = T)) %&gt;%
+* #ungroup() %&gt;%
+  select(region,sexo,edad, ytotcor,n_region, mean_ytotcor_region)
+```
+
+```
+## # A tibble: 21,644 × 6
+## # Groups:   region, sexo [32]
+##    region  sexo  edad ytotcor n_region mean_ytotcor_region
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt;               &lt;dbl&gt;
+##  1     13     2    15      NA     2190             486565.
+##  2      7     2    59      NA      815             238102.
+##  3     13     2    33   78327     2190             486565.
+##  4     13     1    47 1508333     2043             763584.
+##  5      9     2    58    1667      814             233936.
+##  6     13     2     1      NA     2190             486565.
+##  7      6     1    42  270000      787             356659.
+##  8      8     2    45   44109     1092             242467.
+##  9      3     2    27  433333      360             331062.
+## 10      6     2    17      NA      860             267238.
+## # ℹ 21,634 more rows
+```
+
+
+---
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+###R se aprende]
+###usando y]
+###preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, middle
+
+Presentación y código en GitHub: &lt;https://github.com/mebucca/dar_soc4001&gt;
+
+---
+class: inverse, center, middle
+
+##Gracias!
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

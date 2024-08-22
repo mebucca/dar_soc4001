@@ -1,0 +1,248 @@
+---
+title: "Probabilidad e Inferencia Estadística"
+subtitle: "#17: Test de Hipótesis en dos muestras"
+author: "<br> Mauricio Bucca <br> [github.com/mebucca](https://github.com/mebucca) <br> mebucca@uc.cl"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["gentle-r.css","xaringan-themer.css"]
+    df_print: default
+    nature:
+      ratio: 16:9
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: true
+      slideNumberFormat: "%current%"
+editor_options: 
+  chunz_output_type: console
+---  
+class: inverse, center, middle
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(tidyverse)
+library(xaringanthemer)
+style_duo_accent(primary_color = "#A0522D", secondary_color = "#ADD8E6",
+                 background_color = "#f8f7f3", 
+                 header_font_google = google_font("Archivo"),
+                 text_font_google   = google_font("Inconsolata"), 
+                 link_color= "#DAA520"
+
+)
+
+options(scipen = 999)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = T, echo = T)
+```
+
+# Test de Hipótesis en dos muestras
+
+
+
+---
+## Brechas de ingresos entre hombres y mujeres
+
+
+.pull-left[
+![women](https://wbhm.org/wp-content/uploads/2023/10/gettyimages-2666616-930494094c2bc07b528ff36d8b481f35c097fb14-2-800x450.jpg)
+]
+.pull-right[
+![goldin](https://cdn.corrieredellosport.it/img/990/495/2023/10/09/181036087-9d1453e1-65e2-43be-a2be-c42861da4f93.jpg)
+
+]
+
+---
+## Brechas de ingresos entre hombres y mujeres
+
+--
+
+- .bold[¿Existe una brecha de ingresos entre hombres y mujeres?]
+
+
+--
+
+- En otras palabras, ¿existe asociación entre ingresos y género?
+
+--
+
+```{r, echo=F}
+library("tidyverse")
+url <- "https://raw.githubusercontent.com/mebucca/dar_soc4001/master/data/sample_casen2017.csv"
+
+casen2017_mujeres <- read.csv(url) %>% as_tibble() %>%
+  mutate(ingreso = yautcor) %>%    
+  select(region,sexo,edad,educ,ingreso) %>%
+  mutate(univ = case_when(educ==11 | educ==12 & edad > 27 ~ 1, educ < 11 & edad > 27 ~ 0),
+         genero = case_when(sexo==1 ~ "Hombre", sexo==2 ~ "Mujer"))
+```
+
+<br>
+--
+
+.pull-left[
+
+```{r, echo=T}
+results <- casen2017_mujeres %>% group_by(genero) %>% 
+  summarise(promedio_ingresos = 
+              mean(ingreso, na.rm = T),
+            n = sum(!is.na(ingreso)) ); results 
+```
+]
+
+
+.pull-right[
+  ![gwg](https://d26oc3sg82pgk3.cloudfront.net/files/media/edit/image/31933/square_thumb%402x.jpg)
+]
+
+---
+## Brechas de ingresos entre hombres y mujeres
+
+
+.bold[Paso #1: Expresar pregunta en términos de Hipótesis Nula e Hipótesis Alternativa]
+
+<br>
+--
+
+.bold[Hipótesis Nula]: "La media de ingreso de las mujeres es igual a la de los hombres".
+
+- $H_0: \underbrace{\mathbb{E}(X \mid \text{Hombre})}_{\mu_H} = \underbrace{\mathbb{E}(X \mid \text{Mujer})}_{\mu_M} \implies  \mathbb{E}(X \mid \text{Hombre}) - \mathbb{E}(X \mid \text{Mujer}) = 0$
+
+<br>
+--
+
+.bold[Hipótesis Alternativa]: "La media de ingreso de las mujeres es distinta de la de los hombres".
+
+- $H_a: \underbrace{\mathbb{E}(X \mid \text{Hombre})}_{\mu_H} \neq \underbrace{\mathbb{E}(X \mid \text{Mujer})}_{\mu_M} \implies  \mathbb{E}(X \mid \text{Hombre}) - \mathbb{E}(X \mid \text{Mujer}) \neq 0$
+
+
+<br>
+--
+
+.bold[Paso #2: Elegir y calcular un estadístico] 
+
+El estadístico natural es la diferencia entre ambas medias muestrales:
+
+--
+
+.pull-left[
+- $\bar{X}_{H} = \hat{\mu}_{H}=$ `r round(results$promedio_ingresos[1])`
+
+- $\bar{X}_{M} = \hat{\mu}_{M}=$ `r round(results$promedio_ingresos[2])`
+
+]
+
+--
+
+.pull-right[
+- $(\bar{X}_{H} - \bar{X}_{M}) = (\hat{\mu}_{H} - \hat{\mu}_{M})=$ `r round(results$promedio_ingresos[1] - results$promedio_ingresos[2])`
+]
+
+
+---
+## Brechas de ingresos entre hombres y mujeres
+
+
+.bold[Paso #3: Determinar la Distribución Nula]
+
+
+  - Por el TLC sabemos que: 
+    
+    - $\bar{X}_{H}  \sim \text{Normal}\big(\mu_H, \frac{\sigma_H}{\sqrt{n_H}}\big)$
+    
+    - $\bar{X}_{W}  \sim \text{Normal}\big(\mu_W, \frac{\sigma_W}{\sqrt{n_W}}\big)$
+
+<br>
+--
+
+Por tanto, 
+
+.pull-left[
+$(\bar{X}_{H} - \bar{X}_{W}) \sim \dots$ 
+]
+
+--
+
+
+.pull-right[
+<img src="https://media4.giphy.com/media/cg3hGL5fbON3AIVPm7/giphy.gif" alt="sadpug" width="370" height="250">
+
+]
+
+
+---
+## Brechas de ingresos entre hombres y mujeres
+
+
+.bold[Paso #3: Determinar la Distribución Nula]
+
+
+  - Por el TLC sabemos que: 
+    
+    - $\bar{X}_{H}  \sim \text{Normal}\big(\mu_H, \frac{\sigma_H}{\sqrt{n_H}}\big)$
+    
+    - $\bar{X}_{W}  \sim \text{Normal}\big(\mu_W, \frac{\sigma_W}{\sqrt{n_W}}\big)$
+
+<br>
+
+
+Por tanto, 
+
+.pull-left[
+$(\bar{X}_{H} - \bar{X}_{W}) \sim \dots$ 
+]
+
+
+
+.pull-right[
+<img src="https://media.tenor.com/DWQneUNAlycAAAAd/pug-pugs.gif" alt="cooldpug" width="370" height="240">
+
+]
+
+---
+## Brechas de ingresos entre hombres y mujeres
+
+$(\bar{X}_{H} - \bar{X}_{W}) \sim \dots$ 
+
+--
+
+Recordar, si $W$ y $Y$ son dos variables aleatorias independientes, entonces:
+
+- $\mathbb{E}(W \pm Y) = \mathbb{E}(W) \pm \mathbb{E}(Y)$ 
+
+- $\mathbb{Var}(W \pm Y) = \mathbb{Var}(W) + \mathbb{Var}(Y)$ 
+
+<br>
+--
+
+Por tanto:
+
+$(\bar{X}_{H} - \bar{X}_{W}) =  \text{Normal}\big(\mu_H, \frac{\sigma_H}{\sqrt{n_H}}\big) -  \text{Normal}\big(\mu_W, \frac{\sigma_W}{\sqrt{n_W}}\big) \sim \dots$ 
+
+--
+
+$$\sim \text{Normal}\Bigg(\mu_H - \mu_W, \sqrt{\frac{\sigma^{2}_H}{n_H} + \frac{\sigma^{2}_M}{n_M}} \quad \Bigg)$$
+
+<>
+--
+
+Luego, si $H_0$ es verdadera (la media de ingreso de las mujeres es igual a la de los hombres):
+
+$$(\bar{X}_{H} - \bar{X}_{W}) \mid H_0 \sim \text{Normal}\Bigg(0, \sqrt{\frac{\sigma^{2}_H}{n_H} + \frac{\sigma^{2}_M}{n_M}} \quad \Bigg)$$
+
+---
+class: inverse, center, middle
+
+
+##Hasta la próxima clase. Gracias!
+
+<br>
+Mauricio Bucca <br>
+https://mebucca.github.io/ <br>
+github.com/mebucca
+
+
+
+
