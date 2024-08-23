@@ -52,7 +52,6 @@ Nota: Todas las clases serán grabadas y estarán disponibles por 7 días. El li
 
 - Descargar e instalar `R`: [`[Cápsula]`](https://www.youtube.com/watch?v=805yKZSQaj8)
 - For loops: [`[Cápsula]`](https://www.youtube.com/watch?v=Jg473dyiahY)
-- `Pacman` (gestión de paquetes): [`[Cápsula]`](https://zoom.us/rec/play/oEC3ylDF1FgvRefSBeVYa1sw1YUllzmpEErUAJ2Fo_Hm5ZZkKUC1eqpDLlwyAIFi2jmX_VhQJaKJPKWV.A9FP161KdHNM_Agr?continueMode=true&_x_zm_rtaid=u0HMtmUiRMejpEz1fB47bQ.1663094558713.9f2656b492d27b84f009e687810d20ab&_x_zm_rhtaid=913)
 
 
 ---
