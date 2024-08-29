@@ -1,0 +1,110 @@
+---
+title: 'Una nueva teoría sobre la vida en Austria'
+author: "Mauricio Bucca"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+# Reporte sobre mi experiencia en Austria
+
+```{r setup, eval=T, echo=FALSE, message=FALSE, warning=FALSE}
+# Carga paquetes
+library("haven")
+library("tidyverse")
+library("knitr")
+library("viridis")
+library("rmarkdown")
+library("tinytex")
+library("xaringan")
+
+
+dirdata <- "/Users/Mauricio/Library/Mobile Documents/com~apple~CloudDocs/Teaching/ISUC/2021_2_data_analysis_r/repo/slides/class_4/workflow/data"
+
+setwd(dirdata)
+essdata <- read_dta("ESS8_subset.dta")
+
+dirreport <- "/Users/Mauricio/Library/Mobile Documents/com~apple~CloudDocs/Teaching/ISUC/2021_2_data_analysis_r/repo/slides/class_15/"
+setwd(dirreport)
+
+```
+
+## Introducción
+
+```{r, echo=F}
+#comentario
+```
+
+Diferentes autores han argumentado que la vida en Austria se reduce a pasear por las calles de Viena, tomar café y comer torta Sacher (Urbina 2019). La figura a continuación ilustran este argumento. Este documento no es real. Sólo busca ilustrar el uso de `Rmarkdown` a los estudiantes del diplomado.
+
+
+![torta](sacher.jpg)
+
+Alternativamente:
+```{r, eval=FALSE}
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{sacher.jpg}
+\caption{Café y torta Sacher}
+\end{figure}
+```
+
+
+El presente artículo, basado en teorías recientes en literatura de economía institucional (Aranzaes y Deneken 2020), busca testear la siguiente hipótesis complementaria: para entender la vida en Austria hay que considerar elementos adicionales, no reductibles a consideraciones estéticas de sus ciudades, la oferta de bebidas calientes y la calidad de la repostería local. Formalmente, nuestro modelo puede ser escrito de la siguiente manera:
+
+
+
+$$\text{Vida Austria} = \int f(\text{calles Viena},\text{Cafe},\text{Sacher},x)dx$$
+
+donde $x$ es una variable que mide "elementos adicionales", un nuevo concepto acuñado en este artículo.
+
+```{r, echo=FALSE}
+# filtra datos de Austria
+essdata <- essdata %>% filter(cntry =="DE")
+```
+
+Para testear esta hipótesis usaremos datos para Austria (`cntry=="AT"`) de la encuesta European Social Survey (Wave 8, año 2019). El tamaño de la muestra es N= `r nrow(essdata)`, con `r sum(is.na(essdata$hinctnta))` valores perdidos en la variable ingreso (`hinctnta`) y `r sum(is.na(essdata$eisced))` valores perdidos en la variable educación (`eisced`). La siguiente tabla presenta la distribución conjunta de educación en ingresos:
+
+```{r, echo=FALSE}
+# filtra datos de Austria
+essdata %>% with(table(eisced,hinctnta)) %>% knitr::kable()
+```
+
+
+## Resultados
+
+Para testear nuestra hipótesis estimamos un modelo de regresión que correlaciona los años de educación y los ingresos de personas mayores de treinta años en Austria (hombres y mujeres por separado). La figura a continuación -- construida usando la opción `geom_smooth(method="lm",se=F)` en `ggplot()` --  muestra los resultados obtenidos. El código que produce esta figura es incluido en el artículo para facilitar la replicabilidad de nuestros resultados. 
+
+```{r, echo=FALSE}
+# crea nueva variable
+essdata <- essdata %>% mutate(age = 2019 - yrbrn)
+
+# recodifica variables existentes
+essdata <- essdata %>% mutate(eisced = na_if(eisced, 55)) # eisced==55 es NA
+
+essdata <- essdata %>%
+ mutate(gndr_string = case_when(
+	gndr == 1 ~ "Hombre",
+	gndr == 2 ~ "Mujer"
+	)
+) %>% drop_na(gndr_string)
+
+```
+
+```{r, echo=TRUE, message=F, warning=F}
+jitter <- position_jitter(width = 1, height = 0.5)
+
+fig <- essdata %>% filter(age>30) %>% ggplot(aes(x=eisced, y=hinctnta , colour=gndr_string)) +
+	geom_point(alpha=0.2, position = jitter) +
+	geom_smooth(method="lm",se=F) + 
+  	scale_color_viridis(discrete=TRUE, option="plasma") +
+    labs(x="máxima educación alcanzada", y="Ingreso total del hogar", colour="")
+print(fig)
+```
+
+## Discusión
+
+Nuestro resultados revelan alarmantes disparidades en la calidad de vida de los austriacos con distinto logro educacional. Dichas disparidades probablemente se refuerzan mutuamente. Por ejemplo, personas con menor nivel educacional no sólo ganan menores salarios sino que, como consecuencia de esto, tendrían menor acceso a café y torta Sacher. Futuras intervenciones de política pública debieran considerar estos hallazgos.

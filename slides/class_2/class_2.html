@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Procesamiento avanzado de Bases de Datos en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
+    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
+    <link rel="stylesheet" href="gentle-r.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Procesamiento avanzado de Bases de Datos en R
+]
+.subtitle[
+## Introducción a bases de datos
+]
+.author[
+### <br> Mauricio Bucca<br> Profesor Asistente, Sociología UC
+]
+.date[
+### <a href="https://github.com/mebucca">github.com/mebucca</a>
+]
+
+---
+
+
+
+
+class: inverse, center, middle
+
+
+
+#Introducción a bases de datos
+
+---
+## Recapitulación
+&lt;br&gt;
+
+- El universo R
+
+- Primeros pasos en R
+
+---
+
+## Hoy hablaremos de ...
+
+- Bases de datos en R
+
+- Listas
+
+- Manipulación de datos
+
+- Funciones basales
+
+- Visualización
+
+---
+
+class: fullscreen, left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#Data]
+.huge[#frames]
+
+---
+
+## Dataframes (bases de datos)
+
+
+- Dataframes es la forma convencional en que almacenamos datos en `R`. 
+
+- A diferencia de otros softwares estadísticos (e.g, `SPSS`, `SAS`,`Stata`), en `R` las bases de dato son un tipo de estructura de datos, entre muchos otros.
+
+--
+
+  - Un dataframe es una matriz donde cada fila es una "observación y cada columna es un "variable". 
+
+--
+
+  - En un dataframe cada elemento (o "variable") debe tener la misma longitud (mismo número de "observaciones").
+
+--
+
+  - A diferencia de una matriz, un dataframe puede abarcar cualquier mezcla de tipos de datos. 
+
+--
+
+  - Una gran ventaja de `R` es que permite trabajar simultáneamente con más de una base de datos (además de cualquier otro tipo de objeto).
+
+---
+
+## Data frames (bases de datos)
+
+Asi se ve un dataframe en `R`:
+
+```
+##    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1           5.1         3.5          1.4         0.2  setosa
+## 2           4.9         3.0          1.4         0.2  setosa
+## 3           4.7         3.2          1.3         0.2  setosa
+## 4           4.6         3.1          1.5         0.2  setosa
+## 5           5.0         3.6          1.4         0.2  setosa
+## 6           5.4         3.9          1.7         0.4  setosa
+## 7           4.6         3.4          1.4         0.3  setosa
+## 8           5.0         3.4          1.5         0.2  setosa
+## 9           4.4         2.9          1.4         0.2  setosa
+## 10          4.9         3.1          1.5         0.1  setosa
+## 11          5.4         3.7          1.5         0.2  setosa
+## 12          4.8         3.4          1.6         0.2  setosa
+## 13          4.8         3.0          1.4         0.1  setosa
+## 14          4.3         3.0          1.1         0.1  setosa
+## 15          5.8         4.0          1.2         0.2  setosa
+## 16          5.7         4.4          1.5         0.4  setosa
+## 17          5.4         3.9          1.3         0.4  setosa
+## 18          5.1         3.5          1.4         0.3  setosa
+## 19          5.7         3.8          1.7         0.3  setosa
+## 20          5.1         3.8          1.5         0.3  setosa
+```
+
+---
+
+## Construir un data frame
+
+Un data frame requiere que los vectores sean de misma dimensión, pero no necesariamente del mismo tipo.
+
+.top-code[
+
+``` r
+mydf &lt;- data.frame(x=rep(c("A","B","C"),2),
+                   y=sample(1:10,size=6), 
+                   z=factor(sample(letters,size=6)))
+head(mydf)
+```
+]
+
+--
+.pull-bottom[
+
+```
+##   x  y z
+## 1 A  3 e
+## 2 B  8 c
+## 3 C 10 h
+## 4 A  2 a
+## 5 B  4 g
+## 6 C  9 k
+```
+]
+
+---
+
+## Construir un data frame a partir de una matriz 
+
+Una matriz es una colección de vectores de la misma dimensión. Una base de datos es una matriz que permite diferentes tipos de datos (no sólo numéricos). 
+
+
+``` r
+# vectores
+v1 &lt;- sample(1:100,10)
+v2 &lt;- sample(letters,10)
+
+# matriz a partir de vectores
+mymatrix &lt;- cbind(v1,v2)
+
+# transformar una matriz en una base de datos
+mydataframe &lt;- as.data.frame(mymatrix) 
+```
+
+--
+
+.pull-left[
+
+```
+##       v1   v2 
+##  [1,] "7"  "z"
+##  [2,] "9"  "q"
+##  [3,] "63" "e"
+##  [4,] "23" "c"
+##  [5,] "28" "p"
+##  [6,] "30" "g"
+##  [7,] "57" "m"
+##  [8,] "70" "j"
+##  [9,] "42" "v"
+## [10,] "93" "h"
+```
+]
+
+--
+
+.pull-right[
+
+```
+##    v1 v2
+## 1   7  z
+## 2   9  q
+## 3  63  e
+## 4  23  c
+## 5  28  p
+## 6  30  g
+## 7  57  m
+## 8  70  j
+## 9  42  v
+## 10 93  h
+```
+]
+
+---
+
+## Dar nombre a columnas y filas
+
+
+``` r
+# asigna nombre a columnas (en order)
+colnames(mydf) &lt;- c("group_string","outcome_numeric","letters_factor") 
+names(mydf)
+```
+
+```
+## [1] "group_string"    "outcome_numeric" "letters_factor"
+```
+
+``` r
+# asigna nombre a filas: rownames(mydf)  
+```
+--
+
+```
+##   group_string outcome_numeric letters_factor
+## 1            A               3              e
+## 2            B               8              c
+## 3            C              10              h
+## 4            A               2              a
+## 5            B               4              g
+## 6            C               9              k
+```
+
+---
+
+
+## Cargar y guardar data frames desde un arhivo
+
+`R` funciona bien con archivos `.xls` y `.csv`, entre muchos otros. Muchos paquetes permiten la importación de otros formatos de datos (e.g., archivos `.dta`).
+
+**Cargando datos**
+
+```r
+setwd("ubicación de mi archivo")
+mydata &lt;- read.csv('filename.csv', header=T)
+```
+
+**Guardando datos**
+
+```r
+setwd("ubicación donde quiero guarda mi archivo")
+write.csv(mydata, 'filename.csv')
+```
+---
+
+## Cargar y guardar data frames desde un paquete
+
+Muchos paquetes de `R` incluyen data frames. Más aún, muchos paquetes de `R` son principalmente colecciones de datos (e.g., `datasets`,`essurvey`,`countyweather`. `carData`). Cargamos el paquete `datasets`.
+
+
+``` r
+library("datasets")
+```
+
+Escribiendo `datasets::` en la consola de `RStudio` el auto-completador mostrará la lista de bases de datos disponibles, con una breve descripción. `datasets::morley`, por ejemplo, contiene datos sobre una serie de experimentos conducidos en 1879 para medir la velocidad de la luz. 
+
+
+``` r
+data(morley) # carga datos en la memoria
+speed_of_light &lt;- morley # asigna datos a un objeto de R
+head(speed_of_light)
+```
+
+```
+##     Expt Run Speed
+## 001    1   1   850
+## 002    1   2   740
+## 003    1   3   900
+## 004    1   4  1070
+## 005    1   5   930
+## 006    1   6   850
+```
+---
+
+## Listas
+
+Una lista es una colección arbitraria de objetos. Los elemento de una lista no tienen que ser del mismo tipo ni tener las mismas dimensiones.
+
+
+``` r
+mylist &lt;- list(year=1879, name="Michelson Speed of Light Data", data=head(speed_of_light)); mylist
+```
+
+```
+## $year
+## [1] 1879
+## 
+## $name
+## [1] "Michelson Speed of Light Data"
+## 
+## $data
+##     Expt Run Speed
+## 001    1   1   850
+## 002    1   2   740
+## 003    1   3   900
+## 004    1   4  1070
+## 005    1   5   930
+## 006    1   6   850
+```
+---
+
+## Acceder a elementos de una lista
+
+Utilizamos doble corchete para acceder a cada elemento, o el operador `$`.
+
+``` r
+mylist[[1]]
+```
+
+```
+## [1] 1879
+```
+
+``` r
+mylist$data[1:2,2:3]
+```
+
+```
+##     Run Speed
+## 001   1   850
+## 002   2   740
+```
+
+---
+
+class: fullscreen,left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#Mani]
+.huge[#pulación]
+.huge[#de]
+.huge[#datos]
+
+
+---
+
+## Datos del plesbiscito de 1989 en Chile. 
+
+En el paquete `carData` se encuentra una base de datos llamada "Chile". Esta base contiene datos de una encuenta realizada por FLACSO/Chile en Abril y Mayo de 1988 sobre intención de voto en el plesbiscito de 1989, junto con otras variables socio-demográficas.    
+
+.pull-left[
+En lo que sigue vamos a usar esta base de datos para ejemplificar diferentes herramientas para la manipulación de datos en `R`.
+]
+
+.pull-right[
+![NO](images/franja_NO.jpg)
+]
+
+---
+
+## Dimensiones 
+
+Para inspeccionar rapidamente una base de datos podemos usar las funciones `head()` and `tail()`. 
+
+
+``` r
+# Cargamos los datos de Chile
+library("carData")
+data("Chile") # datos "flotante"
+data_chile &lt;- Chile; # crea dataframe
+rm(Chile) # remueve "flotante"
+head(data_chile) # muestra 6 primeras observaciones
+```
+
+```
+##   region population sex age education income statusquo vote
+## 1      N     175000   M  65         P  35000   1.00820    Y
+## 2      N     175000   M  29        PS   7500  -1.29617    N
+## 3      N     175000   F  38         P  15000   1.23072    Y
+## 4      N     175000   F  49         P  35000  -1.03163    N
+## 5      N     175000   F  23         S  35000  -1.10496    N
+## 6      N     175000   F  28         P   7500  -1.04685    N
+```
+
+--
+
+Para saber las dimensiones de una matriz o data frame (*rows*, *cols*) usamos la función `dim()`.
+
+``` r
+dim(data_chile)
+```
+
+```
+## [1] 2700    8
+```
+
+---
+
+## Seleccionar filas y columnas
+
+Filas y columnas se seleccionan usando corchetes cuadrados para "indexar" la posición que se quiere seleccionar. Por ejemplo, `data_chile[3,8]` corresponde a observación 3, variable 8:
+
+
+``` r
+data_chile[3,8]
+```
+
+```
+## [1] Y
+## Levels: A N U Y
+```
+&lt;br&gt;
+--
+
+Seleccionar una fila/columna entera dejando posición en blanco: 
+.pull-left[
+
+``` r
+# todas las columnas de la fila 4
+head(data_chile[4,])
+```
+]
+
+.pull-right[
+
+``` r
+# todas las filas de la columna 6
+head(data_chile[,6]) 
+```
+]
+
+---
+
+## Más formas de seleccionar filas y columnas
+
+```r
+data_chile[-1,]                   # excluye primera fila
+data_chile[, -(2:4)]              # excluye columnas 2 a 4
+data_chile[, c("income","vote")]  # solo vars income and vote
+data_chile[c(1,5),'vote']         # variable voto para observaciones 1 y 5
+data_chile$vote                  # selecciona col vote
+```
+
+--
+
+Ejemplo:
+
+
+``` r
+dim(data_chile[-1,c("income","vote")]) # dimesion
+```
+
+```
+## [1] 2699    2
+```
+
+``` r
+nrow(data_chile[-1,c("income","vote")]) # número de filas
+```
+
+```
+## [1] 2699
+```
+
+``` r
+ncol(data_chile[-1,c("income","vote")]) # número de columnas
+```
+
+```
+## [1] 2
+```
+
+---
+
+## Filtro de datos
+
+¿Y si sólo nos interesa una sub-muestra de votantes jóvenes que apoyan la opción SI?
+
+--
+
+
+
+``` r
+jovenes_pinochetistas &lt;- data_chile[data_chile$age &lt;= 35 &amp; data_chile$vote=="Y",]
+head(jovenes_pinochetistas,15)
+```
+
+```
+##    region population sex age education income statusquo vote
+## 13      N     175000   F  27        PS     NA   1.43448    Y
+## 23      N     175000   M  18         S  75000   1.54808    Y
+## 24      N     175000   F  24        PS  35000   1.61471    Y
+## 31      N     175000   F  32        PS  35000   1.50986    Y
+## 39      N     175000   M  30         P  15000   0.11067    Y
+## 48      N     125000   M  35         S  35000   0.49674    Y
+## 50      N     125000   F  25         P  35000   1.54808    Y
+## 52      N     125000   F  24         S  35000   1.03408    Y
+## 59      N     125000   F  35         S  35000   1.59577    Y
+## 61      N     125000   M  33        PS  75000   1.33168    Y
+## 66      N     125000   F  28         P  35000   1.58770    Y
+## 69      N     125000   F  26         S  35000   1.45329    Y
+## 80      N     125000   M  32        PS  75000   1.48284    Y
+## 85      N     125000   M  23        PS  35000  -1.10784    Y
+## 94      N     125000   F  19         S  35000   1.05618    Y
+```
+
+---
+## Creación de nuevas variables y recodificación
+
+Para crear una nueva variable debemos asignarla al dataframe usando el operado `$`.
+
+
+``` r
+data_chile$year &lt;- 1988
+```
+
+&lt;br&gt;
+--
+
+Podemos crear nuevas variables transformando y combinando variables ya existente. Aquí crearemos una variable que calcula el año de nacimiento de los entrevistados:
+
+
+``` r
+data_chile$birthyear &lt;- data_chile$year -  data_chile$age
+```
+
+--
+
+
+``` r
+head(data_chile$birthyear)
+```
+
+```
+## [1] 1923 1959 1950 1939 1965 1960
+```
+
+---
+
+## Creación de nuevas variables y recodificación
+
+También podemos crear nuevas variables en base a valores de variables existente. Aquí crearemos una variable de grupos de edad.
+
+
+``` r
+data_chile$age_group &lt;- NA
+data_chile$age_group[data_chile$age &lt;=35] &lt;- "Young"
+data_chile$age_group[data_chile$age &gt; 35] &lt;- "Old"
+```
+--
+
+
+``` r
+head(data_chile$age_group) 
+```
+
+```
+## [1] "Old"   "Young" "Old"   "Old"   "Young" "Young"
+```
+
+&lt;br&gt;
+--
+
+Detrás de la asignación condicional de valores hay una evaluación lógica.
+
+``` r
+head(data_chile$age &lt;= 35) 
+```
+
+```
+## [1] FALSE  TRUE FALSE FALSE  TRUE  TRUE
+```
+
+---
+
+## Manipulación de valores perdidos
+
+En un data frame los valores perdidos aparecen como `NA`s. `NA`s son un tipo de dato.
+.left-code[
+
+``` r
+  x &lt;- c(1, NA, 2, 7, 8)
+  y &lt;- c(NA, 1, 4, 7, 2)
+  df &lt;- cbind(x, y)
+  
+* is.na(x)
+* x[!is.na(x)]
+* df[complete.cases(df),]
+```
+]
+.pull-right[
+
+```
+## [1] FALSE  TRUE FALSE FALSE FALSE
+```
+
+```
+## [1] 1 2 7 8
+```
+
+```
+##      x y
+## [1,] 2 4
+## [2,] 7 7
+## [3,] 8 2
+```
+]
+
+---
+
+## Manipulación de valores perdidos
+
+Aplicado a los datos chilenos
+
+
+``` r
+# datos como vienen
+dim(data_chile)
+```
+
+```
+## [1] 2700   11
+```
+
+``` r
+# cuenta no NA para una variable
+sum(!is.na(data_chile$vote))
+```
+
+```
+## [1] 2532
+```
+
+``` r
+# datos completos
+dim(data_chile[complete.cases(data_chile),])
+```
+
+```
+## [1] 2431   11
+```
+
+---
+
+class: fullscreen,left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#Fun]
+.huge[#ciones]
+.huge[#basales]
+
+---
+
+## Resumen
+
+Resumen de datos o prácticamente cualquier objeto con la función `summary(x)`.
+
+
+``` r
+summary(data_chile[,c("age","income","vote")])
+```
+
+```
+##       age            income         vote    
+##  Min.   :18.00   Min.   :  2500   A   :187  
+##  1st Qu.:26.00   1st Qu.:  7500   N   :889  
+##  Median :36.00   Median : 15000   U   :588  
+##  Mean   :38.55   Mean   : 33876   Y   :868  
+##  3rd Qu.:49.00   3rd Qu.: 35000   NA's:168  
+##  Max.   :70.00   Max.   :200000             
+##  NA's   :1       NA's   :98
+```
+
+---
+
+## Estructura 
+
+Una mirada rápida a la estructura los datos `str(x)`
+
+
+``` r
+str(data_chile)
+```
+
+```
+## 'data.frame':	2700 obs. of  11 variables:
+##  $ region    : Factor w/ 5 levels "C","M","N","S",..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ population: int  175000 175000 175000 175000 175000 175000 175000 175000 175000 175000 ...
+##  $ sex       : Factor w/ 2 levels "F","M": 2 2 1 1 1 1 2 1 1 2 ...
+##  $ age       : int  65 29 38 49 23 28 26 24 41 41 ...
+##  $ education : Factor w/ 3 levels "P","PS","S": 1 2 1 1 3 1 2 3 1 1 ...
+##  $ income    : int  35000 7500 15000 35000 35000 7500 35000 15000 15000 15000 ...
+##  $ statusquo : num  1.01 -1.3 1.23 -1.03 -1.1 ...
+##  $ vote      : Factor w/ 4 levels "A","N","U","Y": 4 2 4 2 2 2 2 2 3 2 ...
+##  $ year      : num  1988 1988 1988 1988 1988 ...
+##  $ birthyear : num  1923 1959 1950 1939 1965 ...
+##  $ age_group : chr  "Old" "Young" "Old" "Old" ...
+```
+
+---
+
+## Atributos
+
+Explorar el contenido de un objecto `attributes(x)`
+
+
+``` r
+attributes(data_chile[1:10,1:5])
+```
+
+```
+## $names
+## [1] "region"     "population" "sex"        "age"        "education" 
+## 
+## $row.names
+##  [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
+## 
+## $class
+## [1] "data.frame"
+```
+
+---
+
+## Tablas de contingencia 
+
+Tabulación rápica `table(x,y)`
+       
+.pull-left[
+
+``` r
+mytable &lt;- 
+table(data_chile$sex, data_chile$vote)
+mytable
+```
+
+```
+##    
+##       A   N   U   Y
+##   F 104 363 362 480
+##   M  83 526 226 388
+```
+]
+.pull-right[
+
+``` r
+round(prop.table(mytable,margin=2),2)
+```
+
+```
+##    
+##        A    N    U    Y
+##   F 0.56 0.41 0.62 0.55
+##   M 0.44 0.59 0.38 0.45
+```
+]
+
+&lt;br&gt;
+
+La function `prop.table` transforma una tabla de frecuencias en una tabla de proporciones.
+
+---
+
+## Funciones básicas para vectores y variables
+
+```r
+sum()    # suma elementos
+mean()   # promedio
+sd()     # desviación estándar
+max()    # máximo
+which.max() # posición de valor máximo 
+min()    # mínimo
+which.min() # posición de valor mínimo 
+rank()   # ranking de valores
+median() # mediana
+range()  # rango
+rev()    # revertir elementos
+unique() # lista de elementos únicos
+length() # largo
+```
+Ejemplo,
+.pull-left[
+
+``` r
+mean(data_chile$income)
+```
+
+```
+## [1] NA
+```
+]
+
+.pull-right[
+
+``` r
+mean(data_chile$income, na.rm = TRUE)
+```
+
+```
+## [1] 33875.86
+```
+]
+
+---
+
+class: fullscreen,left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#Loops]
+
+---
+
+## `for` loops
+
+Idea: cualquier repetición manual puede ser automatizada
+
+--
+
+.pull-left[
+con números
+
+
+``` r
+for(i in 1:10){
+  root2 =  sqrt(i)
+  print(root2)
+}
+```
+
+```
+## [1] 1
+## [1] 1.414214
+## [1] 1.732051
+## [1] 2
+## [1] 2.236068
+## [1] 2.44949
+## [1] 2.645751
+## [1] 2.828427
+## [1] 3
+## [1] 3.162278
+```
+]
+
+--
+
+
+.pull-right[
+con números + almacenamiento
+
+``` r
+mynumbers &lt;- matrix(NA, nrow= 10,ncol = 2)
+
+for(i in 1:10){
+  root2 =  sqrt(i)
+  mynumbers[i,1] &lt;- i
+  mynumbers[i,2] &lt;- root2
+}
+print(mynumbers)
+```
+
+```
+##       [,1]     [,2]
+##  [1,]    1 1.000000
+##  [2,]    2 1.414214
+##  [3,]    3 1.732051
+##  [4,]    4 2.000000
+##  [5,]    5 2.236068
+##  [6,]    6 2.449490
+##  [7,]    7 2.645751
+##  [8,]    8 2.828427
+##  [9,]    9 3.000000
+## [10,]   10 3.162278
+```
+]
+
+---
+
+## `for` loops
+
+con strings
+
+
+``` r
+list_words &lt;- c("a","b","c","d")
+
+z &lt;- NULL
+for (i in list_words) {
+  x &lt;- paste(i,"!!", sep="")
+  z &lt;- c(z,x)
+}    
+print(z)
+```
+
+```
+## [1] "a!!" "b!!" "c!!" "d!!"
+```
+
+
+---
+
+## Una aplicaciónes de loops al trabajo con bases de datos
+
+
+.lef-top[
+
+``` r
+incomes &lt;- sort(unique(Chile$income))
+
+results &lt;- NULL
+
+for (i in incomes) {
+  subsample &lt;- Chile[Chile$income==i,]
+  props &lt;- prop.table(table(subsample$vote))["N"]
+  results &lt;- c(results,props)
+}
+
+print(incomes)
+print(results) 
+```
+]
+
+--
+.pull-bottom[
+
+```
+## [1]   2500   7500  15000  35000  75000 125000 200000
+```
+
+```
+##         N         N         N         N         N         N         N 
+## 0.3133333 0.3068670 0.3383978 0.3848355 0.3873518 0.4470588 0.4027778
+```
+]
+
+---
+
+class: fullscreen,left, middle, text-black
+background-image: url("images/typewriter.jpg")
+
+.huge[#Visual]
+.huge[#ización]
+
+---
+
+## Scatterplots
+.pull-left[
+
+``` r
+plot(log(incomes), results, 
+     xlab="log(ingresos)", 
+     ylab="% voto NO",
+     type="p",  
+     pch=16, 
+     ylim = c(0.25,0.45), 
+     col="red")
+```
+]
+
+--
+
+.pull-right[
+![](class_2_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Lineas
+.pull-left[
+
+``` r
+plot(log(incomes), results, 
+     xlab="log(ingresos)", 
+     ylab="% voto NO", 
+*    type="l",
+     ylim = c(0.25,0.45), col="red")
+```
+]
+
+--
+
+.pull-right[
+![](class_2_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+]
+
+---
+## Lineas y puntos
+.pull-left[
+
+``` r
+plot(log(incomes), results, 
+     xlab="log(ingresos)", 
+     ylab="% voto NO", 
+*    type="l",
+     ylim = c(0.25,0.45), col="red")
+
+*points(log(incomes), results,
+*      col="blue", pch=16)
+```
+]
+
+--
+
+.pull-right[
+![](class_2_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+]
+---
+
+## Histogramas
+
+.pull-left[
+
+``` r
+par(mar=c(5,4,1,1), bg='white')
+hist(Chile$income, main="", 
+     xlab="Income",
+     col="orange")
+```
+]
+
+--
+
+.pull-right[
+![](class_2_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Bar plots
+
+.pull-left[
+
+``` r
+barplot(table(Chile$education),
+        ylim = c(0,2000),
+    col="purple")
+
+*box()
+```
+]
+
+--
+
+.pull-right[
+![](class_2_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## En la próxima clase ... 
+
+- Taller #1: primer acercamiento a bases de datos en R (CASEN 2017)
+
+---
+
+class: fullscreen,left, top, top, text-azzurro
+background-image: url("images/bicicleta.jpg")
+
+.huge[#R se aprende]
+.huge[#usando y]
+.huge[#preguntando]
+
+---
+
+![](images/stack-exchange-search.png)
+
+---
+class: inverse, center, middle
+
+#Hasta la próxima clase
+##Gracias!
+
+
+&lt;br&gt;
+Mauricio Bucca &lt;br&gt;
+https://mebucca.github.io/ &lt;br&gt;
+github.com/mebucca
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
