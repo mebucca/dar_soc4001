@@ -1,0 +1,43 @@
+---
+title: "SOC4001 Procesamiento avanzado de bases de datos en R"
+author: "Tarea 2"
+format: html
+editor: visual
+---
+
+```{r, echo=FALSE}
+# Escribir install.packages("tinytex") en la consola para instalar "tinytex"
+# Carga "tinytex" para compilar PDF
+library("tinytex")
+```
+
+Ponderación: 12% de la nota final del curso Entrega: Desde el momento de entrega, los estudiantes tiene 1 exacta semana de plazo para completar esta tarea. Formato: Desarrollar esta tarea en un RScript, agregando comentarios cuando sea necesario.
+
+
+Formato: Entregar esta tarea en un archivo comprimido (zip) que contenga la carpeta `workflow` y todas las subcarpetas y archivos. 
+
+Instrucciones: 
+
+1) Crear una carpeta llamada workflow y sus respectivas subcarpetas siguiendo el modelo visto en clases
+
+2)  Baja datos de Casen 2022 y ubicarlos en la carpeta data: [Casen 2022](https://observatorio.ministeriodesarrollosocial.gob.cl/encuesta-casen-2022)
+
+3) Crea un archivo `README.txt` siguiendo el modelo visto en clases.
+
+4) En `1_masterfile.R` establecer directorios correspondiente a la ubicación de los archivos en tu computador y cargar los datos eb la sesión de R.
+
+5) En `2_exploration.R` implementa las siguientes instrucciones:
+
+  - Muestra las primeras 6 observaciones de la base de datos en la consola.
+
+6) En `3_recoding.R` implementa las siguientes instrucciones de la tarea 1:
+
+  - Crea una base de datos que contenga sólo las variables "edad" y "sexo". Llama tal objeto "subdatos". 
+
+7) En `4_analyses.R` implementa las siguientes instrucciones:
+
+  - Usa un loop para calcular la media de edad por sexo. Almacena los resultados en una matriz, donde las filas correspondan a cada sexo. Usa nombres informativos para filas y columnas. 
+  
+  - Usa la función `write.table()` para almacenar la tabla en la carpeta `results`. Guarda esta tabla con el nombre "mi_table.txt". Documentación del comando en: [`[write.table()]`](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/write.table)
+
+8) Ejecuta `1_masterfile.R` y asegúrate que la totalidad del código corra en "un click". Comprueba que los archivos con resultados hayan sido creados exitosamente.
