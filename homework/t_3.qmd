@@ -1,0 +1,71 @@
+---
+title: "SOC4001 Procesamiento avanzado de bases de datos en R"
+author: "Tarea 3"
+format: html
+editor: visual
+---
+
+```{r, echo=FALSE}
+# Escribir install.packages("tinytex") en la consola para instalar "tinytex"
+# Carga "tinytex" para compilar PDF
+library("tinytex")
+```
+
+Ponderación: 12% de la nota final del curso
+
+Formato: Desarrollar esta tarea en un RScript, agregando comentarios cuando sea necesario.
+
+Instrucciones: Realiza las siguientes operaciones. Debes obtener un resultado similar al que se muestra después de cada pregunta.
+
+1)  Carga la base de datos "Chile" del paquete `carData` y crea un objeto que los contenga los datos. Llama tal objeto "datos_chile". Carga la librería `tidyverse` y ejecuta la siguientes operaciones usando las herramientas contenidas de `tidyverse`:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library("carData") 
+library("tidyverse") 
+data("Chile") 
+datos_chile <- Chile
+rm(Chile) # remueve "flotante"
+
+datos_chile %>% glimpse()
+```
+
+2)  Añade a "datos_chile" un variable llamada "year" con valor 1988 en todas las filas
+
+```{r, echo=FALSE}
+datos_chile <- datos_chile %>% mutate(year = 1988)
+
+datos_chile %>% glimpse()
+```
+
+3)  Calcula el año de nacimiento de cada individuo. Añade a "datos_chile" un variable llamada "birthyear" que contenga esta información
+
+```{r, echo=FALSE}
+datos_chile <- datos_chile %>% mutate(birthyear = year - age)
+datos_chile %>% glimpse()
+```
+
+4)  Usando la función `if_else()` añade a "datos_chile" un variable llamada "vote_no" que tome valor 1 si la persona declara que votará por el No y valor 0 en cualquier otra caso.
+
+```{r,echo=FALSE}
+datos_chile <-  datos_chile %>% mutate(vote_no = if_else(vote=="N",1,0))
+datos_chile %>% glimpse()
+```
+
+5)  Usando la función `case_when()` añade a "datos_chile" un variable llamada "cohort73" que tome valor 1 si la persona tenía 18 año o más el año del golpe de estado (1973) y valor 0 si tenía menos de 18. Trata las observaciones que no cumplan ninguna de estas condiciones como valores perdidos.
+
+```{r, echo=FALSE}
+datos_chile <-  datos_chile %>% mutate(cohort73 = case_when(birthyear <= (1973 - 18) ~ 1,
+                              birthyear > (1973 - 18) ~ 0)
+                            )
+datos_chile %>% glimpse()
+```
+
+6)  Usando la función `group_by()` añade a "datos_chile" un variable llamada "no_by_groups" que contenga el promedio de la variable "vote_no" por región, nivel educacional y cohorte (cohort73).
+
+```{r,echo=FALSE}
+datos_chile <-  datos_chile %>% group_by(region,education,cohort73) %>%
+                mutate(no_by_groups = mean(vote_no, na.rm = T))
+datos_chile %>% glimpse()
+
+```
+
