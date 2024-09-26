@@ -4,7 +4,7 @@
     <title>Procesamiento avanzado de Bases de Datos en R</title>
     <meta charset="utf-8" />
     <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
-    <script src="libs/header-attrs-2.24/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
     <link rel="stylesheet" href="gentle-r.css" type="text/css" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -119,7 +119,7 @@ La función `summarise()` permite calcular una variedad de medidas en base a los
 
 
 
-```r
+``` r
 library(tidyverse)
 data_casen_csv %&gt;% 
   summarise(mean_ytotcor_region = mean(ytotcor, na.rm = T)) 
@@ -139,7 +139,7 @@ Obtenemos una bases de datos con los resultados.
 Pero podemos transformarlo en otro tipo de objetos (vectores, matrices, etc)
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(mean_ytotcor_region = mean(ytotcor, na.rm = T), 
             median_ytotcor_region = median(ytotcor, na.rm = T)) / 1000
@@ -166,7 +166,7 @@ Ejemplo:
 
 - Quantile:
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(q20=quantile(ytotcor, probs=0.2, na.rm = T))
 ```
@@ -185,7 +185,7 @@ data_casen_csv %&gt;%
 
 - 3er caso:
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(tercer=nth(ytotcor, n=3))
 ```
@@ -199,7 +199,7 @@ data_casen_csv %&gt;%
 
 - Cantidad de valores distintos
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(distintos=n_distinct(ytotcor))
 ```
@@ -220,7 +220,7 @@ data_casen_csv %&gt;%
 --
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(across( c("sexo","edad"), mean))
 ```
@@ -235,7 +235,7 @@ data_casen_csv %&gt;%
 --
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(across(starts_with("y"), mean))
 ```
@@ -257,7 +257,7 @@ data_casen_csv %&gt;%
 
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(across( c("sexo","edad"), mean))
 ```
@@ -272,7 +272,7 @@ data_casen_csv %&gt;%
 --
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(across(starts_with("y"), ~mean(.x, na.rm = TRUE) ))
 ```
@@ -290,7 +290,7 @@ data_casen_csv %&gt;%
 ## summarise una variable con una lista de funciones
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(across(edad, list(media = mean, mediana = median)))
 ```
@@ -305,7 +305,7 @@ data_casen_csv %&gt;%
 --
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(across(ytrabajocor, list(media =  ~mean(.x, na.rm = TRUE), mediana = ~median(.x, na.rm = TRUE))))
 ```
@@ -322,7 +322,7 @@ data_casen_csv %&gt;%
 ## summarise muchas variable con una lista de funciones
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
   summarise(across(starts_with("y"), list(media = ~mean(.x, na.rm = TRUE), mediana= ~median(.x, na.rm = TRUE)) ))
 ```
@@ -345,7 +345,7 @@ data_casen_csv %&gt;%
 ## summarise by_group(): resumiendo datos agupados
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
 * group_by(region, sexo) %&gt;%
   summarise(mean_ytotcor_region = mean(ytotcor, na.rm = T), 
@@ -383,7 +383,7 @@ data_casen_csv %&gt;%
 Combinando herramientas
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
 * group_by(region, sexo) %&gt;%
       summarise(across(ytrabajocor, list(media =  ~mean(.x, na.rm = TRUE), mediana = ~median(.x, na.rm = TRUE))))
@@ -413,7 +413,7 @@ data_casen_csv %&gt;%
 Supongamos que queremos calcular el indice de Gini para cada región de Chile.
 
 
-```r
+``` r
 *library(ineq)
 data_casen_csv %&gt;% 
   group_by(region, sexo) %&gt;% 
@@ -444,7 +444,7 @@ data_casen_csv %&gt;%
 Supongamos que queremos calcular el indice de Gini para cada región de Chile.
 
 
-```r
+``` r
 *ratio_9010 &lt;- function(x) { quantile(x,p=0.9, na.rm=T)/quantile(x,p=0.1, na.rm =T)}
 
 data_casen_csv %&gt;% 
@@ -490,7 +490,7 @@ Dos bases de datos puede juntarse mientras tengan un llave común (region, aquí
 
 .pull-left[
 
-```r
+``` r
 data_a &lt;- data_casen_csv %&gt;% filter(region &lt;2 | region&gt;=15 ) %&gt;%
   group_by(region) %&gt;% 
   summarise(across(edad, mean)); data_a
@@ -507,7 +507,7 @@ data_a &lt;- data_casen_csv %&gt;% filter(region &lt;2 | region&gt;=15 ) %&gt;%
 ]
 .pull-right[
 
-```r
+``` r
 data_b &lt;- data_casen_csv %&gt;% filter(region &lt;3 | region&gt;=16 ) %&gt;%
   group_by(region) %&gt;% 
   summarise(across(c(edad,yautcorh), mean)); data_b
@@ -562,7 +562,7 @@ Muchas formas de juntar ambas bases de datos.
 
 `inner_join()`
 
-```r
+``` r
 data_a %&gt;% inner_join(data_b, by="region")
 ```
 
@@ -607,7 +607,7 @@ data_a %&gt;% inner_join(data_b, by="region")
 
 `inner_join()`
 
-```r
+``` r
 data_a %&gt;% inner_join(data_b %&gt;% select(!edad), by="region")
 ```
 
@@ -652,7 +652,7 @@ data_a %&gt;% inner_join(data_b %&gt;% select(!edad), by="region")
 
 `inner_join()`
 
-```r
+``` r
 data_a %&gt;% select(!edad) %&gt;% inner_join(data_b, by="region")
 ```
 
@@ -698,7 +698,7 @@ data_a %&gt;% select(!edad) %&gt;% inner_join(data_b, by="region")
 
 `left_join()`
 
-```r
+``` r
 data_a %&gt;% left_join(data_b  %&gt;% select(!edad), by="region")
 ```
 
@@ -750,7 +750,7 @@ data_a %&gt;% left_join(data_b  %&gt;% select(!edad), by="region")
 
 `right_join()`
 
-```r
+``` r
 data_a  %&gt;% right_join(data_b %&gt;% select(!edad), by="region")
 ```
 
@@ -796,7 +796,7 @@ data_a  %&gt;% right_join(data_b %&gt;% select(!edad), by="region")
 
 `full_join()`
 
-```r
+``` r
 data_a  %&gt;% full_join(data_b %&gt;% select(!edad), by="region")
 ```
 
@@ -816,7 +816,7 @@ data_a  %&gt;% full_join(data_b %&gt;% select(!edad), by="region")
 
 .pull-left[
 
-```r
+``` r
 data_casen_csv %&gt;% 
   select(region,sexo,yautcorh)
 ```
@@ -843,7 +843,7 @@ data_casen_csv %&gt;%
 
 .pull-right[
 
-```r
+``` r
 gini_regsex &lt;- data_casen_csv %&gt;% 
 * group_by(region,sexo) %&gt;%
   summarise(gini = Gini(yautcorh, na.rm = T )); gini_regsex
@@ -876,7 +876,7 @@ Quiero incorporar la información agregada a mi bases de datos.
 ## join: juntar bases de datos por más de una llave
 
 
-```r
+``` r
 data_casen_csv %&gt;% 
 * left_join(gini_regsex, by=c("region","sexo")) %&gt;%
   select(region,sexo,yautcorh, gini)
