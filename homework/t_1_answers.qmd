@@ -1,0 +1,84 @@
+---
+title: "SOC4001 Procesamiento avanzado de bases de datos en R"
+author: "Tarea 1, respuestas"
+format: html
+editor: visual
+---
+
+```{r, echo=FALSE}
+# Escribir install.packages("tinytex") en la consola para instalar "tinytex"
+# Carga "tinytex" para compilar PDF
+library("tinytex")
+```
+
+Ponderación: 12% de la nota final del curso Entrega: Desde el momento de entrega, los estudiantes tiene 1 exacta semana de plazo para completar esta tarea. Formato: Desarrollar esta tarea en un RScript, agregando comentarios cuando sea necesario.
+
+1)  Instalar y cargar el paquete (desde el Script) `CarData`.
+
+```{r}
+install.packages("carData", repos = "http://cran.us.r-project.org")
+library("carData")
+```
+
+2)  Usa la documentación del paquete `CarData` para identificar los datos correspondientes a "Self-Reports of Height and height"
+
+3)  Carga los datos y crea un objeto que los contenga. Llama tal objeto "datos_davis".
+
+```{r}
+data("Davis") 
+datos_davis <- Davis
+rm(Davis) # remueve "flotante"
+```
+
+4)  Muestra las primeras y las últimas 6 observaciones de la base de datos en la consola.
+
+```{r}
+head(datos_davis) 
+tail(datos_davis) 
+```
+
+5)  Crea una base de datos que contenga sólo las variables `sex`, `height` y `repht` de "datos_davis". Llama tal objeto "subdatos_davis". Muestra las dimensiones de la nueva bases de datos.
+
+```{r}
+subdatos_davis <- datos_davis[,c("sex","height","repht")]
+dim(subdatos_davis)
+```
+
+6)  Presenta un resumen estadístico (summary) de las variables en "subdatos_davis".
+
+```{r}
+summary(subdatos_davis)
+```
+
+7)  Crea una variable llamada "ratio" que mida la razón (división) entre la altura real (`height`) y la altura reportada (`repht`) por los individuos y añadela a "subdatos_davis".
+
+```{r}
+subdatos_davis$ratio <- subdatos_davis$height/subdatos_davis$repht
+```
+
+8)  Chequea la presencia de valores perdidos en la variable "ratio". Luego crea una nueva base de datos que contenga sólo las observaciones con datos completos en todas las variables en "subdatos_davis". Llama este objeto "subdatos_davis_full" y presenta un resumen estadístico (summary) de las variables en "subdatos_davis_full".
+
+```{r}
+is.na(subdatos_davis$ratio)
+subdatos_davis_full <- subdatos_davis[complete.cases(subdatos_davis),]
+summary(subdatos_davis_full)
+
+
+```
+
+9)  Crea una nueva variable llamada "sex_num". Asigna valor 1 a "sex_num" para aquellas observaciones en las cuales la variable "sex" toma valor "F" (mujer). Asigna valor 0 a "sex_num" para aquellas observaciones en las cuales la variable "sex" toma un valor "M" (hombre).
+
+```{r}
+subdatos_davis_full$sex_num[subdatos_davis_full$sex == "F"] <- 1
+subdatos_davis_full$sex_num[subdatos_davis_full$sex == "M"] <- 0
+```
+
+10) Usa un loop para calcular la media de la variable "ratio" para las observaciones en cada uno de los niveles de la variable "sex" (es decir, para hombres y mujeres). No olvides usar el comando `print()` para mostrar los cálculos ejecutados dentro del loop.
+
+```{r}
+for (i in c("F","M")) {
+  print(i)
+  print(mean(subdatos_davis_full$ratio[subdatos_davis_full$sex==i]))
+}
+
+```

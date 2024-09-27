@@ -1,0 +1,3 @@
+"media prestigio" "mediana prestigio"
+"Educ bajo la media" 26.12 19
+"Educ sobre la media" 74.65 82.5
