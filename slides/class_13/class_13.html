@@ -4,7 +4,7 @@
     <title>Procesamiento avanzado de Bases de Datos en R</title>
     <meta charset="utf-8" />
     <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
-    <script src="libs/header-attrs-2.24/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
     <link rel="stylesheet" href="gentle-r.css" type="text/css" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -99,7 +99,7 @@ Con números
 
 .pull-left[
 
-```r
+``` r
 for(i in 1:20) {
   
   primo &lt;- i + (i-1)
@@ -144,7 +144,7 @@ Con letras
 
 .pull-left[
 
-```r
+``` r
 *for(j in c("Tamara","Julio","Simona")) {
   
   frase &lt;- paste0(j, " participa en clases")
@@ -168,7 +168,7 @@ Con letras
 
 .pull-left[
 
-```r
+``` r
 nombres &lt;- c("Tamara","Julio","Simona")
 
 *for(n in nombres) {
@@ -200,7 +200,7 @@ nombres &lt;- c("Tamara","Julio","Simona")
 
 .pull-left[
 
-```r
+``` r
 *for (i in  1:5) {
 * for (j in c(3,4)) {
     
@@ -233,7 +233,7 @@ nombres &lt;- c("Tamara","Julio","Simona")
 
 .pull-left[
 
-```r
+``` r
 *for (j in c(3,4)) {
 * for (i in  1:5) {
 
@@ -276,7 +276,7 @@ nombres &lt;- c("Tamara","Julio","Simona")
 
 .pull-left[
 
-```r
+``` r
 a &lt;- 49
 
 *if(a &gt; 100){
@@ -335,7 +335,7 @@ f_{n-2} + f_{n-1} \quad &amp; \text{si } n &gt; 1
 
 .pull-left[
 
-```r
+``` r
 *f &lt;- NULL
 for (n in 0:12) {
   
@@ -385,7 +385,7 @@ for (n in 0:12) {
 
 .pull-left[
 
-```r
+``` r
 j=0
 *while (j &lt; 1000000000) {
     print(j)
@@ -412,7 +412,7 @@ j=0
 
 .pull-left[
 
-```r
+``` r
 j=1
 *while (j &lt; 2) {
   j = j/j 
@@ -442,56 +442,56 @@ Continuaremos trabajando con datos mundiales de COVID (OWID):
 ```
 ## Rows: 210
 ## Columns: 50
-## $ iso_code                           &lt;chr&gt; "AFG", "ALB", "DZA", "AND", "AGO", "AIA", "ATG", "ARG", "ARM", "A…
-## $ continent                          &lt;chr&gt; "Asia", "Europe", "Africa", "Europe", "Africa", "North America", …
-## $ location                           &lt;chr&gt; "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguil…
-## $ date                               &lt;date&gt; 2020-11-17, 2020-11-17, 2020-11-17, 2020-11-17, 2020-11-17, 2020…
-## $ total_cases                        &lt;dbl&gt; 43468, 28432, 68589, 5914, 13451, 3, 134, 1318371, 118870, 4668, …
-## $ new_cases                          &lt;dbl&gt; 65, 602, 910, 42, 77, 0, 0, 7895, 984, 6, 25, 4304, 1395, 70, 179…
-## $ new_cases_smoothed                 &lt;dbl&gt; 143.571, 528.714, 842.286, 68.143, 145.429, 0.000, 429.000, 9697.…
-## $ total_deaths                       &lt;dbl&gt; 1632, 631, 2168, 76, 322, NA, 4, 35727, 1811, 44, 907, 1741, 985,…
-## $ new_deaths                         &lt;dbl&gt; 6, 8, 14, 0, 0, 0, 0, 291, 23, 0, 0, 62, 18, 7, 2, 21, 0, 7, 4, 0…
-## $ new_deaths_smoothed                &lt;dbl&gt; 7.857, 8.571, 15.143, 143.000, 2.143, 0.000, 143.000, 260.000, 28…
-## $ total_cases_per_million            &lt;dbl&gt; 1116.616, 9879.769, 1564.136, 76541.772, 409.265, 199.973, 1368.3…
-## $ new_cases_per_million              &lt;dbl&gt; 1.670, 209.188, 20.752, 543.584, 2.343, 0.000, 0.000, 174.684, 33…
-## $ new_cases_smoothed_per_million     &lt;dbl&gt; 3.688, 183.722, 19.208, 881.937, 4.425, 0.000, 4.376, 214.574, 49…
-## $ total_deaths_per_million           &lt;dbl&gt; 41.923, 219.265, 49.440, 983.628, 9.797, NA, 40.846, 790.494, 611…
-## $ new_deaths_per_million             &lt;dbl&gt; 154.000, 2.780, 319.000, 0.000, 0.000, 0.000, 0.000, 6.439, 7.762…
-## $ new_deaths_smoothed_per_million    &lt;dbl&gt; 202.000, 2.978, 345.000, 1.849, 65.000, 0.000, 1.459, 5.753, 9.73…
-## $ reproduction_rate                  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ icu_patients                       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ icu_patients_per_million           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ hosp_patients                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ hosp_patients_per_million          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ weekly_icu_admissions              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ weekly_icu_admissions_per_million  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ weekly_hosp_admissions             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ weekly_hosp_admissions_per_million &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ total_tests                        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ new_tests                          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ total_tests_per_thousand           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ new_tests_per_thousand             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ new_tests_smoothed                 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ new_tests_smoothed_per_thousand    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ tests_per_case                     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ positive_rate                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ tests_units                        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ stringency_index                   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ population                         &lt;dbl&gt; 38928341, 2877800, 43851043, 77265, 32866268, 15002, 97928, 45195…
-## $ population_density                 &lt;dbl&gt; 54.422, 104.871, 17.348, 163.755, 23.890, NA, 231.845, 16.177, 10…
-## $ median_age                         &lt;dbl&gt; 18.6, 38.0, 29.1, NA, 16.8, NA, 32.1, 31.9, 35.7, 41.2, 37.9, 44.…
-## $ aged_65_older                      &lt;dbl&gt; 2.581, 13.188, 6.211, NA, 2.405, NA, 6.933, 11.198, 11.232, 13.08…
-## $ aged_70_older                      &lt;dbl&gt; 1.337, 8.643, 3.857, NA, 1.362, NA, 4.631, 7.441, 7.571, 7.452, 1…
-## $ gdp_per_capita                     &lt;dbl&gt; 1803.987, 11803.431, 13913.839, NA, 5819.495, NA, 21490.943, 1893…
-## $ extreme_poverty                    &lt;dbl&gt; NA, 1.1, 0.5, NA, NA, NA, NA, 0.6, 1.8, NA, 0.5, 0.7, NA, NA, NA,…
-## $ cardiovasc_death_rate              &lt;dbl&gt; 597.029, 304.195, 278.364, 109.135, 276.045, NA, 191.511, 191.032…
-## $ diabetes_prevalence                &lt;dbl&gt; 9.59, 10.08, 6.73, 7.97, 3.94, NA, 13.17, 5.50, 7.11, 11.62, 5.07…
-## $ female_smokers                     &lt;dbl&gt; NA, 7.1, 0.7, 29.0, NA, NA, NA, 16.2, 1.5, NA, 13.0, 28.4, 0.3, 3…
-## $ male_smokers                       &lt;dbl&gt; NA, 51.2, 30.4, 37.8, NA, NA, NA, 27.7, 52.1, NA, 16.5, 30.9, 42.…
-## $ handwashing_facilities             &lt;dbl&gt; 37.746, NA, 83.741, NA, 26.664, NA, NA, NA, 94.043, NA, NA, NA, 8…
-## $ hospital_beds_per_thousand         &lt;dbl&gt; 0.500, 2.890, 1.900, NA, NA, NA, 3.800, 5.000, 4.200, NA, 3.840, …
-## $ life_expectancy                    &lt;dbl&gt; 64.83, 78.57, 76.88, 83.73, 61.15, 81.88, 77.02, 76.67, 75.09, 76…
-## $ human_development_index            &lt;dbl&gt; 498.00, 785.00, 754.00, 858.00, 581.00, NA, 0.78, 825.00, 755.00,…
+## $ iso_code                           &lt;chr&gt; "AFG", "ALB", "DZA", "AND", "AGO", …
+## $ continent                          &lt;chr&gt; "Asia", "Europe", "Africa", "Europe…
+## $ location                           &lt;chr&gt; "Afghanistan", "Albania", "Algeria"…
+## $ date                               &lt;date&gt; 2020-11-17, 2020-11-17, 2020-11-17…
+## $ total_cases                        &lt;dbl&gt; 43468, 28432, 68589, 5914, 13451, 3…
+## $ new_cases                          &lt;dbl&gt; 65, 602, 910, 42, 77, 0, 0, 7895, 9…
+## $ new_cases_smoothed                 &lt;dbl&gt; 143.571, 528.714, 842.286, 68.143, …
+## $ total_deaths                       &lt;dbl&gt; 1632, 631, 2168, 76, 322, NA, 4, 35…
+## $ new_deaths                         &lt;dbl&gt; 6, 8, 14, 0, 0, 0, 0, 291, 23, 0, 0…
+## $ new_deaths_smoothed                &lt;dbl&gt; 7.857, 8.571, 15.143, 143.000, 2.14…
+## $ total_cases_per_million            &lt;dbl&gt; 1116.616, 9879.769, 1564.136, 76541…
+## $ new_cases_per_million              &lt;dbl&gt; 1.670, 209.188, 20.752, 543.584, 2.…
+## $ new_cases_smoothed_per_million     &lt;dbl&gt; 3.688, 183.722, 19.208, 881.937, 4.…
+## $ total_deaths_per_million           &lt;dbl&gt; 41.923, 219.265, 49.440, 983.628, 9…
+## $ new_deaths_per_million             &lt;dbl&gt; 154.000, 2.780, 319.000, 0.000, 0.0…
+## $ new_deaths_smoothed_per_million    &lt;dbl&gt; 202.000, 2.978, 345.000, 1.849, 65.…
+## $ reproduction_rate                  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ icu_patients                       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ icu_patients_per_million           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ hosp_patients                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ hosp_patients_per_million          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_icu_admissions              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_icu_admissions_per_million  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_hosp_admissions             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ weekly_hosp_admissions_per_million &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ total_tests                        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests                          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ total_tests_per_thousand           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_per_thousand             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_smoothed                 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ new_tests_smoothed_per_thousand    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ tests_per_case                     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ positive_rate                      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ tests_units                        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ stringency_index                   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ population                         &lt;dbl&gt; 38928341, 2877800, 43851043, 77265,…
+## $ population_density                 &lt;dbl&gt; 54.422, 104.871, 17.348, 163.755, 2…
+## $ median_age                         &lt;dbl&gt; 18.6, 38.0, 29.1, NA, 16.8, NA, 32.…
+## $ aged_65_older                      &lt;dbl&gt; 2.581, 13.188, 6.211, NA, 2.405, NA…
+## $ aged_70_older                      &lt;dbl&gt; 1.337, 8.643, 3.857, NA, 1.362, NA,…
+## $ gdp_per_capita                     &lt;dbl&gt; 1803.987, 11803.431, 13913.839, NA,…
+## $ extreme_poverty                    &lt;dbl&gt; NA, 1.1, 0.5, NA, NA, NA, NA, 0.6, …
+## $ cardiovasc_death_rate              &lt;dbl&gt; 597.029, 304.195, 278.364, 109.135,…
+## $ diabetes_prevalence                &lt;dbl&gt; 9.59, 10.08, 6.73, 7.97, 3.94, NA, …
+## $ female_smokers                     &lt;dbl&gt; NA, 7.1, 0.7, 29.0, NA, NA, NA, 16.…
+## $ male_smokers                       &lt;dbl&gt; NA, 51.2, 30.4, 37.8, NA, NA, NA, 2…
+## $ handwashing_facilities             &lt;dbl&gt; 37.746, NA, 83.741, NA, 26.664, NA,…
+## $ hospital_beds_per_thousand         &lt;dbl&gt; 0.50, 2.89, 1.90, NA, NA, NA, 3.80,…
+## $ life_expectancy                    &lt;dbl&gt; 64.83, 78.57, 76.88, 83.73, 61.15, …
+## $ human_development_index            &lt;dbl&gt; 498.00, 785.00, 754.00, 858.00, 581…
 ```
 
 ---
@@ -532,7 +532,7 @@ Continuaremos trabajando con datos mundiales de COVID (OWID):
 --
 
 
-```r
+``` r
 *lm1 &lt;- lm(total_cases_per_million ~ population_density, data=covid_data)
 *r2_1 &lt;- summary(lm1)$r.squared
 
@@ -554,7 +554,7 @@ r2_2 &lt;- summary(lm2)$r.squared
 --
 
 
-```r
+``` r
 for (dv in c("total_cases_per_million", "total_deaths_per_million")) {
   for (iv in  c("population_density", "median_age", "gdp_per_capita")) {
     
@@ -592,7 +592,7 @@ for (dv in c("total_cases_per_million", "total_deaths_per_million")) {
 ## Análisis de datos Covid-19 usando loops + almacenamiento resultados via `assign()`
 
 
-```r
+``` r
 for (dv in c("total_cases_per_million", "total_deaths_per_million")) {
   for (iv in  c("population_density", "median_age", "gdp_per_capita")) {
     
@@ -640,8 +640,9 @@ Una posible solución: agregar un nivel adicional al loop (continentes)
 class: fullscreen, left, middle, text-black
 background-image: url("images/typewriter.jpg")
 
-.huge[#A breve]
-.huge[#introducción]
+.huge[#Una breve]
+.huge[#intro]
+.huge[#ducción]
 .huge[#a purrr]
 
 
@@ -701,7 +702,7 @@ La función básica de `purrr` es `map()`:  aplica la misma acción/función a c
 
 .pull-left[
 
-```r
+``` r
 mydata &lt;- tibble(x=rnorm(30),y=rnorm(30))
 mydata %&gt;% head()
 ```
@@ -711,14 +712,14 @@ mydata %&gt;% head()
 
 ```
 ## # A tibble: 6 × 2
-##         x      y
-##     &lt;dbl&gt;  &lt;dbl&gt;
-## 1 -0.667  -1.09 
-## 2  1.28   -1.47 
-## 3  0.333  -0.369
-## 4  0.991   0.818
-## 5  0.0886 -0.131
-## 6 -0.0771 -0.541
+##        x      y
+##    &lt;dbl&gt;  &lt;dbl&gt;
+## 1 -0.366  1.96 
+## 2  0.100 -2.08 
+## 3  1.34   0.818
+## 4  1.46  -2.21 
+## 5  1.16   0.870
+## 6 -0.245  0.190
 ```
 ]
 
@@ -727,7 +728,7 @@ mydata %&gt;% head()
 
 .pull-left[
 
-```r
+``` r
 sum_plus10 &lt;- function(x) {sum(x) + 10}
 
 *map(.x=mydata, .f=sum_plus10 )
@@ -739,10 +740,10 @@ sum_plus10 &lt;- function(x) {sum(x) + 10}
 
 ```
 ## $x
-## [1] 10.01307
+## [1] 8.289258
 ## 
 ## $y
-## [1] 6.328387
+## [1] 14.24167
 ```
 ]
 
@@ -757,7 +758,7 @@ sum_plus10 &lt;- function(x) {sum(x) + 10}
 
 .pull-left[
 
-```r
+``` r
 mydata &lt;- tibble(x=rnorm(30),y=rnorm(30))
 mydata %&gt;% head()
 ```
@@ -767,14 +768,14 @@ mydata %&gt;% head()
 
 ```
 ## # A tibble: 6 × 2
-##        x      y
-##    &lt;dbl&gt;  &lt;dbl&gt;
-## 1  0.893  0.813
-## 2 -1.03  -0.110
-## 3  0.812 -0.399
-## 4  0.570  1.11 
-## 5 -1.06   1.63 
-## 6 -1.11  -0.516
+##          x      y
+##      &lt;dbl&gt;  &lt;dbl&gt;
+## 1  1.87    -0.678
+## 2  0.00708  0.182
+## 3  1.26     1.21 
+## 4 -0.966   -0.595
+## 5  1.01     0.334
+## 6 -0.673    0.337
 ```
 ]
 
@@ -783,7 +784,7 @@ mydata %&gt;% head()
 
 .pull-left[
 
-```r
+``` r
 sum_plus10 &lt;- function(x) {sum(x) + 10}
 
 *map_df(.x=mydata, .f=sum_plus10 )
@@ -797,7 +798,7 @@ sum_plus10 &lt;- function(x) {sum(x) + 10}
 ## # A tibble: 1 × 2
 ##       x     y
 ##   &lt;dbl&gt; &lt;dbl&gt;
-## 1  9.24  15.9
+## 1  13.8  12.1
 ```
 ]
 
@@ -812,7 +813,7 @@ sum_plus10 &lt;- function(x) {sum(x) + 10}
 
 .pull-left[
 
-```r
+``` r
 mydata &lt;- tibble(x=rnorm(30),y=rnorm(30))
 mydata %&gt;% head()
 ```
@@ -822,14 +823,14 @@ mydata %&gt;% head()
 
 ```
 ## # A tibble: 6 × 2
-##        x      y
-##    &lt;dbl&gt;  &lt;dbl&gt;
-## 1  2.82   1.45 
-## 2 -1.10   0.166
-## 3  0.545  1.43 
-## 4 -0.204 -0.199
-## 5 -0.676 -1.08 
-## 6  1.35   0.407
+##         x      y
+##     &lt;dbl&gt;  &lt;dbl&gt;
+## 1 -0.0300  1.58 
+## 2 -0.942   1.53 
+## 3 -0.511   0.907
+## 4 -0.927   1.08 
+## 5  1.18   -0.434
+## 6 -0.580  -0.493
 ```
 ]
 
@@ -838,7 +839,7 @@ mydata %&gt;% head()
 
 .pull-left[
 
-```r
+``` r
 *map_df(.x=mydata, .f= ~ sum(.x) + 10  )
 ```
 ]
@@ -850,7 +851,7 @@ mydata %&gt;% head()
 ## # A tibble: 1 × 2
 ##       x     y
 ##   &lt;dbl&gt; &lt;dbl&gt;
-## 1  6.25  12.7
+## 1  3.29  13.0
 ```
 ]
 
@@ -884,7 +885,7 @@ Un modelo regresión por continente:
 
 .pull-left[
 
-```r
+``` r
 fit_lm &lt;- covid_data  %&gt;% nest(-continent) %&gt;%
   mutate(
 *   fit = map(data, ~ lm(total_cases_per_million ~ median_age, data = .x))
@@ -921,7 +922,7 @@ Ahora .bold[extraemos] los coefficientes del modelo con la función `broom::tidy
 --
 
 
-```r
+``` r
 *fit_lm &lt;- fit_lm %&gt;% mutate(coefs = map(fit, tidy))
 fit_lm
 ```
@@ -953,7 +954,7 @@ Ahora .bold[extraemos] los coefficientes del modelo con la función `broom::tidy
 --
 
 
-```r
+``` r
 fit_lm &lt;- fit_lm %&gt;% mutate(coefs = map(fit, tidy))
 *fit_lm %&gt;% select(continent,coefs) %&gt;% unnest()
 ```
@@ -996,7 +997,7 @@ fit_lm &lt;- fit_lm %&gt;% mutate(coefs = map(fit, tidy))
 --
 
 
-```r
+``` r
 covid_data &lt;- covid_data %&gt;% 
 * dplyr::select(continent,location,total_cases_per_million,
                 total_deaths_per_million, population_density,median_age, gdp_per_capita) %&gt;%
@@ -1016,18 +1017,18 @@ covid_data
 
 ```
 ## # A tibble: 1,260 × 6
-##    continent location    dv                            y iv                       x
-##    &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;
-##  1 Asia      Afghanistan total_cases_per_million  1117.  population_density    54.4
-##  2 Asia      Afghanistan total_cases_per_million  1117.  median_age            18.6
-##  3 Asia      Afghanistan total_cases_per_million  1117.  gdp_per_capita      1804. 
-##  4 Asia      Afghanistan total_deaths_per_million   41.9 population_density    54.4
-##  5 Asia      Afghanistan total_deaths_per_million   41.9 median_age            18.6
-##  6 Asia      Afghanistan total_deaths_per_million   41.9 gdp_per_capita      1804. 
-##  7 Europe    Albania     total_cases_per_million  9880.  population_density   105. 
-##  8 Europe    Albania     total_cases_per_million  9880.  median_age            38  
-##  9 Europe    Albania     total_cases_per_million  9880.  gdp_per_capita     11803. 
-## 10 Europe    Albania     total_deaths_per_million  219.  population_density   105. 
+##    continent location    dv                            y iv                    x
+##    &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;
+##  1 Asia      Afghanistan total_cases_per_million  1117.  population_dens… 5.44e1
+##  2 Asia      Afghanistan total_cases_per_million  1117.  median_age       1.86e1
+##  3 Asia      Afghanistan total_cases_per_million  1117.  gdp_per_capita   1.80e3
+##  4 Asia      Afghanistan total_deaths_per_million   41.9 population_dens… 5.44e1
+##  5 Asia      Afghanistan total_deaths_per_million   41.9 median_age       1.86e1
+##  6 Asia      Afghanistan total_deaths_per_million   41.9 gdp_per_capita   1.80e3
+##  7 Europe    Albania     total_cases_per_million  9880.  population_dens… 1.05e2
+##  8 Europe    Albania     total_cases_per_million  9880.  median_age       3.8 e1
+##  9 Europe    Albania     total_cases_per_million  9880.  gdp_per_capita   1.18e4
+## 10 Europe    Albania     total_deaths_per_million  219.  population_dens… 1.05e2
 ## # ℹ 1,250 more rows
 ```
 
@@ -1036,7 +1037,7 @@ covid_data
 
 
 
-```r
+``` r
 *fit_lm &lt;- covid_data %&gt;% nest(-c(continent,dv,iv)) %&gt;%
   mutate(
     fit = map(data, ~ lm(y ~ x, data = .x))
@@ -1047,18 +1048,18 @@ fit_lm
 
 ```
 ## # A tibble: 36 × 5
-##    continent dv                       iv                 data              fit   
-##    &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;              &lt;list&gt;            &lt;list&gt;
-##  1 Asia      total_cases_per_million  population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt;  
-##  2 Asia      total_cases_per_million  median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt;  
-##  3 Asia      total_cases_per_million  gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt;  
-##  4 Asia      total_deaths_per_million population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt;  
-##  5 Asia      total_deaths_per_million median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt;  
-##  6 Asia      total_deaths_per_million gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt;  
-##  7 Europe    total_cases_per_million  population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt;  
-##  8 Europe    total_cases_per_million  median_age         &lt;tibble [48 × 3]&gt; &lt;lm&gt;  
-##  9 Europe    total_cases_per_million  gdp_per_capita     &lt;tibble [48 × 3]&gt; &lt;lm&gt;  
-## 10 Europe    total_deaths_per_million population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt;  
+##    continent dv                       iv                 data              fit  
+##    &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;              &lt;list&gt;            &lt;lis&gt;
+##  1 Asia      total_cases_per_million  population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  2 Asia      total_cases_per_million  median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  3 Asia      total_cases_per_million  gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  4 Asia      total_deaths_per_million population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  5 Asia      total_deaths_per_million median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  6 Asia      total_deaths_per_million gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt; 
+##  7 Europe    total_cases_per_million  population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
+##  8 Europe    total_cases_per_million  median_age         &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
+##  9 Europe    total_cases_per_million  gdp_per_capita     &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
+## 10 Europe    total_deaths_per_million population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt; 
 ## # ℹ 26 more rows
 ```
 ---
@@ -1066,7 +1067,7 @@ fit_lm
 
 
 
-```r
+``` r
 fit_lm &lt;- covid_data %&gt;% nest(-c(continent,dv,iv)) %&gt;%
   mutate(fit = map(data, ~ lm(y ~ x, data = .x))) %&gt;% 
 * mutate(coefs = map(fit, tidy))
@@ -1077,18 +1078,18 @@ fit_lm
 
 ```
 ## # A tibble: 36 × 6
-##    continent dv                       iv                 data              fit    coefs           
-##    &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;              &lt;list&gt;            &lt;list&gt; &lt;list&gt;          
-##  1 Asia      total_cases_per_million  population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  2 Asia      total_cases_per_million  median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  3 Asia      total_cases_per_million  gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  4 Asia      total_deaths_per_million population_density &lt;tibble [46 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  5 Asia      total_deaths_per_million median_age         &lt;tibble [46 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  6 Asia      total_deaths_per_million gdp_per_capita     &lt;tibble [46 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  7 Europe    total_cases_per_million  population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  8 Europe    total_cases_per_million  median_age         &lt;tibble [48 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-##  9 Europe    total_cases_per_million  gdp_per_capita     &lt;tibble [48 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
-## 10 Europe    total_deaths_per_million population_density &lt;tibble [48 × 3]&gt; &lt;lm&gt;   &lt;tibble [2 × 5]&gt;
+##    continent dv                       iv                 data     fit   coefs   
+##    &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;              &lt;list&gt;   &lt;lis&gt; &lt;list&gt;  
+##  1 Asia      total_cases_per_million  population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  2 Asia      total_cases_per_million  median_age         &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  3 Asia      total_cases_per_million  gdp_per_capita     &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  4 Asia      total_deaths_per_million population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  5 Asia      total_deaths_per_million median_age         &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  6 Asia      total_deaths_per_million gdp_per_capita     &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  7 Europe    total_cases_per_million  population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  8 Europe    total_cases_per_million  median_age         &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+##  9 Europe    total_cases_per_million  gdp_per_capita     &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
+## 10 Europe    total_deaths_per_million population_density &lt;tibble&gt; &lt;lm&gt;  &lt;tibble&gt;
 ## # ℹ 26 more rows
 ```
 
@@ -1097,7 +1098,7 @@ fit_lm
 
 
 
-```r
+``` r
 fit_lm &lt;- covid_data %&gt;% nest(-c(continent,dv,iv)) %&gt;%
   mutate(fit = map(data, ~ lm(y ~ x, data = .x))) %&gt;% 
   mutate(coefs = map(fit, tidy)) %&gt;% 
@@ -1110,18 +1111,18 @@ fit_lm
 
 ```
 ## # A tibble: 72 × 8
-##    continent dv                       iv                 term         estimate std.error statistic    p.value
-##    &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt;              &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-##  1 Asia      total_cases_per_million  population_density (Intercept) 9456.     2146.         4.41  0.0000711 
-##  2 Asia      total_cases_per_million  population_density x              1.40      1.67       0.836 0.408     
-##  3 Asia      total_cases_per_million  median_age         (Intercept) 2329.     8948.         0.260 0.796     
-##  4 Asia      total_cases_per_million  median_age         x            243.      290.         0.838 0.407     
-##  5 Asia      total_cases_per_million  gdp_per_capita     (Intercept) 4534.     2380.         1.91  0.0636    
-##  6 Asia      total_cases_per_million  gdp_per_capita     x              0.250     0.0710     3.52  0.00106   
-##  7 Asia      total_deaths_per_million population_density (Intercept)  121.       23.4        5.17  0.00000828
-##  8 Asia      total_deaths_per_million population_density x             -0.0150    0.0172    -0.873 0.388     
-##  9 Asia      total_deaths_per_million median_age         (Intercept)   87.9     101.         0.873 0.388     
-## 10 Asia      total_deaths_per_million median_age         x              0.904     3.20       0.283 0.779     
+##    continent dv                 iv    term  estimate std.error statistic p.value
+##    &lt;chr&gt;     &lt;chr&gt;              &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+##  1 Asia      total_cases_per_m… popu… (Int…  9.46e+3 2146.         4.41  7.11e-5
+##  2 Asia      total_cases_per_m… popu… x      1.40e+0    1.67       0.836 4.08e-1
+##  3 Asia      total_cases_per_m… medi… (Int…  2.33e+3 8948.         0.260 7.96e-1
+##  4 Asia      total_cases_per_m… medi… x      2.43e+2  290.         0.838 4.07e-1
+##  5 Asia      total_cases_per_m… gdp_… (Int…  4.53e+3 2380.         1.91  6.36e-2
+##  6 Asia      total_cases_per_m… gdp_… x      2.50e-1    0.0710     3.52  1.06e-3
+##  7 Asia      total_deaths_per_… popu… (Int…  1.21e+2   23.4        5.17  8.28e-6
+##  8 Asia      total_deaths_per_… popu… x     -1.50e-2    0.0172    -0.873 3.88e-1
+##  9 Asia      total_deaths_per_… medi… (Int…  8.79e+1  101.         0.873 3.88e-1
+## 10 Asia      total_deaths_per_… medi… x      9.04e-1    3.20       0.283 7.79e-1
 ## # ℹ 62 more rows
 ```
 
@@ -1130,7 +1131,7 @@ fit_lm
 
 
 
-```r
+``` r
 *fit_lm %&gt;% filter(term=="x") %&gt;%
 * ggplot(aes(x=continent, y=estimate, fill=continent)) +
   geom_col() + facet_wrap(dv ~ iv, scales="free_y") +

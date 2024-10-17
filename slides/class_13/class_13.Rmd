@@ -528,8 +528,9 @@ Una posible solución: agregar un nivel adicional al loop (continentes)
 class: fullscreen, left, middle, text-black
 background-image: url("images/typewriter.jpg")
 
-.huge[#A breve]
-.huge[#introducción]
+.huge[#Breve]
+.huge[#intro]
+.huge[#ducción]
 .huge[#a purrr]
 
 
