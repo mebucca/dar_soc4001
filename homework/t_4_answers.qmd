@@ -1,0 +1,109 @@
+---
+title: "SOC4001 Procesamiento avanzado de bases de datos en R"
+author: "Tarea 4"
+format: html
+editor: visual
+---
+
+```{r, echo=FALSE}
+# Escribir install.packages("tinytex") en la consola para instalar "tinytex"
+# Carga "tinytex" para compilar PDF
+library("tinytex")
+```
+
+Ponderación: 12% de la nota final del curso
+
+Entrega: Desde el momento de entrega, los estudiantes una semana de plazo para completar esta tarea.
+
+Formato: Desarrollar esta tarea en un RScript, agregando comentarios cuando sea necesario.
+
+El código a continuación carga la Base de Datos Histórica Proyectos Adjudicados ANID (ex-conicyt) y extrae una selección de variables que son almacenados en el objecto `data_anid`. Además, carga otra base con datos del IPC anual.
+
+```{r,  message=FALSE, warning=FALSE}
+library("tidyverse")
+library("readr")
+
+path <- url("https://raw.githubusercontent.com/ANID-GITHUB/Historico-de-Proyectos-Adjudicados/da63cab4fa424eaaac2a108b0582c83fa4f229c1/BDH_Proyectos.csv")
+
+data_anid <- read_delim(path, delim = ";")
+
+data_anid <- data_anid %>% rename(codigo_proyecto = CODIGO_PROYECTO, anno = ANO_FALLO, sexo = SEXO, area = AREA_OCDE, duracion =  DURACION_MESES, monto = `MONTO ADJUDICADO (MILES $)`) %>% select(codigo_proyecto,anno, sexo,area,monto)
+
+datos_ipc <- read.csv("https://raw.githubusercontent.com/mebucca/dar_soc4001/master/homework/ipc.csv")
+
+```
+
+Descripción de los datos: La Agencia Nacional de Investigación y Desarrollo (ANID) cada año adjudica financiamiento para proyectos en Ciencia y Tecnología a través de sus diferentes concursos. La base de datos denominada "BDH_Proyectos" contiene la información disponible de proyectos adjudicados por la Agencia (antes del 2020, CONICYT) desde el año 1982 hasta el 2020, con fecha de corte al 31 de diciembre del 2020. Cada fila representa una iniciativa adjudicada. Los datos deben verse así:
+
+```{r, echo=T}
+data_anid %>% head()
+```
+
+1)  Usando los comandos `group_by()` y `summarise()` produce la siguiente tabla y asígnala al objeto `tabla_1`. El resultado debe verse así y corresponde al monto promedio asignado a cada investigadores de caga sexo en cada area:
+
+```{r, echo=T, warning=FALSE, message=FALSE}
+tabla_1 <- data_anid  %>% group_by(area,anno,sexo) %>%
+  summarise(across(c(monto), ~mean(.x,rm=T))) 
+tabla_1 %>% head()
+```
+
+2)  En la base de datos `datos_ipc` remueve los años con valores perdidos en la variable `datos_ipc$ipc`, usa. Conserva sólo las variables `anno` e `ipc`. Los datos deben verse así:
+
+```{r, echo=T}
+
+datos_ipc <- datos_ipc %>% 
+  filter(is.na(ipc)==0)
+
+datos_ipc %>% head()
+```
+
+3)  Usando algunos de los comandos `_join()` junta los datos en `tabla_1` y `datos_ipc` preservando toda la información disponible en `tabla_1`. El resultado debe verse así:
+
+```{r, echo=T}
+tabla_1 <- tabla_1 %>% left_join(datos_ipc, by="anno")
+tabla_1 %>% head()
+```
+
+4)  Crea la nueva variable `monto_precios2021` multiplicando las variables `monto` e `ipc`. Posteriormente remueve las variables `monto` e `ipc`. El resultado debe verse así:
+
+```{r, echo=T}
+tabla_1 <- tabla_1 %>% mutate(monto_precios2021 = monto*ipc) %>% select(-c(monto,ipc))
+tabla_1 
+```
+
+5)  Usando el comando `pivot_wider()` transforma los datos de la siguiente manera.
+
+```{r, echo=T}
+tabla_1 %>% 
+  pivot_wider(names_from=sexo, values_from=monto_precios2021)
+```
+
+6)  Usa la función `replace_na()` para reemplazar los valores perdidos en las variables `HOMBRE` y `MUJER` por ceros. El resultado debe verse así:
+
+```{r, echo=T}
+tabla_1 %>% 
+  pivot_wider(names_from=sexo, values_from=monto_precios2021) %>%
+  mutate(across(c(HOMBRE,MUJER), ~ ifelse(is.na(.x),0,.x) ))
+
+```
+
+7)  Crea una nueva variable llamada `dif_hombremujer` que mida la diferencia entre el monto asignado a hombres y mujeres `= HOMBRE - MUJER`. Posteriormente conserva sólo las variables `anno`, `area` y `dif_hombremujer`. El resultado debe verse así:
+
+```{r, echo=T}
+tabla_1 %>% select(anno,sexo,area,monto_precios2021) %>%
+  pivot_wider(names_from=sexo, values_from=monto_precios2021) %>%
+  mutate(across(c(HOMBRE,MUJER), ~ ifelse(is.na(.x),0,.x) )) %>%
+  mutate(dif_hombremujer = HOMBRE - MUJER) %>%select(anno,area,dif_hombremujer)
+```
+
+8)  Usando el comando `pivot_wider()` modifica la tabla producida en (7) y produce la siguiente tabla:
+
+```{r, echo=T}
+tabla_1 %>% select(anno,sexo,area,monto_precios2021) %>%
+  pivot_wider(names_from=sexo, values_from=monto_precios2021) %>%
+  mutate(across(c(HOMBRE,MUJER), ~ ifelse(is.na(.x),0,.x) )) %>%
+  mutate(dif_hombremujer = HOMBRE - MUJER) %>%  select(anno,area,dif_hombremujer) %>%
+  pivot_wider(names_from=area,values_from=dif_hombremujer) 
+```
+
+9)  Elige el valor correspondiente a una celda cualquiera y describe la información que comunica.
