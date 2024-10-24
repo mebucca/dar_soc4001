@@ -4,7 +4,7 @@
     <title>Procesamiento avanzado de Bases de Datos en R</title>
     <meta charset="utf-8" />
     <meta name="author" content="  Mauricio Bucca  Profesor Asistente, Sociología UC" />
-    <script src="libs/header-attrs-2.23/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
     <link rel="stylesheet" href="gentle-r.css" type="text/css" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -240,7 +240,7 @@ Adivina los datos detrás del siguiente gráfico ...
 
 .pull-left[
 
-```r
+``` r
 data_ineq
 ```
 
@@ -335,7 +335,7 @@ Adivina los datos detrás del siguiente gráfico ...
 
 .pull-left[
 
-```r
+``` r
 data_ineq
 ```
 ]
@@ -370,7 +370,7 @@ Adivina los datos detrás del siguiente gráfico ...
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 *ggplot(aes(x=gini_yaut, y=gini_ytot))
 ```
@@ -389,7 +389,7 @@ Adivina los datos detrás del siguiente gráfico ...
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(aes(x=gini_yaut, y=gini_ytot)) +
 *geom_point()
@@ -409,7 +409,7 @@ Adivina los datos detrás del siguiente gráfico ...
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(aes(x=gini_yaut, y=gini_ytot)) +
 *geom_line()
@@ -429,7 +429,7 @@ Adivina los datos detrás del siguiente gráfico ...
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(aes(x=gini_yaut, y=gini_ytot)) +
 *geom_point() +
@@ -524,7 +524,7 @@ Or just start typing `geom_` in RStudio
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 *ggplot(aes(x=gini_yaut, y=gini_ytot)) +
 geom_point()
@@ -542,7 +542,7 @@ geom_point()
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(
   aes(x=gini_yaut, y=gini_ytot, 
@@ -562,7 +562,7 @@ geom_point()
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(
   aes(x=gini_yaut, y=gini_ytot, 
@@ -582,7 +582,7 @@ geom_point()
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(
   aes(x=gini_yaut, y=gini_ytot, 
@@ -602,7 +602,7 @@ geom_point()
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(
   aes(x=gini_yaut, y=gini_ytot, 
@@ -623,7 +623,7 @@ geom_point()
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(
   aes(x=gini_yaut, y=gini_ytot, 
@@ -647,7 +647,7 @@ geom_point()  +
 
 .pull-left[
 
-```r
+``` r
 data_ineq %&gt;%
 ggplot(
   aes(x=gini_yaut, y=gini_ytot, 
