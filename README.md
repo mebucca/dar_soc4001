@@ -64,7 +64,7 @@ Nota: Todas las clases serán grabadas y estarán disponibles por 7 días. El li
 | Tarea 3       | septiembre 12   | septiembre 26   | [`[T3 sols]`](https://mebucca.github.io/dar_soc4001/homework/t_3_answers#1) [`[T3.qmd sols]`](homework/t_3_answers.qmd)                                      |
 | Tarea 4       | octubre 3       | octubre 17      | [`[T4 sols]`](https://mebucca.github.io/dar_soc4001/homework/t_4_answers#1) [`[T4.qmd sols]`](homework/t_4_answers.qmd)                                             |
 | Tarea 5       | octubre 24      | noviembre 7     | [`[T5]`](https://mebucca.github.io/dar_soc4001/homework/t_5#1) [`[T5.qmd]`](homework/t_5.qmd)                                     |
-| Trabajo final | noviembre 7     | diciembre 8     | [`[TF]`](https://mebucca.github.io/dar_soc4001/homework/tf#1) [`[T5.qmd]`](homework/tf.Rmd)                                    |
+| Trabajo final | noviembre 7     | diciembre 8     | [`[TF]`](https://mebucca.github.io/dar_soc4001/homework/tf#1) [`[TF.qmd]`](homework/tf.Rmd)                                    |
 
 
 
