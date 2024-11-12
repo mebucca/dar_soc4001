@@ -6,11 +6,10 @@ cat("\014")
 rm(list = ls())
 
 # Carga paquetes
-# install.packages("readstata13")
-# library("readstata13")
-# library("psych")
-# library("scales")
-# library("stargazer")
+library("readstata13")
+library("psych")
+library("scales")
+library("stargazer")
 
 library("pacman")
 p_load(readstata13,psych,scales,stargazer)
@@ -20,12 +19,12 @@ p_load(readstata13,psych,scales,stargazer)
 
 # Change the line below to set your own working directory
 
+folder <- "~/Library/Mobile Documents/com~apple~CloudDocs/Teaching/ISUC/2023_2_data_analysis_r/repo/slides/class_4/workflow/"
 
-folder <- "/Users/mauricio/Library/Mobile Documents/com~apple~CloudDocs/Teaching/ISUC/2024_2_data_analysis_r/repo/slides/class_4/workflow"
+dircode     <- paste0(folder,"code/") 
+dirdata 	  <- paste0(folder,"data/") 
+dirresults  <- paste0(folder,"results/");  dirresults
 
-dircode     <- paste0(folder,"/code/") 
-dirdata 	  <- paste0(folder,"/data/") 
-dirresults  <- paste0(folder,"/results/")
 
 
 ############################################# Importar datos ################################################# 
@@ -65,4 +64,5 @@ source("3_recoding.R")
 
 # Set working directory
 setwd(dircode)
+
 source("4_analyses.R")

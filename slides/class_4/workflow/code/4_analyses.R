@@ -19,7 +19,6 @@ summary_table <- describeBy(essdata_sub[,c("eisced", "age")], essdata_sub$cntry)
 #################### Plots  #################### 
 
 filename <- paste0(dirresults,"miprimerplot.jpeg")
-
 jpeg(file=filename, width=600, height=350)
 
 par(mfrow=c(1,2))
@@ -84,6 +83,7 @@ sum_model2$sigma
 # exportar resultados a una linda tabla 
 
 filename <- paste0(dirresults,"miprimeratabladeregresion.txt")
+
 
 
 stargazer(model1, model2, type="text",

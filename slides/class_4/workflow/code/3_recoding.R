@@ -9,6 +9,7 @@ dim(essdata_sub)
 
 head(essdata_sub)
 
+
 # filtra filas que cumplen condición lógica 
  
 attach(essdata_sub)

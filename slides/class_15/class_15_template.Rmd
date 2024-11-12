@@ -1,11 +1,12 @@
 ---
-title: "RMarkdown en 10 minutos -  SOC4001"
-author: "Mauricio Bucca"
-date: "Noviembre de 2022"
+title: "RMarkdown en 10 minutos -  SOC4001 2024"
+author: "M. Bucca"
+date: "7 de Noviembre de 2024"
 output:
-  word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
 
@@ -17,11 +18,9 @@ library("carData")
 datos_chile <- Chile
 ```
 
-#  Reportes automatizados en RMarkdown
+# Reportes automatizados en RMarkdown
 
-<!-- your comment -->
-
-## Primeros pasos 
+## Primeros pasos
 
 En este documento revisaremos elementos básicos de la escritura de documentos en **RMarkdown**.
 
@@ -29,46 +28,46 @@ En este documento revisaremos elementos básicos de la escritura de documentos e
 
 ### Texto
 
-La parte principal de un informe en `RMarkdown` suele ser texto. En un fichero .Rmd, todo lo que no sea encabezamiento código será interpretado como texto y lo mostrará tal cual. El texto de un documento `.Rmd` es “simplemente” texto PERO está escrito en *Markdown*. Lo que escribamos en **Rmarkdown** se mostrará tal cual en el documento final, pero es posible dar un poco de formato: negritas, cursivas, listas, enlaces de internet, etc. Para mayor detalle puedes visitar la siguiente [página web](https://www.markdownguide.org/cheat-sheet/).
+La parte principal de un informe en `RMarkdown` suele ser texto. En un fichero .Rmd, todo lo que no sea encabezamiento código será interpretado como texto y lo mostrará tal cual. El texto de un documento `.Rmd` es “simplemente” texto PERO está escrito en *Markdown*. Lo que escribamos en **Rmarkdown** se mostrará tal cual en el documento final, pero es posible dar un poco de formato: negritas, cursivas, listas, enlaces de internet, etc. Para mayor detalle puedes visitar el siguiente [link](https://www.markdownguide.org/cheat-sheet/)
 
-### Ecuaciones 
+
+### Ecuaciones
 
 En `Rmarkdown` se pueden introducir formulas matemáticas (escritas en `Látex`). Para formulas en linea se usa el signo `$` al inicio y al final de la expresión. Por ejemplo, el código `$y = f(x)$` produce la siguiente ecuación: $y = f(x)$.
 
-Para escribir la misma ecuación en una linea independiente, se usa el signo `$$`. Por ejemplo, el código `$$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$$` produce la siguiente ecuación: 
+Para escribir la misma ecuación en una linea independiente, se usa el signo `$$`. Por ejemplo, el código `$$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$$` produce la siguiente ecuación:
 
 $$y_{i} = \alpha + \beta_{1}x_{i} + \beta_{2}x^{2}_{i} + \epsilon_{i}$$
 
-$$e = m \times c^2$$ Hola clase
+$$e = m \times c^2$$ 
 
 $\lim\limits_{x \to \infty} \exp(-x) = 0$
 
 Para mayor detalle: [aquí](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
 
-\[ f(n) =
+$$ f(n) =
   \begin{cases}
     n/2       & \quad \text{if } n \text{ is even}\\
     -(n+1)/2  & \quad \text{if } n \text{ is odd}
   \end{cases}
-\]
-
-
+$$
 
 ## Código ("chunks")
 
 `RMarkdown` permite introducir código de `R` en el documento de texto, evaluar tal código y mostrar los resultados directamente en el informe. A modo de ejemplo, comenzaremos mostrando un `summary` de la base de datos `Chile`, que viene incluida en el paquete `carData`.
 
-```{r}
+
+```{r, eval=TRUE, echo=TRUE}
 mediana <- datos_chile %>% summarise(median_ingreso = quantile(income, p=0.5, na.rm = T)) %>% as.numeric() 
 mediana
 ```
 
-El 1988 la mediana de ingreso en Chile de `r round(mediana,0)`.
+En 1988 la mediana de ingreso en Chile era de `r round(mediana,0)`.
 
-El trozo de arriba es un chunk de código `R`. Al compilar el documento, (click en el botón `knitr`, en el panel)  el código se ejecutará y mostrarán los resultados en el documento final. Los chunks pueden tienen diversas opciones que permiten una mayor flexibilidad en como se muestra el código y los resultados. Las opciones más usadas son:
+El trozo de arriba es un chunk de código `R`. Al compilar el documento, (click en el botón `knitr`, en el panel) el código se ejecutará y mostrarán los resultados en el documento final. Los chunks pueden tienen diversas opciones que permiten una mayor flexibilidad en como se muestra el código y los resultados. Las opciones más usadas son:
 
-- echo
-- eval
+-   echo
+-   eval
 
 Por ejemplo, el chunk abajo mostrará el código (`echo = TRUE`), lo evaluará y mostrará los resultados en el documento final (`eval = TRUE`). Así se ve:
 
@@ -90,7 +89,7 @@ datos_chile <- datos_chile %>% drop_na()
 promedio <- mean(datos_chile$income, na.rm = T)
 ```
 
-Como muestra nuestro análisis el promedio de ingreso es de `r round(promedio,0)`. Por último, si queremos NO mostrar el código (`echo = FALSE`), SI evaluarlo (`eval = TRUE`), PERO NO se mostrar los resultados  (`results = "hide"`), escribimos:
+Como muestra nuestro análisis el promedio de ingreso es de `r round(promedio,0)`. Por último, si queremos NO mostrar el código (`echo = FALSE`), SI evaluarlo (`eval = TRUE`), PERO NO se mostrar los resultados (`results = "hide"`), escribimos:
 
 ```{r, echo = FALSE, eval = TRUE, results = "hide"}
 datos_chile <- datos_chile %>% drop_na()
@@ -99,7 +98,6 @@ print(promedio)
 ```
 
 Que el código haya sido evaluado significa que el objeto "a" existirá en la memoria y podrá ser usado para posterior análisis.
-
 
 ## Gráficos
 
@@ -110,13 +108,12 @@ datos_chile %>% ggplot(aes(x=income, y=statusquo, group=vote, colour=vote)) + ge
   scale_color_viridis_d()
 ```
 
-
-## Tablas 
+## Tablas
 
 Este reporte usa datos de la base de datos `Chile`:
 
 ```{r, echo=FALSE, eval=TRUE, message=FALSE}
-datos_chile %>% summarise(across(c("income","statusquo","age"), ~ mean(.x, na.rm=T))) %>% pivot_longer(everything()) %>%
+datos_chile %>% summarise(across(c("income","statusquo","age"), ~ mean(.x, na.rm=T))) %>% pivot_longer(everything())  %>%
 knitr::kable(type="html")
 ```
 
