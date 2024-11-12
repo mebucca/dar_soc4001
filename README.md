@@ -44,7 +44,7 @@ Nota: Todas las clases serán grabadas y estarán disponibles por 7 días. El li
 | Martes | octubre 29      | Visualización de datos con ggplot                            | Mauricio B.| [`[Pres]`](https://mebucca.github.io/dar_soc4001/slides/class_12/class_12#1) [`[.Rmd]`](slides/class_12/class_12.Rmd)                                                                                                               |
 | Martes | noviembre 5     | Visualización de datos con ggplot                            | Roberto C. | [`[.R]`](slides/class_12/class_12.R)                                                                                                            |
 | Jueves | noviembre 7     | Reportes automatizados con rmarkdown y knitr                 | Mauricio B.| [`[Pres]`](https://mebucca.github.io/dar_soc4001/slides/class_15/class_15#1) [`[.Rmd]`](slides/class_15/class_15.Rmd)  [`[Template]`](slides/class_15/class_15_template.Rmd)                                                                                                             |
-| Martes | noviembre 12    | Reportes automatizados con rmarkdown y knitr                 | Roberto C. |  [`[.Rmd]`](slides/class_15/ejercicio_practico.Rmd)                                                                                                         |
+| Martes | noviembre 12    | Reportes automatizados con rmarkdown y knitr                 | Roberto C. |                                                                                                           |
 | Jueves | noviembre 14    | Workflow avanzado                                            | Mauricio B.|                                                                                                           |
 
 ---
@@ -64,7 +64,7 @@ Nota: Todas las clases serán grabadas y estarán disponibles por 7 días. El li
 | Tarea 3       | septiembre 12   | septiembre 26   | [`[T3 sols]`](https://mebucca.github.io/dar_soc4001/homework/t_3_answers#1) [`[T3.qmd sols]`](homework/t_3_answers.qmd)                                      |
 | Tarea 4       | octubre 3       | octubre 17      | [`[T4 sols]`](https://mebucca.github.io/dar_soc4001/homework/t_4_answers#1) [`[T4.qmd sols]`](homework/t_4_answers.qmd)                                             |
 | Tarea 5       | octubre 24      | noviembre 7     | [`[T5]`](https://mebucca.github.io/dar_soc4001/homework/t_5#1) [`[T5.qmd]`](homework/t_5.qmd)                                     |
-| Trabajo final | noviembre 7     | diciembre 8     | [`[TF]`](https://mebucca.github.io/dar_soc4001/homework/tf#1) [`[T5.qmd]`](homework/tf.Rmd)                                    |
+| Trabajo final | noviembre 7     | diciembre 8     | [`[TF]`](https://mebucca.github.io/dar_soc4001/homework/tf#1) [`[TF.qmd]`](homework/tf.Rmd)                                    |
 
 
 

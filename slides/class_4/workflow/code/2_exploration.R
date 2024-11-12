@@ -28,7 +28,6 @@ table(essdata$eisced, essdata$hinctnta)
 print(table(essdata$eisced, essdata$hinctnta))
 
 
-
 print("================ TODO OK CON LA EXPLORACIÓN !!!! ====================") # Debugging flags
 
 
