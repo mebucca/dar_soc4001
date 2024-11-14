@@ -44,7 +44,11 @@ Nota: Todas las clases serán grabadas y estarán disponibles por 7 días. El li
 | Martes | octubre 29      | Visualización de datos con ggplot                            | Mauricio B.| [`[Pres]`](https://mebucca.github.io/dar_soc4001/slides/class_12/class_12#1) [`[.Rmd]`](slides/class_12/class_12.Rmd)                                                                                                               |
 | Martes | noviembre 5     | Visualización de datos con ggplot                            | Roberto C. | [`[.R]`](slides/class_12/class_12.R)                                                                                                            |
 | Jueves | noviembre 7     | Reportes automatizados con rmarkdown y knitr                 | Mauricio B.| [`[Pres]`](https://mebucca.github.io/dar_soc4001/slides/class_15/class_15#1) [`[.Rmd]`](slides/class_15/class_15.Rmd)  [`[Template]`](slides/class_15/class_15_template.Rmd)                                                                                                             |
+<<<<<<< HEAD
 | Martes | noviembre 12    | Reportes automatizados con rmarkdown y knitr                 | Roberto C. |   [`[.Rmd]`](slides/class_15/ejercicio_practico.Rmd)                                                                                                         |
+=======
+| Martes | noviembre 12    | Reportes automatizados con rmarkdown y knitr                 | Roberto C. |                                                                                                           |
+>>>>>>> efb4889 (s)
 | Jueves | noviembre 14    | Workflow avanzado                                            | Mauricio B.|                                                                                                           |
 
 ---
