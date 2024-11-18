@@ -22,7 +22,7 @@ p_load("haven",
 
 # Change the line below to set your own working directory
 
-folder <- "/Users/Mauricio/Library/Mobile Documents/com~apple~CloudDocs/Teaching/ISUC/2023_2_data_analysis_r/repo/slides/class_16/workflow_adv/"
+folder <- "/Users/Mauricio/Library/Mobile Documents/com~apple~CloudDocs/Teaching/ISUC/2024_2_data_analysis_r/repo/slides/class_16/workflow_adv/"
 dircode    <- paste0(folder,"code/") 
 dirdata 	 <- paste0(folder,"data/") 
 dirresults <- paste0(folder,"results/")
